@@ -1,0 +1,271 @@
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
+import sys
+from io import StringIO
+
+def abrir_archivo():
+    """Abre un archivo de texto y lo muestra en el editor."""
+    archivo = filedialog.askopenfilename(filetypes=[("Archivos de texto", "*.txt")])
+    if archivo:
+        with open(archivo, 'r') as f:
+            contenido = f.read()
+        texto.delete(1.0, tk.END)
+        texto.insert(tk.END, contenido)
+
+def guardar_archivo():
+    """Guarda el contenido del editor en un archivo de texto."""
+    archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Archivos de texto", "*.txt")])
+    if archivo:
+        with open(archivo, 'w') as f:
+            f.write(texto.get(1.0, tk.END))
+        messagebox.showinfo("Guardado", "El archivo ha sido guardado correctamente.")
+
+def guardar_como():
+    """Guarda el contenido del editor en un nuevo archivo de texto."""
+    archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Archivos de texto", "*.txt")])
+    if archivo:
+        with open(archivo, 'w') as f:
+            f.write(texto.get(1.0, tk.END))
+        messagebox.showinfo("Guardado", "El archivo ha sido guardado correctamente.")
+
+def agregar_codigo():
+    """Abre una ventana para que el usuario pueda agregar código."""
+    ventana_codigo = tk.Toplevel(ventana)
+    ventana_codigo.title("Agregar Código")
+    ventana_codigo.geometry("400x300")
+
+    etiqueta_instruccion = ttk.Label(ventana_codigo, text="Escribe tu código aquí:")
+    etiqueta_instruccion.pack(pady=10)
+
+    codigo_texto = tk.Text(ventana_codigo, wrap="word", height=15)
+    codigo_texto.pack(expand=True, fill="both", padx=20, pady=10)
+
+    boton_agregar = ttk.Button(ventana_codigo, text="Agregar", command=lambda: insertar_codigo(codigo_texto.get(1.0, tk.END)))
+    boton_agregar.pack(pady=10)
+
+def insertar_codigo(codigo):
+    """Inserta el código proporcionado en el editor."""
+    texto.insert(tk.END, codigo)
+
+def editar_codigo():
+    """Función para editar código."""
+    pass  # Implementa la funcionalidad aquí
+
+def formato_archivo():
+    """Función para establecer el formato del archivo."""
+    pass  # Implementa la funcionalidad aquí
+
+def compilar_cod():
+    """Función para compilar el código."""
+    # Supongamos que aquí se realiza la compilación del código y se obtiene un resultado
+    # Aquí simulamos la compilación imprimiendo un mensaje
+    output = StringIO()
+    sys.stdout = output  # Redirigir la salida estándar al buffer StringIO
+    print("Este es el resultado de la compilación.")
+    sys.stdout = sys.__stdout__  # Restaurar la salida estándar
+    
+    resultado_compilacion_texto.delete(1.0, tk.END)  # Limpiar el resultado anterior
+    resultado_compilacion_texto.insert(tk.END, output.getvalue())
+
+def help_user():
+    """Función para mostrar la ayuda al usuario."""
+    pass  # Implementa la funcionalidad aquí
+
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
+import keyword
+import re
+
+class EditorCodigo:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Editor de Código")
+        self.root.geometry("800x600")
+
+        self.create_widgets()
+        self.apply_highlight()
+
+    def create_widgets(self):
+        self.code_text = tk.Text(self.root, wrap="word", undo=True)
+        self.code_text.pack(fill="both", expand=True, padx=10, pady=10)
+
+        self.scrollbar = ttk.Scrollbar(self.root, orient="vertical", command=self.code_text.yview)
+        self.scrollbar.pack(side="right", fill="y")
+
+        self.code_text.configure(yscrollcommand=self.scrollbar.set)
+
+    def apply_highlight(self):
+        start_index = '1.0'
+        end_index = tk.END
+        code = self.code_text.get(start_index, end_index)
+        declarations = ['int', 'float', 'double', 'char', 'string', 'bool', 'print']  # Agregar más declaraciones si es necesario
+        keywords = keyword.kwlist + declarations
+
+        for word in keywords:
+            start_pos = '1.0'
+            while True:
+                escaped_word = re.escape(word)
+                start_pos = self.code_text.search(escaped_word, start_pos, stopindex=tk.END, nocase=1, regexp=1)
+                if not start_pos:
+                    break
+                end_pos = f'{start_pos}+{len(word)}c'
+
+                if word in declarations:
+                    self.code_text.tag_add('datatype', start_pos, end_pos)
+                else:
+                    self.code_text.tag_add('keyword', start_pos, end_pos)
+
+                start_pos = end_pos
+
+        start_index = '1.0'
+        for char in code:
+            color_tag = 'symbol' if char in [';', ')', '(', '{', '}', '+', '-', '', '/', '%', '=', '==', '!=', '>', '<', '>=', '<=', '&&', '||', '!', '++', '--', '+=', '-=', '=', '/=', '%='] else None
+            if color_tag:
+                self.code_text.tag_add(color_tag, start_index, f'{start_index}+1c')
+            start_index = f'{start_index}+1c'
+
+        string_pattern = r'"([^"\\]|\\.)*"'
+        for match in re.finditer(string_pattern, code):
+            start_pos = f'1.0+{match.start()}c'
+            end_pos = f'1.0+{match.end()}c'
+            self.code_text.tag_add('string', start_pos, end_pos)
+
+        # Configurar atajos de teclado para Undo y Redo
+        self.root.bind('<Control-z>', self.undo)
+        self.root.bind('<Control-y>', self.redo)
+        # Configurar atajos para abrir y guardar archivos
+        self.root.bind('<Control-o>', lambda e: self.open_file())            
+        self.root.bind('<Control-s>', lambda e: self.save_file())
+        # Configurar atajos para eliminar una palabra con Control + Backspace
+        self.root.bind('<Control-BackSpace>', self.delete_last_word)
+        self.root.bind('<Control-Delete>', self.delete_next_word)
+        # Configurar atajo para salir
+        self.root.bind('<Control-q>', lambda e: self.root.quit())
+
+    def undo(self, event=None):
+        self.code_text.edit_undo()
+
+    def redo(self, event=None):
+        self.code_text.edit_redo()
+
+    def open_file(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Archivos de texto", "*.txt")])
+        if file_path:
+            with open(file_path, 'r') as file:
+                content = file.read()
+                self.code_text.delete('1.0', tk.END)
+                self.code_text.insert(tk.END, content)
+                self.apply_highlight()
+
+    def save_file(self):
+        file_path = filedialog.asksaveasfilename(filetypes=[("Archivos de texto", "*.txt")])
+        if file_path:
+            with open(file_path, 'w') as file:
+                content = self.code_text.get('1.0', tk.END)
+                file.write(content)
+
+    def delete_last_word(self, event=None):
+        last_pos = self.code_text.search(r'\s', 'end', backwards=True, regexp=True)
+        self.code_text.delete(last_pos, 'end')
+
+    def delete_next_word(self, event=None):
+        next_pos = self.code_text.search(r'\s', 'end', regexp=True)
+        if next_pos:
+            self.code_text.delete('insert', next_pos)
+
+    def save_file_as(self):
+        file_path = filedialog.asksaveasfilename(filetypes=[("Archivos de texto", "*.txt")])
+        if file_path:
+            with open(file_path, 'w') as file:
+                content = self.code_text.get('1.0', tk.END)
+                file.write(content)
+
+root = tk.Tk()
+app = EditorCodigo(root)
+root.mainloop()
+
+# Crear la ventana principal
+ventana = tk.Tk()
+ventana.title("Editor de Texto")
+ventana.geometry("800x600")
+
+# Crear el widget de texto
+texto = tk.Text(ventana, wrap="word", undo=True)
+texto.pack(side=tk.LEFT, expand=True, fill="both", padx=20, pady=10)
+
+# Crear el marco para mostrar los errores y resultados
+marco_errores_resultados = ttk.Frame(ventana)
+marco_errores_resultados.pack(side=tk.BOTTOM, fill="both", expand=True)
+
+# Crear un notebook para las pestañas de errores, resultados y análisis
+notebook_errores_resultados = ttk.Notebook(marco_errores_resultados)
+notebook_errores_resultados.pack(fill="both", expand=True)
+
+# Frame para los errores
+frame_errores = ttk.Frame(notebook_errores_resultados)
+notebook_errores_resultados.add(frame_errores, text="Errores")
+
+etiqueta_errores = tk.Label(frame_errores, text="Errores:")
+etiqueta_errores.pack(side=tk.TOP, padx=10, pady=(10, 5))
+
+errores_texto = tk.Text(frame_errores, wrap="word", height=3)
+errores_texto.pack(side=tk.TOP, expand=True, fill="both", padx=10)
+
+# Frame para el resultado de la compilación
+frame_resultado = ttk.Frame(notebook_errores_resultados)
+notebook_errores_resultados.add(frame_resultado, text="Resultado")
+
+etiqueta_resultado = tk.Label(frame_resultado, text="Resultado de la compilación:")
+etiqueta_resultado.pack(side=tk.TOP, padx=10, pady=(10, 5))
+
+resultado_compilacion_texto = tk.Text(frame_resultado, wrap="word", height=3)
+resultado_compilacion_texto.pack(side=tk.TOP, expand=True, fill="both", padx=10)
+
+# Crear el marco para los análisis léxico, semántico, sintáctico y código intermedio
+marco_analisis = ttk.Frame(ventana)
+marco_analisis.pack(side=tk.TOP, fill="both", expand=True)
+
+# Crear un notebook para las pestañas de análisis
+notebook_analisis = ttk.Notebook(marco_analisis)
+notebook_analisis.pack(fill="both", expand=True)
+
+# Frame para el análisis léxico
+frame_lexico = ttk.Frame(notebook_analisis)
+notebook_analisis.add(frame_lexico, text="Análisis Léxico")
+
+# Frame para el análisis semántico
+frame_semantico = ttk.Frame(notebook_analisis)
+notebook_analisis.add(frame_semantico, text="Análisis Semántico")
+
+# Frame para el análisis sintáctico
+frame_sintactico = ttk.Frame(notebook_analisis)
+notebook_analisis.add(frame_sintactico, text="Análisis Sintáctico")
+
+# Frame para el código intermedio
+frame_intermedio = ttk.Frame(notebook_analisis)
+notebook_analisis.add(frame_intermedio, text="Código Intermedio")
+
+# Menú
+barra_menu = tk.Menu(ventana)
+archivo_menu = tk.Menu(barra_menu, tearoff=0)
+archivo_menu.add_command(label="Abrir", command=abrir_archivo)
+archivo_menu.add_command(label="Guardar", command=guardar_archivo)
+archivo_menu.add_command(label="Guardar como", command=guardar_como)
+archivo_menu.add_separator()
+archivo_menu.add_command(label="Salir", command=ventana.quit)
+barra_menu.add_cascade(label="Archivo", menu=archivo_menu)
+barra_menu.add_command(label="Agregar Código", command=agregar_codigo)
+barra_menu.add_command(label="Editar", command=editar_codigo)
+barra_menu.add_command(label="Formato", command=formato_archivo)
+barra_menu.add_command(label="Compilar", command=compilar_cod)
+barra_menu.add_command(label="Ayuda", command=help_user)
+ventana.config(menu=barra_menu)
+
+# Estilo
+estilo = ttk.Style()
+estilo.theme_use("clam")
+estilo.configure("TButton", padding=6, relief="flat", background="#ccc")
+estilo.configure("TLabel", padding=6, relief="flat", background="#f0f0f0")
+estilo.configure("TFrame", background="#f0f0f0")
+
+ventana.mainloop()
