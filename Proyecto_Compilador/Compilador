@@ -118,7 +118,7 @@ top_right_frame.pack(side="top", fill="both", expand=True)
 bottom_right_frame = tk.Frame(right_frame)
 bottom_right_frame.pack(side="bottom", fill="both", expand=True)
 
-# Crear pestañas para el analizador léxico, semántico y sintáctico en la sección superior derecha
+# Crear pestañas para el analizador léxico, semántico, sintáctico y código intermedio en la sección superior derecha
 analyzer_notebook = ttk.Notebook(top_right_frame)
 
 lexical_tab = ttk.Frame(analyzer_notebook)
@@ -130,10 +130,13 @@ analyzer_notebook.add(semantic_tab, text="Analizador Semántico")
 syntax_tab = ttk.Frame(analyzer_notebook)
 analyzer_notebook.add(syntax_tab, text="Analizador Sintáctico")
 
+intermediate_tab = ttk.Frame(analyzer_notebook)
+analyzer_notebook.add(intermediate_tab, text="Código Intermedio")
+
 analyzer_notebook.pack(expand=True, fill="both")
 
-# Crear recuadros de texto en las pestañas de los analizadores, sin permitir edición
-for tab in [lexical_tab, semantic_tab, syntax_tab]:
+# Crear recuadros de texto en las pestañas de los analizadores y código intermedio, sin permitir edición
+for tab in [lexical_tab, semantic_tab, syntax_tab, intermediate_tab]:
     result_text = tk.Text(tab, state="disabled")
     result_text.pack(expand=True, fill="both")
 
