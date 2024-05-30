@@ -1,0 +1,104 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    CARACTER
+
+Grammar
+
+Rule 0     S' -> programa
+Rule 1     programa -> PALABRA_RESERVADA LBRACE lista_decl lista_sent RBRACE
+Rule 2     lista_decl -> lista_decl decl
+Rule 3     lista_decl -> decl
+Rule 4     lista_decl -> empty
+Rule 5     decl -> tipo lista_id PUNTO_Y_COMA
+Rule 6     tipo -> PALABRA_RESERVADA
+Rule 7     lista_id -> lista_id COMA IDENTIFICADOR
+Rule 8     lista_id -> IDENTIFICADOR
+Rule 9     lista_sent -> lista_sent sent
+Rule 10    lista_sent -> sent
+Rule 11    lista_sent -> empty
+Rule 12    sent -> sent_if
+Rule 13    sent -> sent_while
+Rule 14    sent -> sent_do
+Rule 15    sent -> sent_read
+Rule 16    sent -> sent_write
+Rule 17    sent -> bloque
+Rule 18    sent -> sent_assign
+Rule 19    sent -> break
+Rule 20    sent_if -> PALABRA_RESERVADA LPAREN exp_bool RPAREN bloque else_clause PALABRA_RESERVADA
+Rule 21    else_clause -> PALABRA_RESERVADA bloque
+Rule 22    else_clause -> empty
+Rule 23    sent_while -> PALABRA_RESERVADA LPAREN exp_bool RPAREN bloque
+Rule 24    sent_do -> PALABRA_RESERVADA bloque PALABRA_RESERVADA LPAREN exp_bool RPAREN PUNTO_Y_COMA
+Rule 25    sent_read -> PALABRA_RESERVADA IDENTIFICADOR PUNTO_Y_COMA
+Rule 26    sent_write -> PALABRA_RESERVADA exp_bool PUNTO_Y_COMA
+Rule 27    bloque -> LBRACE lista_sent RBRACE
+Rule 28    sent_assign -> IDENTIFICADOR ASIGNACION exp_bool PUNTO_Y_COMA
+Rule 29    exp_bool -> exp_bool OPERADOR_LOGICO comb
+Rule 30    exp_bool -> comb
+Rule 31    comb -> comb OPERADOR_LOGICO igualdad
+Rule 32    comb -> igualdad
+Rule 33    igualdad -> igualdad OPERADOR_RELACIONAL rel
+Rule 34    igualdad -> rel
+Rule 35    rel -> expr
+Rule 36    expr -> expr OPERADOR_ARITMETICO term
+Rule 37    expr -> term
+Rule 38    term -> term OPERADOR_ARITMETICO unario
+Rule 39    term -> unario
+Rule 40    unario -> OPERADOR_LOGICO unario
+Rule 41    unario -> OPERADOR_ARITMETICO unario
+Rule 42    unario -> factor
+Rule 43    factor -> LPAREN exp_bool RPAREN
+Rule 44    factor -> IDENTIFICADOR
+Rule 45    factor -> NUMERO
+Rule 46    factor -> BOOLEANO
+Rule 47    empty -> <empty>
+
+Terminals, with rules where they appear
+
+BOOLEANO             : 46
+CARACTER             : 
+IDENTIFICADOR        : 7 8 25 28 44
+NUMERO               : 45
+PALABRA_RESERVADA    : 1 6 20 20 21 23 24 24 25 26
+error                : 
+
+Nonterminals, with rules where they appear
+
+ASIGNACION           : 28
+COMA                 : 7
+LBRACE               : 1 27
+LPAREN               : 20 23 24 43
+OPERADOR_ARITMETICO  : 36 38 41
+OPERADOR_LOGICO      : 29 31 40
+OPERADOR_RELACIONAL  : 33
+PUNTO_Y_COMA         : 5 24 25 26 28
+RBRACE               : 1 27
+RPAREN               : 20 23 24 43
+bloque               : 17 20 21 23 24
+break                : 19
+comb                 : 29 30 31
+decl                 : 2 3
+else_clause          : 20
+empty                : 4 11 22
+exp_bool             : 20 23 24 26 28 29 43
+expr                 : 35 36
+factor               : 42
+igualdad             : 31 32 33
+lista_decl           : 1 2
+lista_id             : 5 7
+lista_sent           : 1 9 27
+programa             : 0
+rel                  : 33 34
+sent                 : 9 10
+sent_assign          : 18
+sent_do              : 14
+sent_if              : 12
+sent_read            : 15
+sent_while           : 13
+sent_write           : 16
+term                 : 36 37 38
+tipo                 : 5
+unario               : 38 39 40 41
+

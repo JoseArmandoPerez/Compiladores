@@ -1,8 +1,9 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
+from tkinter import ttk, filedialog
 import re
 import Lexico
+from tabulate import tabulate
+import Sintactico
 
 # Definir las palabras clave y operadores
 keywords = {"int", "float", "double", "char", "string", "bool", "print", "main", "for", "while", "true", "if", "void", "while", "do", "switch", "case"}
@@ -76,12 +77,43 @@ def save_as_file():
 
 def analyze_lexical():
     text = text_entry.get("1.0", "end-1c")
-    tokens = Lexico.tokenize(text)
-    lexical_result = "\n".join(f"{token[0]} : {token[1]}" for token in tokens)
+    lexical_result = Lexico.prueba(text)
+    
+    # Formatear el resultado léxico como tabla
+    table = [["Linea", "Tipo", "Valor", "Posicion"]]
+    for item in lexical_result:
+        parts = item.split()
+        table.append([parts[1], parts[3], parts[5], parts[7]])
+    
+    # Convertir la tabla a texto
+    table_text = tabulate(table, headers="firstrow", tablefmt="plain")
+    
+    # Actualizar el texto en la ventana del analizador léxico como tabla
     result_text_lexical.config(state="normal")
     result_text_lexical.delete("1.0", "end")
-    result_text_lexical.insert("1.0", lexical_result)
+    result_text_lexical.insert("1.0", table_text)
     result_text_lexical.config(state="disabled")
+
+def analyze_syntactic():
+    text = text_entry.get("1.0", "end-1c")
+    result = Sintactico.parser.parse(text, lexer=Lexico.analizador)
+    
+    # Mostrar el resultado del análisis sintáctico
+    if result:
+        tree, _ = Sintactico.formatear_arbol(result)
+        tree_text = "\n".join(tree)
+    else:
+        tree_text = "Errores en el análisis sintáctico."
+
+    result_text_syntax.config(state="normal")
+    result_text_syntax.delete("1.0", "end")
+    result_text_syntax.insert("1.0", tree_text)
+    result_text_syntax.config(state="disabled")
+    
+
+def analyze_both():
+    analyze_lexical()
+    analyze_syntactic()
 
 # Crear la ventana principal
 root = tk.Tk()
@@ -109,8 +141,9 @@ menu_bar.add_cascade(label="Formato", menu=format_menu)
 # Menú Compilar
 compile_menu = tk.Menu(menu_bar, tearoff=0)
 menu_bar.add_cascade(label="Compilar", menu=compile_menu)
-compile_menu.add_command(label="Correr")
 compile_menu.add_command(label="Analizar léxico", command=analyze_lexical)
+compile_menu.add_command(label="Analizar sintáctico", command=analyze_syntactic)
+compile_menu.add_command(label="Analizar ambos", command=analyze_both)
 
 # Menú Ayuda
 help_menu = tk.Menu(menu_bar, tearoff=0)
@@ -143,26 +176,23 @@ top_right_frame.pack(side="top", fill="both", expand=True)
 bottom_right_frame = tk.Frame(right_frame)
 bottom_right_frame.pack(side="bottom", fill="both", expand=True)
 
-# Crear pestañas para el analizador léxico, semántico, sintáctico y código intermedio en la sección superior derecha
+# Crear pestañas para el analizador léxico y sintáctico en la sección superior derecha
 analyzer_notebook = ttk.Notebook(top_right_frame)
 
 lexical_tab = ttk.Frame(analyzer_notebook)
 analyzer_notebook.add(lexical_tab, text="Analizador Léxico")
 
-semantic_tab = ttk.Frame(analyzer_notebook)
-analyzer_notebook.add(semantic_tab, text="Analizador Semántico")
-
 syntax_tab = ttk.Frame(analyzer_notebook)
 analyzer_notebook.add(syntax_tab, text="Analizador Sintáctico")
 
-intermediate_tab = ttk.Frame(analyzer_notebook)
-analyzer_notebook.add(intermediate_tab, text="Código Intermedio")
-
 analyzer_notebook.pack(expand=True, fill="both")
 
-# Crear recuadros de texto en las pestañas de los analizadores y código intermedio, sin permitir edición
+# Crear recuadros de texto en las pestañas de los analizadores, sin permitir edición
 result_text_lexical = tk.Text(lexical_tab, state="disabled")
 result_text_lexical.pack(expand=True, fill="both")
+
+result_text_syntax = tk.Text(syntax_tab, state="disabled")
+result_text_syntax.pack(expand=True, fill="both")
 
 # Crear pestañas para errores y resultado en la sección inferior derecha
 error_notebook = ttk.Notebook(bottom_right_frame)
@@ -179,7 +209,7 @@ error_notebook.pack(expand=True, fill="both")
 error_text = tk.Text(error_tab)
 error_text.pack(expand=True, fill="both")
 
-# Crear recuadro de texto para el resultado, sin permitir edición
+# resultado, sin permitir edición
 result_text = tk.Text(result_tab, state="disabled")
 result_text.pack(expand=True, fill="both")
 
