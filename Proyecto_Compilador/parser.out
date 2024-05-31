@@ -7,8 +7,11 @@ Unused terminals:
     CORDER
     CORIZQ
     COUT
+    ELSE
     ENDL
+    FOR
     GET
+    IF
     INCLUDE
     MAYORDER
     MAYORIZQ
@@ -21,6 +24,7 @@ Unused terminals:
     STD
     USING
     VOID
+    WHILE
 
 Grammar
 
@@ -43,114 +47,120 @@ Rule 15    sent -> sent_while
 Rule 16    sent -> sent_do
 Rule 17    sent -> sent_read
 Rule 18    sent -> sent_write
-Rule 19    sent -> bloque
-Rule 20    sent -> sent_assign
-Rule 21    sent -> BREAK PUNTOCOMA
+Rule 19    sent -> sent_assign
+Rule 20    sent -> BREAK PUNTOCOMA
+Rule 21    sent -> decl
 Rule 22    sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque
-Rule 23    sent_if -> SI PARIZQ exp_bool PARDER bloque
-Rule 24    sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque
-Rule 25    sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
-Rule 26    sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
-Rule 27    sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA
-Rule 28    bloque -> LLAIZQ lista_sent LLADER
+Rule 23    sent_if -> SI PARIZQ exp_bool PARDER bloque FI
+Rule 24    sent_if -> SI PARIZQ exp_bool PARDER bloque
+Rule 25    sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque
+Rule 26    sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
+Rule 27    sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
+Rule 28    sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA
 Rule 29    sent_assign -> IDENTIFICADOR ASIGNAR exp PUNTOCOMA
-Rule 30    exp_bool -> exp_bool OR exp_bool
-Rule 31    exp_bool -> exp_bool AND exp_bool
-Rule 32    exp_bool -> NOT exp_bool
-Rule 33    exp_bool -> exp_rel
-Rule 34    exp_rel -> exp MENORQUE exp
-Rule 35    exp_rel -> exp MAYORQUE exp
-Rule 36    exp_rel -> exp MENORIGUAL exp
-Rule 37    exp_rel -> exp MAYORIGUAL exp
-Rule 38    exp_rel -> exp IGUAL exp
-Rule 39    exp_rel -> exp DISTINTO exp
-Rule 40    exp -> exp SUMA exp
-Rule 41    exp -> exp RESTA exp
-Rule 42    exp -> exp MULT exp
-Rule 43    exp -> exp DIV exp
-Rule 44    exp -> exp POTENCIA exp
-Rule 45    exp -> exp MODULO exp
-Rule 46    exp -> factor
-Rule 47    factor -> ENTERO
-Rule 48    factor -> IDENTIFICADOR
-Rule 49    factor -> CADENA
-Rule 50    factor -> PARIZQ exp PARDER
-Rule 51    empty -> <empty>
+Rule 30    bloque -> LLAIZQ lista_sent LLADER
+Rule 31    exp_bool -> exp_bool OR exp_bool
+Rule 32    exp_bool -> exp_bool AND exp_bool
+Rule 33    exp_bool -> NOT exp_bool
+Rule 34    exp_bool -> exp_rel
+Rule 35    exp_rel -> exp MENORQUE exp
+Rule 36    exp_rel -> exp MAYORQUE exp
+Rule 37    exp_rel -> exp MENORIGUAL exp
+Rule 38    exp_rel -> exp MAYORIGUAL exp
+Rule 39    exp_rel -> exp IGUAL exp
+Rule 40    exp_rel -> exp DISTINTO exp
+Rule 41    exp -> exp SUMA exp
+Rule 42    exp -> exp RESTA exp
+Rule 43    exp -> exp MULT exp
+Rule 44    exp -> exp DIV exp
+Rule 45    exp -> exp POTENCIA exp
+Rule 46    exp -> exp MODULO exp
+Rule 47    exp -> factor
+Rule 48    factor -> ENTERO
+Rule 49    factor -> IDENTIFICADOR
+Rule 50    factor -> CADENA
+Rule 51    factor -> PARIZQ exp PARDER
+Rule 52    empty -> <empty>
 
 Terminals, with rules where they appear
 
-AND                  : 31
+AND                  : 32
 ASIGNAR              : 29
 BOOL                 : 8
-BREAK                : 21
-CADENA               : 49
+BREAK                : 20
+CADENA               : 50
 CIN                  : 
 COMA                 : 9
 COMDOB               : 
 CORDER               : 
 CORIZQ               : 
 COUT                 : 
-DISTINTO             : 39
-DIV                  : 43
-DO                   : 25
+DISTINTO             : 40
+DIV                  : 44
+DO                   : 26
+ELSE                 : 
 ENDL                 : 
-ENTERO               : 47
+ENTERO               : 48
+FI                   : 23
 FLOAT                : 7
+FOR                  : 
 GET                  : 
-IDENTIFICADOR        : 9 10 26 29 48
-IGUAL                : 38
+IDENTIFICADOR        : 9 10 27 29 49
+IF                   : 
+IGUAL                : 39
 INCLUDE              : 
 INT                  : 6
-LLADER               : 1 28
-LLAIZQ               : 1 28
+LLADER               : 1 30
+LLAIZQ               : 1 30
 MAYORDER             : 
-MAYORIGUAL           : 37
+MAYORIGUAL           : 38
 MAYORIZQ             : 
-MAYORQUE             : 35
-MENORIGUAL           : 36
-MENORQUE             : 34
-MIENTRAS             : 24 25
+MAYORQUE             : 36
+MENORIGUAL           : 37
+MENORQUE             : 35
+MIENTRAS             : 25 26
 MINUSMINUS           : 
-MODULO               : 45
-MULT                 : 42
+MODULO               : 46
+MULT                 : 43
 NAMESPACE            : 
-NOT                  : 32
+NOT                  : 33
 NUMERAL              : 
-OR                   : 30
+OR                   : 31
 PARA                 : 
-PARDER               : 22 23 24 25 26 27 50
-PARIZQ               : 22 23 24 25 26 27 50
+PARDER               : 22 23 24 25 26 27 28 51
+PARIZQ               : 22 23 24 25 26 27 28 51
 PLUSPLUS             : 
-POTENCIA             : 44
+POTENCIA             : 45
 PROGRAM              : 1
-PUNTOCOMA            : 5 21 25 26 27 29
-READ                 : 26
-RESTA                : 41
+PUNTOCOMA            : 5 20 26 27 28 29
+READ                 : 27
+RESTA                : 42
 RETURN               : 
-SI                   : 22 23
+SI                   : 22 23 24
 SINO                 : 22
 STD                  : 
-SUMA                 : 40
+SUMA                 : 41
 USING                : 
 VOID                 : 
-WRITE                : 27
+WHILE                : 
+WRITE                : 28
 error                : 
 
 Nonterminals, with rules where they appear
 
-bloque               : 19 22 22 23 24 25
-decl                 : 2 3
+bloque               : 22 22 23 24 25 26
+decl                 : 2 3 21
 empty                : 4 13
-exp                  : 27 29 34 34 35 35 36 36 37 37 38 38 39 39 40 40 41 41 42 42 43 43 44 44 45 45 50
-exp_bool             : 22 23 24 25 30 30 31 31 32
-exp_rel              : 33
-factor               : 46
+exp                  : 28 29 35 35 36 36 37 37 38 38 39 39 40 40 41 41 42 42 43 43 44 44 45 45 46 46 51
+exp_bool             : 22 23 24 25 26 31 31 32 32 33
+exp_rel              : 34
+factor               : 47
 lista_decl           : 1 2
 lista_id             : 5 9
-lista_sent           : 1 11 28
+lista_sent           : 1 11 30
 programa             : 0
 sent                 : 11 12
-sent_assign          : 20
+sent_assign          : 19
 sent_do              : 16
 sent_if              : 14
 sent_read            : 17
@@ -189,7 +199,7 @@ state 3
     (3) lista_decl -> . decl
     (4) lista_decl -> . empty
     (5) decl -> . tipo lista_id PUNTOCOMA
-    (51) empty -> .
+    (52) empty -> .
     (6) tipo -> . INT
     (7) tipo -> . FLOAT
     (8) tipo -> . BOOL
@@ -197,22 +207,21 @@ state 3
   ! shift/reduce conflict for INT resolved as shift
   ! shift/reduce conflict for FLOAT resolved as shift
   ! shift/reduce conflict for BOOL resolved as shift
-    BREAK           reduce using rule 51 (empty -> .)
-    SI              reduce using rule 51 (empty -> .)
-    MIENTRAS        reduce using rule 51 (empty -> .)
-    DO              reduce using rule 51 (empty -> .)
-    READ            reduce using rule 51 (empty -> .)
-    WRITE           reduce using rule 51 (empty -> .)
-    LLAIZQ          reduce using rule 51 (empty -> .)
-    IDENTIFICADOR   reduce using rule 51 (empty -> .)
-    LLADER          reduce using rule 51 (empty -> .)
+    BREAK           reduce using rule 52 (empty -> .)
+    SI              reduce using rule 52 (empty -> .)
+    MIENTRAS        reduce using rule 52 (empty -> .)
+    DO              reduce using rule 52 (empty -> .)
+    READ            reduce using rule 52 (empty -> .)
+    WRITE           reduce using rule 52 (empty -> .)
+    IDENTIFICADOR   reduce using rule 52 (empty -> .)
+    LLADER          reduce using rule 52 (empty -> .)
     INT             shift and go to state 8
     FLOAT           shift and go to state 9
     BOOL            shift and go to state 10
 
-  ! INT             [ reduce using rule 51 (empty -> .) ]
-  ! FLOAT           [ reduce using rule 51 (empty -> .) ]
-  ! BOOL            [ reduce using rule 51 (empty -> .) ]
+  ! INT             [ reduce using rule 52 (empty -> .) ]
+  ! FLOAT           [ reduce using rule 52 (empty -> .) ]
+  ! BOOL            [ reduce using rule 52 (empty -> .) ]
 
     lista_decl                     shift and go to state 4
     decl                           shift and go to state 5
@@ -232,64 +241,66 @@ state 4
     (16) sent -> . sent_do
     (17) sent -> . sent_read
     (18) sent -> . sent_write
-    (19) sent -> . bloque
-    (20) sent -> . sent_assign
-    (21) sent -> . BREAK PUNTOCOMA
-    (51) empty -> .
+    (19) sent -> . sent_assign
+    (20) sent -> . BREAK PUNTOCOMA
+    (21) sent -> . decl
+    (52) empty -> .
     (6) tipo -> . INT
     (7) tipo -> . FLOAT
     (8) tipo -> . BOOL
     (22) sent_if -> . SI PARIZQ exp_bool PARDER bloque SINO bloque
-    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque
-    (24) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
-    (25) sent_do -> . DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
-    (26) sent_read -> . READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
-    (27) sent_write -> . WRITE PARIZQ exp PARDER PUNTOCOMA
-    (28) bloque -> . LLAIZQ lista_sent LLADER
+    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque FI
+    (24) sent_if -> . SI PARIZQ exp_bool PARDER bloque
+    (25) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
+    (26) sent_do -> . DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
+    (27) sent_read -> . READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
+    (28) sent_write -> . WRITE PARIZQ exp PARDER PUNTOCOMA
     (29) sent_assign -> . IDENTIFICADOR ASIGNAR exp PUNTOCOMA
 
   ! shift/reduce conflict for BREAK resolved as shift
+  ! shift/reduce conflict for INT resolved as shift
+  ! shift/reduce conflict for FLOAT resolved as shift
+  ! shift/reduce conflict for BOOL resolved as shift
   ! shift/reduce conflict for SI resolved as shift
   ! shift/reduce conflict for MIENTRAS resolved as shift
   ! shift/reduce conflict for DO resolved as shift
   ! shift/reduce conflict for READ resolved as shift
   ! shift/reduce conflict for WRITE resolved as shift
-  ! shift/reduce conflict for LLAIZQ resolved as shift
   ! shift/reduce conflict for IDENTIFICADOR resolved as shift
-    BREAK           shift and go to state 23
-    LLADER          reduce using rule 51 (empty -> .)
+    BREAK           shift and go to state 21
+    LLADER          reduce using rule 52 (empty -> .)
     INT             shift and go to state 8
     FLOAT           shift and go to state 9
     BOOL            shift and go to state 10
-    SI              shift and go to state 24
-    MIENTRAS        shift and go to state 25
-    DO              shift and go to state 26
-    READ            shift and go to state 27
-    WRITE           shift and go to state 29
-    LLAIZQ          shift and go to state 11
-    IDENTIFICADOR   shift and go to state 28
+    SI              shift and go to state 22
+    MIENTRAS        shift and go to state 23
+    DO              shift and go to state 24
+    READ            shift and go to state 25
+    WRITE           shift and go to state 27
+    IDENTIFICADOR   shift and go to state 26
 
-  ! BREAK           [ reduce using rule 51 (empty -> .) ]
-  ! SI              [ reduce using rule 51 (empty -> .) ]
-  ! MIENTRAS        [ reduce using rule 51 (empty -> .) ]
-  ! DO              [ reduce using rule 51 (empty -> .) ]
-  ! READ            [ reduce using rule 51 (empty -> .) ]
-  ! WRITE           [ reduce using rule 51 (empty -> .) ]
-  ! LLAIZQ          [ reduce using rule 51 (empty -> .) ]
-  ! IDENTIFICADOR   [ reduce using rule 51 (empty -> .) ]
+  ! BREAK           [ reduce using rule 52 (empty -> .) ]
+  ! SI              [ reduce using rule 52 (empty -> .) ]
+  ! MIENTRAS        [ reduce using rule 52 (empty -> .) ]
+  ! DO              [ reduce using rule 52 (empty -> .) ]
+  ! READ            [ reduce using rule 52 (empty -> .) ]
+  ! WRITE           [ reduce using rule 52 (empty -> .) ]
+  ! IDENTIFICADOR   [ reduce using rule 52 (empty -> .) ]
+  ! INT             [ reduce using rule 52 (empty -> .) ]
+  ! FLOAT           [ reduce using rule 52 (empty -> .) ]
+  ! BOOL            [ reduce using rule 52 (empty -> .) ]
 
-    lista_sent                     shift and go to state 12
-    decl                           shift and go to state 13
-    sent                           shift and go to state 14
-    empty                          shift and go to state 15
+    lista_sent                     shift and go to state 11
+    decl                           shift and go to state 12
+    sent                           shift and go to state 13
+    empty                          shift and go to state 14
     tipo                           shift and go to state 7
-    sent_if                        shift and go to state 16
-    sent_while                     shift and go to state 17
-    sent_do                        shift and go to state 18
-    sent_read                      shift and go to state 19
-    sent_write                     shift and go to state 20
-    bloque                         shift and go to state 21
-    sent_assign                    shift and go to state 22
+    sent_if                        shift and go to state 15
+    sent_while                     shift and go to state 16
+    sent_do                        shift and go to state 17
+    sent_read                      shift and go to state 18
+    sent_write                     shift and go to state 19
+    sent_assign                    shift and go to state 20
 
 state 5
 
@@ -304,7 +315,6 @@ state 5
     DO              reduce using rule 3 (lista_decl -> decl .)
     READ            reduce using rule 3 (lista_decl -> decl .)
     WRITE           reduce using rule 3 (lista_decl -> decl .)
-    LLAIZQ          reduce using rule 3 (lista_decl -> decl .)
     IDENTIFICADOR   reduce using rule 3 (lista_decl -> decl .)
     LLADER          reduce using rule 3 (lista_decl -> decl .)
 
@@ -322,7 +332,6 @@ state 6
     DO              reduce using rule 4 (lista_decl -> empty .)
     READ            reduce using rule 4 (lista_decl -> empty .)
     WRITE           reduce using rule 4 (lista_decl -> empty .)
-    LLAIZQ          reduce using rule 4 (lista_decl -> empty .)
     IDENTIFICADOR   reduce using rule 4 (lista_decl -> empty .)
     LLADER          reduce using rule 4 (lista_decl -> empty .)
 
@@ -333,9 +342,9 @@ state 7
     (9) lista_id -> . lista_id COMA IDENTIFICADOR
     (10) lista_id -> . IDENTIFICADOR
 
-    IDENTIFICADOR   shift and go to state 31
+    IDENTIFICADOR   shift and go to state 29
 
-    lista_id                       shift and go to state 30
+    lista_id                       shift and go to state 28
 
 state 8
 
@@ -360,68 +369,6 @@ state 10
 
 state 11
 
-    (28) bloque -> LLAIZQ . lista_sent LLADER
-    (11) lista_sent -> . lista_sent sent
-    (12) lista_sent -> . sent
-    (13) lista_sent -> . empty
-    (14) sent -> . sent_if
-    (15) sent -> . sent_while
-    (16) sent -> . sent_do
-    (17) sent -> . sent_read
-    (18) sent -> . sent_write
-    (19) sent -> . bloque
-    (20) sent -> . sent_assign
-    (21) sent -> . BREAK PUNTOCOMA
-    (51) empty -> .
-    (22) sent_if -> . SI PARIZQ exp_bool PARDER bloque SINO bloque
-    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque
-    (24) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
-    (25) sent_do -> . DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
-    (26) sent_read -> . READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
-    (27) sent_write -> . WRITE PARIZQ exp PARDER PUNTOCOMA
-    (28) bloque -> . LLAIZQ lista_sent LLADER
-    (29) sent_assign -> . IDENTIFICADOR ASIGNAR exp PUNTOCOMA
-
-  ! shift/reduce conflict for BREAK resolved as shift
-  ! shift/reduce conflict for SI resolved as shift
-  ! shift/reduce conflict for MIENTRAS resolved as shift
-  ! shift/reduce conflict for DO resolved as shift
-  ! shift/reduce conflict for READ resolved as shift
-  ! shift/reduce conflict for WRITE resolved as shift
-  ! shift/reduce conflict for LLAIZQ resolved as shift
-  ! shift/reduce conflict for IDENTIFICADOR resolved as shift
-    BREAK           shift and go to state 23
-    LLADER          reduce using rule 51 (empty -> .)
-    SI              shift and go to state 24
-    MIENTRAS        shift and go to state 25
-    DO              shift and go to state 26
-    READ            shift and go to state 27
-    WRITE           shift and go to state 29
-    LLAIZQ          shift and go to state 11
-    IDENTIFICADOR   shift and go to state 28
-
-  ! BREAK           [ reduce using rule 51 (empty -> .) ]
-  ! SI              [ reduce using rule 51 (empty -> .) ]
-  ! MIENTRAS        [ reduce using rule 51 (empty -> .) ]
-  ! DO              [ reduce using rule 51 (empty -> .) ]
-  ! READ            [ reduce using rule 51 (empty -> .) ]
-  ! WRITE           [ reduce using rule 51 (empty -> .) ]
-  ! LLAIZQ          [ reduce using rule 51 (empty -> .) ]
-  ! IDENTIFICADOR   [ reduce using rule 51 (empty -> .) ]
-
-    lista_sent                     shift and go to state 32
-    sent                           shift and go to state 14
-    empty                          shift and go to state 15
-    sent_if                        shift and go to state 16
-    sent_while                     shift and go to state 17
-    sent_do                        shift and go to state 18
-    sent_read                      shift and go to state 19
-    sent_write                     shift and go to state 20
-    bloque                         shift and go to state 21
-    sent_assign                    shift and go to state 22
-
-state 12
-
     (1) programa -> PROGRAM LLAIZQ lista_decl lista_sent . LLADER
     (11) lista_sent -> lista_sent . sent
     (14) sent -> . sent_if
@@ -429,41 +376,60 @@ state 12
     (16) sent -> . sent_do
     (17) sent -> . sent_read
     (18) sent -> . sent_write
-    (19) sent -> . bloque
-    (20) sent -> . sent_assign
-    (21) sent -> . BREAK PUNTOCOMA
+    (19) sent -> . sent_assign
+    (20) sent -> . BREAK PUNTOCOMA
+    (21) sent -> . decl
     (22) sent_if -> . SI PARIZQ exp_bool PARDER bloque SINO bloque
-    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque
-    (24) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
-    (25) sent_do -> . DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
-    (26) sent_read -> . READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
-    (27) sent_write -> . WRITE PARIZQ exp PARDER PUNTOCOMA
-    (28) bloque -> . LLAIZQ lista_sent LLADER
+    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque FI
+    (24) sent_if -> . SI PARIZQ exp_bool PARDER bloque
+    (25) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
+    (26) sent_do -> . DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
+    (27) sent_read -> . READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
+    (28) sent_write -> . WRITE PARIZQ exp PARDER PUNTOCOMA
     (29) sent_assign -> . IDENTIFICADOR ASIGNAR exp PUNTOCOMA
+    (5) decl -> . tipo lista_id PUNTOCOMA
+    (6) tipo -> . INT
+    (7) tipo -> . FLOAT
+    (8) tipo -> . BOOL
 
-    LLADER          shift and go to state 33
-    BREAK           shift and go to state 23
-    SI              shift and go to state 24
-    MIENTRAS        shift and go to state 25
-    DO              shift and go to state 26
-    READ            shift and go to state 27
-    WRITE           shift and go to state 29
-    LLAIZQ          shift and go to state 11
-    IDENTIFICADOR   shift and go to state 28
+    LLADER          shift and go to state 30
+    BREAK           shift and go to state 21
+    SI              shift and go to state 22
+    MIENTRAS        shift and go to state 23
+    DO              shift and go to state 24
+    READ            shift and go to state 25
+    WRITE           shift and go to state 27
+    IDENTIFICADOR   shift and go to state 26
+    INT             shift and go to state 8
+    FLOAT           shift and go to state 9
+    BOOL            shift and go to state 10
 
-    sent                           shift and go to state 34
-    sent_if                        shift and go to state 16
-    sent_while                     shift and go to state 17
-    sent_do                        shift and go to state 18
-    sent_read                      shift and go to state 19
-    sent_write                     shift and go to state 20
-    bloque                         shift and go to state 21
-    sent_assign                    shift and go to state 22
+    sent                           shift and go to state 31
+    sent_if                        shift and go to state 15
+    sent_while                     shift and go to state 16
+    sent_do                        shift and go to state 17
+    sent_read                      shift and go to state 18
+    sent_write                     shift and go to state 19
+    sent_assign                    shift and go to state 20
+    decl                           shift and go to state 32
+    tipo                           shift and go to state 7
 
-state 13
+state 12
 
     (2) lista_decl -> lista_decl decl .
+    (21) sent -> decl .
 
+  ! reduce/reduce conflict for LLADER resolved using rule 2 (lista_decl -> lista_decl decl .)
+  ! reduce/reduce conflict for BREAK resolved using rule 2 (lista_decl -> lista_decl decl .)
+  ! reduce/reduce conflict for SI resolved using rule 2 (lista_decl -> lista_decl decl .)
+  ! reduce/reduce conflict for MIENTRAS resolved using rule 2 (lista_decl -> lista_decl decl .)
+  ! reduce/reduce conflict for DO resolved using rule 2 (lista_decl -> lista_decl decl .)
+  ! reduce/reduce conflict for READ resolved using rule 2 (lista_decl -> lista_decl decl .)
+  ! reduce/reduce conflict for WRITE resolved using rule 2 (lista_decl -> lista_decl decl .)
+  ! reduce/reduce conflict for IDENTIFICADOR resolved using rule 2 (lista_decl -> lista_decl decl .)
+  ! reduce/reduce conflict for INT resolved using rule 2 (lista_decl -> lista_decl decl .)
+  ! reduce/reduce conflict for FLOAT resolved using rule 2 (lista_decl -> lista_decl decl .)
+  ! reduce/reduce conflict for BOOL resolved using rule 2 (lista_decl -> lista_decl decl .)
     BREAK           reduce using rule 2 (lista_decl -> lista_decl decl .)
     INT             reduce using rule 2 (lista_decl -> lista_decl decl .)
     FLOAT           reduce using rule 2 (lista_decl -> lista_decl decl .)
@@ -473,12 +439,23 @@ state 13
     DO              reduce using rule 2 (lista_decl -> lista_decl decl .)
     READ            reduce using rule 2 (lista_decl -> lista_decl decl .)
     WRITE           reduce using rule 2 (lista_decl -> lista_decl decl .)
-    LLAIZQ          reduce using rule 2 (lista_decl -> lista_decl decl .)
     IDENTIFICADOR   reduce using rule 2 (lista_decl -> lista_decl decl .)
     LLADER          reduce using rule 2 (lista_decl -> lista_decl decl .)
 
+  ! LLADER          [ reduce using rule 21 (sent -> decl .) ]
+  ! BREAK           [ reduce using rule 21 (sent -> decl .) ]
+  ! SI              [ reduce using rule 21 (sent -> decl .) ]
+  ! MIENTRAS        [ reduce using rule 21 (sent -> decl .) ]
+  ! DO              [ reduce using rule 21 (sent -> decl .) ]
+  ! READ            [ reduce using rule 21 (sent -> decl .) ]
+  ! WRITE           [ reduce using rule 21 (sent -> decl .) ]
+  ! IDENTIFICADOR   [ reduce using rule 21 (sent -> decl .) ]
+  ! INT             [ reduce using rule 21 (sent -> decl .) ]
+  ! FLOAT           [ reduce using rule 21 (sent -> decl .) ]
+  ! BOOL            [ reduce using rule 21 (sent -> decl .) ]
 
-state 14
+
+state 13
 
     (12) lista_sent -> sent .
 
@@ -489,11 +466,13 @@ state 14
     DO              reduce using rule 12 (lista_sent -> sent .)
     READ            reduce using rule 12 (lista_sent -> sent .)
     WRITE           reduce using rule 12 (lista_sent -> sent .)
-    LLAIZQ          reduce using rule 12 (lista_sent -> sent .)
     IDENTIFICADOR   reduce using rule 12 (lista_sent -> sent .)
+    INT             reduce using rule 12 (lista_sent -> sent .)
+    FLOAT           reduce using rule 12 (lista_sent -> sent .)
+    BOOL            reduce using rule 12 (lista_sent -> sent .)
 
 
-state 15
+state 14
 
     (13) lista_sent -> empty .
 
@@ -504,11 +483,13 @@ state 15
     DO              reduce using rule 13 (lista_sent -> empty .)
     READ            reduce using rule 13 (lista_sent -> empty .)
     WRITE           reduce using rule 13 (lista_sent -> empty .)
-    LLAIZQ          reduce using rule 13 (lista_sent -> empty .)
     IDENTIFICADOR   reduce using rule 13 (lista_sent -> empty .)
+    INT             reduce using rule 13 (lista_sent -> empty .)
+    FLOAT           reduce using rule 13 (lista_sent -> empty .)
+    BOOL            reduce using rule 13 (lista_sent -> empty .)
 
 
-state 16
+state 15
 
     (14) sent -> sent_if .
 
@@ -519,11 +500,13 @@ state 16
     DO              reduce using rule 14 (sent -> sent_if .)
     READ            reduce using rule 14 (sent -> sent_if .)
     WRITE           reduce using rule 14 (sent -> sent_if .)
-    LLAIZQ          reduce using rule 14 (sent -> sent_if .)
     IDENTIFICADOR   reduce using rule 14 (sent -> sent_if .)
+    INT             reduce using rule 14 (sent -> sent_if .)
+    FLOAT           reduce using rule 14 (sent -> sent_if .)
+    BOOL            reduce using rule 14 (sent -> sent_if .)
 
 
-state 17
+state 16
 
     (15) sent -> sent_while .
 
@@ -534,11 +517,13 @@ state 17
     DO              reduce using rule 15 (sent -> sent_while .)
     READ            reduce using rule 15 (sent -> sent_while .)
     WRITE           reduce using rule 15 (sent -> sent_while .)
-    LLAIZQ          reduce using rule 15 (sent -> sent_while .)
     IDENTIFICADOR   reduce using rule 15 (sent -> sent_while .)
+    INT             reduce using rule 15 (sent -> sent_while .)
+    FLOAT           reduce using rule 15 (sent -> sent_while .)
+    BOOL            reduce using rule 15 (sent -> sent_while .)
 
 
-state 18
+state 17
 
     (16) sent -> sent_do .
 
@@ -549,11 +534,13 @@ state 18
     DO              reduce using rule 16 (sent -> sent_do .)
     READ            reduce using rule 16 (sent -> sent_do .)
     WRITE           reduce using rule 16 (sent -> sent_do .)
-    LLAIZQ          reduce using rule 16 (sent -> sent_do .)
     IDENTIFICADOR   reduce using rule 16 (sent -> sent_do .)
+    INT             reduce using rule 16 (sent -> sent_do .)
+    FLOAT           reduce using rule 16 (sent -> sent_do .)
+    BOOL            reduce using rule 16 (sent -> sent_do .)
 
 
-state 19
+state 18
 
     (17) sent -> sent_read .
 
@@ -564,11 +551,13 @@ state 19
     DO              reduce using rule 17 (sent -> sent_read .)
     READ            reduce using rule 17 (sent -> sent_read .)
     WRITE           reduce using rule 17 (sent -> sent_read .)
-    LLAIZQ          reduce using rule 17 (sent -> sent_read .)
     IDENTIFICADOR   reduce using rule 17 (sent -> sent_read .)
+    INT             reduce using rule 17 (sent -> sent_read .)
+    FLOAT           reduce using rule 17 (sent -> sent_read .)
+    BOOL            reduce using rule 17 (sent -> sent_read .)
 
 
-state 20
+state 19
 
     (18) sent -> sent_write .
 
@@ -579,102 +568,92 @@ state 20
     DO              reduce using rule 18 (sent -> sent_write .)
     READ            reduce using rule 18 (sent -> sent_write .)
     WRITE           reduce using rule 18 (sent -> sent_write .)
-    LLAIZQ          reduce using rule 18 (sent -> sent_write .)
     IDENTIFICADOR   reduce using rule 18 (sent -> sent_write .)
+    INT             reduce using rule 18 (sent -> sent_write .)
+    FLOAT           reduce using rule 18 (sent -> sent_write .)
+    BOOL            reduce using rule 18 (sent -> sent_write .)
+
+
+state 20
+
+    (19) sent -> sent_assign .
+
+    LLADER          reduce using rule 19 (sent -> sent_assign .)
+    BREAK           reduce using rule 19 (sent -> sent_assign .)
+    SI              reduce using rule 19 (sent -> sent_assign .)
+    MIENTRAS        reduce using rule 19 (sent -> sent_assign .)
+    DO              reduce using rule 19 (sent -> sent_assign .)
+    READ            reduce using rule 19 (sent -> sent_assign .)
+    WRITE           reduce using rule 19 (sent -> sent_assign .)
+    IDENTIFICADOR   reduce using rule 19 (sent -> sent_assign .)
+    INT             reduce using rule 19 (sent -> sent_assign .)
+    FLOAT           reduce using rule 19 (sent -> sent_assign .)
+    BOOL            reduce using rule 19 (sent -> sent_assign .)
 
 
 state 21
 
-    (19) sent -> bloque .
+    (20) sent -> BREAK . PUNTOCOMA
 
-    LLADER          reduce using rule 19 (sent -> bloque .)
-    BREAK           reduce using rule 19 (sent -> bloque .)
-    SI              reduce using rule 19 (sent -> bloque .)
-    MIENTRAS        reduce using rule 19 (sent -> bloque .)
-    DO              reduce using rule 19 (sent -> bloque .)
-    READ            reduce using rule 19 (sent -> bloque .)
-    WRITE           reduce using rule 19 (sent -> bloque .)
-    LLAIZQ          reduce using rule 19 (sent -> bloque .)
-    IDENTIFICADOR   reduce using rule 19 (sent -> bloque .)
+    PUNTOCOMA       shift and go to state 33
 
 
 state 22
 
-    (20) sent -> sent_assign .
+    (22) sent_if -> SI . PARIZQ exp_bool PARDER bloque SINO bloque
+    (23) sent_if -> SI . PARIZQ exp_bool PARDER bloque FI
+    (24) sent_if -> SI . PARIZQ exp_bool PARDER bloque
 
-    LLADER          reduce using rule 20 (sent -> sent_assign .)
-    BREAK           reduce using rule 20 (sent -> sent_assign .)
-    SI              reduce using rule 20 (sent -> sent_assign .)
-    MIENTRAS        reduce using rule 20 (sent -> sent_assign .)
-    DO              reduce using rule 20 (sent -> sent_assign .)
-    READ            reduce using rule 20 (sent -> sent_assign .)
-    WRITE           reduce using rule 20 (sent -> sent_assign .)
-    LLAIZQ          reduce using rule 20 (sent -> sent_assign .)
-    IDENTIFICADOR   reduce using rule 20 (sent -> sent_assign .)
+    PARIZQ          shift and go to state 34
 
 
 state 23
 
-    (21) sent -> BREAK . PUNTOCOMA
+    (25) sent_while -> MIENTRAS . PARIZQ exp_bool PARDER bloque
 
-    PUNTOCOMA       shift and go to state 35
+    PARIZQ          shift and go to state 35
 
 
 state 24
 
-    (22) sent_if -> SI . PARIZQ exp_bool PARDER bloque SINO bloque
-    (23) sent_if -> SI . PARIZQ exp_bool PARDER bloque
+    (26) sent_do -> DO . bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
+    (30) bloque -> . LLAIZQ lista_sent LLADER
 
-    PARIZQ          shift and go to state 36
+    LLAIZQ          shift and go to state 37
 
+    bloque                         shift and go to state 36
 
 state 25
 
-    (24) sent_while -> MIENTRAS . PARIZQ exp_bool PARDER bloque
+    (27) sent_read -> READ . PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
 
-    PARIZQ          shift and go to state 37
+    PARIZQ          shift and go to state 38
 
 
 state 26
 
-    (25) sent_do -> DO . bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
-    (28) bloque -> . LLAIZQ lista_sent LLADER
+    (29) sent_assign -> IDENTIFICADOR . ASIGNAR exp PUNTOCOMA
 
-    LLAIZQ          shift and go to state 11
+    ASIGNAR         shift and go to state 39
 
-    bloque                         shift and go to state 38
 
 state 27
 
-    (26) sent_read -> READ . PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
+    (28) sent_write -> WRITE . PARIZQ exp PARDER PUNTOCOMA
 
-    PARIZQ          shift and go to state 39
+    PARIZQ          shift and go to state 40
 
 
 state 28
 
-    (29) sent_assign -> IDENTIFICADOR . ASIGNAR exp PUNTOCOMA
-
-    ASIGNAR         shift and go to state 40
-
-
-state 29
-
-    (27) sent_write -> WRITE . PARIZQ exp PARDER PUNTOCOMA
-
-    PARIZQ          shift and go to state 41
-
-
-state 30
-
     (5) decl -> tipo lista_id . PUNTOCOMA
     (9) lista_id -> lista_id . COMA IDENTIFICADOR
 
-    PUNTOCOMA       shift and go to state 42
-    COMA            shift and go to state 43
+    PUNTOCOMA       shift and go to state 41
+    COMA            shift and go to state 42
 
 
-state 31
+state 29
 
     (10) lista_id -> IDENTIFICADOR .
 
@@ -682,54 +661,14 @@ state 31
     COMA            reduce using rule 10 (lista_id -> IDENTIFICADOR .)
 
 
-state 32
-
-    (28) bloque -> LLAIZQ lista_sent . LLADER
-    (11) lista_sent -> lista_sent . sent
-    (14) sent -> . sent_if
-    (15) sent -> . sent_while
-    (16) sent -> . sent_do
-    (17) sent -> . sent_read
-    (18) sent -> . sent_write
-    (19) sent -> . bloque
-    (20) sent -> . sent_assign
-    (21) sent -> . BREAK PUNTOCOMA
-    (22) sent_if -> . SI PARIZQ exp_bool PARDER bloque SINO bloque
-    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque
-    (24) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
-    (25) sent_do -> . DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
-    (26) sent_read -> . READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
-    (27) sent_write -> . WRITE PARIZQ exp PARDER PUNTOCOMA
-    (28) bloque -> . LLAIZQ lista_sent LLADER
-    (29) sent_assign -> . IDENTIFICADOR ASIGNAR exp PUNTOCOMA
-
-    LLADER          shift and go to state 44
-    BREAK           shift and go to state 23
-    SI              shift and go to state 24
-    MIENTRAS        shift and go to state 25
-    DO              shift and go to state 26
-    READ            shift and go to state 27
-    WRITE           shift and go to state 29
-    LLAIZQ          shift and go to state 11
-    IDENTIFICADOR   shift and go to state 28
-
-    sent                           shift and go to state 34
-    sent_if                        shift and go to state 16
-    sent_while                     shift and go to state 17
-    sent_do                        shift and go to state 18
-    sent_read                      shift and go to state 19
-    sent_write                     shift and go to state 20
-    bloque                         shift and go to state 21
-    sent_assign                    shift and go to state 22
-
-state 33
+state 30
 
     (1) programa -> PROGRAM LLAIZQ lista_decl lista_sent LLADER .
 
     $end            reduce using rule 1 (programa -> PROGRAM LLAIZQ lista_decl lista_sent LLADER .)
 
 
-state 34
+state 31
 
     (11) lista_sent -> lista_sent sent .
 
@@ -740,159 +679,254 @@ state 34
     DO              reduce using rule 11 (lista_sent -> lista_sent sent .)
     READ            reduce using rule 11 (lista_sent -> lista_sent sent .)
     WRITE           reduce using rule 11 (lista_sent -> lista_sent sent .)
-    LLAIZQ          reduce using rule 11 (lista_sent -> lista_sent sent .)
     IDENTIFICADOR   reduce using rule 11 (lista_sent -> lista_sent sent .)
+    INT             reduce using rule 11 (lista_sent -> lista_sent sent .)
+    FLOAT           reduce using rule 11 (lista_sent -> lista_sent sent .)
+    BOOL            reduce using rule 11 (lista_sent -> lista_sent sent .)
 
+
+state 32
+
+    (21) sent -> decl .
+
+    LLADER          reduce using rule 21 (sent -> decl .)
+    BREAK           reduce using rule 21 (sent -> decl .)
+    SI              reduce using rule 21 (sent -> decl .)
+    MIENTRAS        reduce using rule 21 (sent -> decl .)
+    DO              reduce using rule 21 (sent -> decl .)
+    READ            reduce using rule 21 (sent -> decl .)
+    WRITE           reduce using rule 21 (sent -> decl .)
+    IDENTIFICADOR   reduce using rule 21 (sent -> decl .)
+    INT             reduce using rule 21 (sent -> decl .)
+    FLOAT           reduce using rule 21 (sent -> decl .)
+    BOOL            reduce using rule 21 (sent -> decl .)
+
+
+state 33
+
+    (20) sent -> BREAK PUNTOCOMA .
+
+    LLADER          reduce using rule 20 (sent -> BREAK PUNTOCOMA .)
+    BREAK           reduce using rule 20 (sent -> BREAK PUNTOCOMA .)
+    SI              reduce using rule 20 (sent -> BREAK PUNTOCOMA .)
+    MIENTRAS        reduce using rule 20 (sent -> BREAK PUNTOCOMA .)
+    DO              reduce using rule 20 (sent -> BREAK PUNTOCOMA .)
+    READ            reduce using rule 20 (sent -> BREAK PUNTOCOMA .)
+    WRITE           reduce using rule 20 (sent -> BREAK PUNTOCOMA .)
+    IDENTIFICADOR   reduce using rule 20 (sent -> BREAK PUNTOCOMA .)
+    INT             reduce using rule 20 (sent -> BREAK PUNTOCOMA .)
+    FLOAT           reduce using rule 20 (sent -> BREAK PUNTOCOMA .)
+    BOOL            reduce using rule 20 (sent -> BREAK PUNTOCOMA .)
+
+
+state 34
+
+    (22) sent_if -> SI PARIZQ . exp_bool PARDER bloque SINO bloque
+    (23) sent_if -> SI PARIZQ . exp_bool PARDER bloque FI
+    (24) sent_if -> SI PARIZQ . exp_bool PARDER bloque
+    (31) exp_bool -> . exp_bool OR exp_bool
+    (32) exp_bool -> . exp_bool AND exp_bool
+    (33) exp_bool -> . NOT exp_bool
+    (34) exp_bool -> . exp_rel
+    (35) exp_rel -> . exp MENORQUE exp
+    (36) exp_rel -> . exp MAYORQUE exp
+    (37) exp_rel -> . exp MENORIGUAL exp
+    (38) exp_rel -> . exp MAYORIGUAL exp
+    (39) exp_rel -> . exp IGUAL exp
+    (40) exp_rel -> . exp DISTINTO exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
+
+    NOT             shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
+
+    exp_bool                       shift and go to state 44
+    exp_rel                        shift and go to state 46
+    exp                            shift and go to state 47
+    factor                         shift and go to state 48
 
 state 35
 
-    (21) sent -> BREAK PUNTOCOMA .
+    (25) sent_while -> MIENTRAS PARIZQ . exp_bool PARDER bloque
+    (31) exp_bool -> . exp_bool OR exp_bool
+    (32) exp_bool -> . exp_bool AND exp_bool
+    (33) exp_bool -> . NOT exp_bool
+    (34) exp_bool -> . exp_rel
+    (35) exp_rel -> . exp MENORQUE exp
+    (36) exp_rel -> . exp MAYORQUE exp
+    (37) exp_rel -> . exp MENORIGUAL exp
+    (38) exp_rel -> . exp MAYORIGUAL exp
+    (39) exp_rel -> . exp IGUAL exp
+    (40) exp_rel -> . exp DISTINTO exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    LLADER          reduce using rule 21 (sent -> BREAK PUNTOCOMA .)
-    BREAK           reduce using rule 21 (sent -> BREAK PUNTOCOMA .)
-    SI              reduce using rule 21 (sent -> BREAK PUNTOCOMA .)
-    MIENTRAS        reduce using rule 21 (sent -> BREAK PUNTOCOMA .)
-    DO              reduce using rule 21 (sent -> BREAK PUNTOCOMA .)
-    READ            reduce using rule 21 (sent -> BREAK PUNTOCOMA .)
-    WRITE           reduce using rule 21 (sent -> BREAK PUNTOCOMA .)
-    LLAIZQ          reduce using rule 21 (sent -> BREAK PUNTOCOMA .)
-    IDENTIFICADOR   reduce using rule 21 (sent -> BREAK PUNTOCOMA .)
+    NOT             shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
+    exp_bool                       shift and go to state 52
+    exp_rel                        shift and go to state 46
+    exp                            shift and go to state 47
+    factor                         shift and go to state 48
 
 state 36
 
-    (22) sent_if -> SI PARIZQ . exp_bool PARDER bloque SINO bloque
-    (23) sent_if -> SI PARIZQ . exp_bool PARDER bloque
-    (30) exp_bool -> . exp_bool OR exp_bool
-    (31) exp_bool -> . exp_bool AND exp_bool
-    (32) exp_bool -> . NOT exp_bool
-    (33) exp_bool -> . exp_rel
-    (34) exp_rel -> . exp MENORQUE exp
-    (35) exp_rel -> . exp MAYORQUE exp
-    (36) exp_rel -> . exp MENORIGUAL exp
-    (37) exp_rel -> . exp MAYORIGUAL exp
-    (38) exp_rel -> . exp IGUAL exp
-    (39) exp_rel -> . exp DISTINTO exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (26) sent_do -> DO bloque . MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
 
-    NOT             shift and go to state 47
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    MIENTRAS        shift and go to state 53
 
-    exp_bool                       shift and go to state 46
-    exp_rel                        shift and go to state 48
-    exp                            shift and go to state 49
-    factor                         shift and go to state 50
 
 state 37
 
-    (24) sent_while -> MIENTRAS PARIZQ . exp_bool PARDER bloque
-    (30) exp_bool -> . exp_bool OR exp_bool
-    (31) exp_bool -> . exp_bool AND exp_bool
-    (32) exp_bool -> . NOT exp_bool
-    (33) exp_bool -> . exp_rel
-    (34) exp_rel -> . exp MENORQUE exp
-    (35) exp_rel -> . exp MAYORQUE exp
-    (36) exp_rel -> . exp MENORIGUAL exp
-    (37) exp_rel -> . exp MAYORIGUAL exp
-    (38) exp_rel -> . exp IGUAL exp
-    (39) exp_rel -> . exp DISTINTO exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (30) bloque -> LLAIZQ . lista_sent LLADER
+    (11) lista_sent -> . lista_sent sent
+    (12) lista_sent -> . sent
+    (13) lista_sent -> . empty
+    (14) sent -> . sent_if
+    (15) sent -> . sent_while
+    (16) sent -> . sent_do
+    (17) sent -> . sent_read
+    (18) sent -> . sent_write
+    (19) sent -> . sent_assign
+    (20) sent -> . BREAK PUNTOCOMA
+    (21) sent -> . decl
+    (52) empty -> .
+    (22) sent_if -> . SI PARIZQ exp_bool PARDER bloque SINO bloque
+    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque FI
+    (24) sent_if -> . SI PARIZQ exp_bool PARDER bloque
+    (25) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
+    (26) sent_do -> . DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
+    (27) sent_read -> . READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
+    (28) sent_write -> . WRITE PARIZQ exp PARDER PUNTOCOMA
+    (29) sent_assign -> . IDENTIFICADOR ASIGNAR exp PUNTOCOMA
+    (5) decl -> . tipo lista_id PUNTOCOMA
+    (6) tipo -> . INT
+    (7) tipo -> . FLOAT
+    (8) tipo -> . BOOL
 
-    NOT             shift and go to state 47
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+  ! shift/reduce conflict for BREAK resolved as shift
+  ! shift/reduce conflict for SI resolved as shift
+  ! shift/reduce conflict for MIENTRAS resolved as shift
+  ! shift/reduce conflict for DO resolved as shift
+  ! shift/reduce conflict for READ resolved as shift
+  ! shift/reduce conflict for WRITE resolved as shift
+  ! shift/reduce conflict for IDENTIFICADOR resolved as shift
+  ! shift/reduce conflict for INT resolved as shift
+  ! shift/reduce conflict for FLOAT resolved as shift
+  ! shift/reduce conflict for BOOL resolved as shift
+    BREAK           shift and go to state 21
+    LLADER          reduce using rule 52 (empty -> .)
+    SI              shift and go to state 22
+    MIENTRAS        shift and go to state 23
+    DO              shift and go to state 24
+    READ            shift and go to state 25
+    WRITE           shift and go to state 27
+    IDENTIFICADOR   shift and go to state 26
+    INT             shift and go to state 8
+    FLOAT           shift and go to state 9
+    BOOL            shift and go to state 10
 
-    exp_bool                       shift and go to state 54
-    exp_rel                        shift and go to state 48
-    exp                            shift and go to state 49
-    factor                         shift and go to state 50
+  ! BREAK           [ reduce using rule 52 (empty -> .) ]
+  ! SI              [ reduce using rule 52 (empty -> .) ]
+  ! MIENTRAS        [ reduce using rule 52 (empty -> .) ]
+  ! DO              [ reduce using rule 52 (empty -> .) ]
+  ! READ            [ reduce using rule 52 (empty -> .) ]
+  ! WRITE           [ reduce using rule 52 (empty -> .) ]
+  ! IDENTIFICADOR   [ reduce using rule 52 (empty -> .) ]
+  ! INT             [ reduce using rule 52 (empty -> .) ]
+  ! FLOAT           [ reduce using rule 52 (empty -> .) ]
+  ! BOOL            [ reduce using rule 52 (empty -> .) ]
+
+    lista_sent                     shift and go to state 54
+    sent                           shift and go to state 13
+    empty                          shift and go to state 14
+    sent_if                        shift and go to state 15
+    sent_while                     shift and go to state 16
+    sent_do                        shift and go to state 17
+    sent_read                      shift and go to state 18
+    sent_write                     shift and go to state 19
+    sent_assign                    shift and go to state 20
+    decl                           shift and go to state 32
+    tipo                           shift and go to state 7
 
 state 38
 
-    (25) sent_do -> DO bloque . MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
+    (27) sent_read -> READ PARIZQ . IDENTIFICADOR PARDER PUNTOCOMA
 
-    MIENTRAS        shift and go to state 55
+    IDENTIFICADOR   shift and go to state 55
 
 
 state 39
 
-    (26) sent_read -> READ PARIZQ . IDENTIFICADOR PARDER PUNTOCOMA
+    (29) sent_assign -> IDENTIFICADOR ASIGNAR . exp PUNTOCOMA
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    IDENTIFICADOR   shift and go to state 56
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
+    exp                            shift and go to state 56
+    factor                         shift and go to state 48
 
 state 40
 
-    (29) sent_assign -> IDENTIFICADOR ASIGNAR . exp PUNTOCOMA
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (28) sent_write -> WRITE PARIZQ . exp PARDER PUNTOCOMA
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
     exp                            shift and go to state 57
-    factor                         shift and go to state 50
+    factor                         shift and go to state 48
 
 state 41
-
-    (27) sent_write -> WRITE PARIZQ . exp PARDER PUNTOCOMA
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
-
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
-
-    exp                            shift and go to state 58
-    factor                         shift and go to state 50
-
-state 42
 
     (5) decl -> tipo lista_id PUNTOCOMA .
 
@@ -905,295 +939,326 @@ state 42
     DO              reduce using rule 5 (decl -> tipo lista_id PUNTOCOMA .)
     READ            reduce using rule 5 (decl -> tipo lista_id PUNTOCOMA .)
     WRITE           reduce using rule 5 (decl -> tipo lista_id PUNTOCOMA .)
-    LLAIZQ          reduce using rule 5 (decl -> tipo lista_id PUNTOCOMA .)
     IDENTIFICADOR   reduce using rule 5 (decl -> tipo lista_id PUNTOCOMA .)
     LLADER          reduce using rule 5 (decl -> tipo lista_id PUNTOCOMA .)
 
 
-state 43
+state 42
 
     (9) lista_id -> lista_id COMA . IDENTIFICADOR
 
-    IDENTIFICADOR   shift and go to state 59
+    IDENTIFICADOR   shift and go to state 58
 
+
+state 43
+
+    (51) factor -> PARIZQ . exp PARDER
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
+
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
+
+    exp                            shift and go to state 59
+    factor                         shift and go to state 48
 
 state 44
 
-    (28) bloque -> LLAIZQ lista_sent LLADER .
+    (22) sent_if -> SI PARIZQ exp_bool . PARDER bloque SINO bloque
+    (23) sent_if -> SI PARIZQ exp_bool . PARDER bloque FI
+    (24) sent_if -> SI PARIZQ exp_bool . PARDER bloque
+    (31) exp_bool -> exp_bool . OR exp_bool
+    (32) exp_bool -> exp_bool . AND exp_bool
 
-    LLADER          reduce using rule 28 (bloque -> LLAIZQ lista_sent LLADER .)
-    BREAK           reduce using rule 28 (bloque -> LLAIZQ lista_sent LLADER .)
-    SI              reduce using rule 28 (bloque -> LLAIZQ lista_sent LLADER .)
-    MIENTRAS        reduce using rule 28 (bloque -> LLAIZQ lista_sent LLADER .)
-    DO              reduce using rule 28 (bloque -> LLAIZQ lista_sent LLADER .)
-    READ            reduce using rule 28 (bloque -> LLAIZQ lista_sent LLADER .)
-    WRITE           reduce using rule 28 (bloque -> LLAIZQ lista_sent LLADER .)
-    LLAIZQ          reduce using rule 28 (bloque -> LLAIZQ lista_sent LLADER .)
-    IDENTIFICADOR   reduce using rule 28 (bloque -> LLAIZQ lista_sent LLADER .)
-    SINO            reduce using rule 28 (bloque -> LLAIZQ lista_sent LLADER .)
+    PARDER          shift and go to state 60
+    OR              shift and go to state 61
+    AND             shift and go to state 62
 
 
 state 45
 
-    (50) factor -> PARIZQ . exp PARDER
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (33) exp_bool -> NOT . exp_bool
+    (31) exp_bool -> . exp_bool OR exp_bool
+    (32) exp_bool -> . exp_bool AND exp_bool
+    (33) exp_bool -> . NOT exp_bool
+    (34) exp_bool -> . exp_rel
+    (35) exp_rel -> . exp MENORQUE exp
+    (36) exp_rel -> . exp MAYORQUE exp
+    (37) exp_rel -> . exp MENORIGUAL exp
+    (38) exp_rel -> . exp MAYORIGUAL exp
+    (39) exp_rel -> . exp IGUAL exp
+    (40) exp_rel -> . exp DISTINTO exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    NOT             shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 60
-    factor                         shift and go to state 50
+    exp_bool                       shift and go to state 63
+    exp_rel                        shift and go to state 46
+    exp                            shift and go to state 47
+    factor                         shift and go to state 48
 
 state 46
 
-    (22) sent_if -> SI PARIZQ exp_bool . PARDER bloque SINO bloque
-    (23) sent_if -> SI PARIZQ exp_bool . PARDER bloque
-    (30) exp_bool -> exp_bool . OR exp_bool
-    (31) exp_bool -> exp_bool . AND exp_bool
+    (34) exp_bool -> exp_rel .
 
-    PARDER          shift and go to state 61
-    OR              shift and go to state 62
-    AND             shift and go to state 63
+    PARDER          reduce using rule 34 (exp_bool -> exp_rel .)
+    OR              reduce using rule 34 (exp_bool -> exp_rel .)
+    AND             reduce using rule 34 (exp_bool -> exp_rel .)
 
 
 state 47
 
-    (32) exp_bool -> NOT . exp_bool
-    (30) exp_bool -> . exp_bool OR exp_bool
-    (31) exp_bool -> . exp_bool AND exp_bool
-    (32) exp_bool -> . NOT exp_bool
-    (33) exp_bool -> . exp_rel
-    (34) exp_rel -> . exp MENORQUE exp
-    (35) exp_rel -> . exp MAYORQUE exp
-    (36) exp_rel -> . exp MENORIGUAL exp
-    (37) exp_rel -> . exp MAYORIGUAL exp
-    (38) exp_rel -> . exp IGUAL exp
-    (39) exp_rel -> . exp DISTINTO exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (35) exp_rel -> exp . MENORQUE exp
+    (36) exp_rel -> exp . MAYORQUE exp
+    (37) exp_rel -> exp . MENORIGUAL exp
+    (38) exp_rel -> exp . MAYORIGUAL exp
+    (39) exp_rel -> exp . IGUAL exp
+    (40) exp_rel -> exp . DISTINTO exp
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
-    NOT             shift and go to state 47
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    MENORQUE        shift and go to state 64
+    MAYORQUE        shift and go to state 65
+    MENORIGUAL      shift and go to state 66
+    MAYORIGUAL      shift and go to state 67
+    IGUAL           shift and go to state 68
+    DISTINTO        shift and go to state 69
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
-    exp_bool                       shift and go to state 64
-    exp_rel                        shift and go to state 48
-    exp                            shift and go to state 49
-    factor                         shift and go to state 50
 
 state 48
 
-    (33) exp_bool -> exp_rel .
+    (47) exp -> factor .
 
-    PARDER          reduce using rule 33 (exp_bool -> exp_rel .)
-    OR              reduce using rule 33 (exp_bool -> exp_rel .)
-    AND             reduce using rule 33 (exp_bool -> exp_rel .)
+    MENORQUE        reduce using rule 47 (exp -> factor .)
+    MAYORQUE        reduce using rule 47 (exp -> factor .)
+    MENORIGUAL      reduce using rule 47 (exp -> factor .)
+    MAYORIGUAL      reduce using rule 47 (exp -> factor .)
+    IGUAL           reduce using rule 47 (exp -> factor .)
+    DISTINTO        reduce using rule 47 (exp -> factor .)
+    SUMA            reduce using rule 47 (exp -> factor .)
+    RESTA           reduce using rule 47 (exp -> factor .)
+    MULT            reduce using rule 47 (exp -> factor .)
+    DIV             reduce using rule 47 (exp -> factor .)
+    POTENCIA        reduce using rule 47 (exp -> factor .)
+    MODULO          reduce using rule 47 (exp -> factor .)
+    PUNTOCOMA       reduce using rule 47 (exp -> factor .)
+    PARDER          reduce using rule 47 (exp -> factor .)
+    OR              reduce using rule 47 (exp -> factor .)
+    AND             reduce using rule 47 (exp -> factor .)
 
 
 state 49
 
-    (34) exp_rel -> exp . MENORQUE exp
-    (35) exp_rel -> exp . MAYORQUE exp
-    (36) exp_rel -> exp . MENORIGUAL exp
-    (37) exp_rel -> exp . MAYORIGUAL exp
-    (38) exp_rel -> exp . IGUAL exp
-    (39) exp_rel -> exp . DISTINTO exp
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (48) factor -> ENTERO .
 
-    MENORQUE        shift and go to state 65
-    MAYORQUE        shift and go to state 66
-    MENORIGUAL      shift and go to state 67
-    MAYORIGUAL      shift and go to state 68
-    IGUAL           shift and go to state 69
-    DISTINTO        shift and go to state 70
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    MENORQUE        reduce using rule 48 (factor -> ENTERO .)
+    MAYORQUE        reduce using rule 48 (factor -> ENTERO .)
+    MENORIGUAL      reduce using rule 48 (factor -> ENTERO .)
+    MAYORIGUAL      reduce using rule 48 (factor -> ENTERO .)
+    IGUAL           reduce using rule 48 (factor -> ENTERO .)
+    DISTINTO        reduce using rule 48 (factor -> ENTERO .)
+    SUMA            reduce using rule 48 (factor -> ENTERO .)
+    RESTA           reduce using rule 48 (factor -> ENTERO .)
+    MULT            reduce using rule 48 (factor -> ENTERO .)
+    DIV             reduce using rule 48 (factor -> ENTERO .)
+    POTENCIA        reduce using rule 48 (factor -> ENTERO .)
+    MODULO          reduce using rule 48 (factor -> ENTERO .)
+    PUNTOCOMA       reduce using rule 48 (factor -> ENTERO .)
+    PARDER          reduce using rule 48 (factor -> ENTERO .)
+    OR              reduce using rule 48 (factor -> ENTERO .)
+    AND             reduce using rule 48 (factor -> ENTERO .)
 
 
 state 50
 
-    (46) exp -> factor .
+    (49) factor -> IDENTIFICADOR .
 
-    MENORQUE        reduce using rule 46 (exp -> factor .)
-    MAYORQUE        reduce using rule 46 (exp -> factor .)
-    MENORIGUAL      reduce using rule 46 (exp -> factor .)
-    MAYORIGUAL      reduce using rule 46 (exp -> factor .)
-    IGUAL           reduce using rule 46 (exp -> factor .)
-    DISTINTO        reduce using rule 46 (exp -> factor .)
-    SUMA            reduce using rule 46 (exp -> factor .)
-    RESTA           reduce using rule 46 (exp -> factor .)
-    MULT            reduce using rule 46 (exp -> factor .)
-    DIV             reduce using rule 46 (exp -> factor .)
-    POTENCIA        reduce using rule 46 (exp -> factor .)
-    MODULO          reduce using rule 46 (exp -> factor .)
-    PUNTOCOMA       reduce using rule 46 (exp -> factor .)
-    PARDER          reduce using rule 46 (exp -> factor .)
-    OR              reduce using rule 46 (exp -> factor .)
-    AND             reduce using rule 46 (exp -> factor .)
+    MENORQUE        reduce using rule 49 (factor -> IDENTIFICADOR .)
+    MAYORQUE        reduce using rule 49 (factor -> IDENTIFICADOR .)
+    MENORIGUAL      reduce using rule 49 (factor -> IDENTIFICADOR .)
+    MAYORIGUAL      reduce using rule 49 (factor -> IDENTIFICADOR .)
+    IGUAL           reduce using rule 49 (factor -> IDENTIFICADOR .)
+    DISTINTO        reduce using rule 49 (factor -> IDENTIFICADOR .)
+    SUMA            reduce using rule 49 (factor -> IDENTIFICADOR .)
+    RESTA           reduce using rule 49 (factor -> IDENTIFICADOR .)
+    MULT            reduce using rule 49 (factor -> IDENTIFICADOR .)
+    DIV             reduce using rule 49 (factor -> IDENTIFICADOR .)
+    POTENCIA        reduce using rule 49 (factor -> IDENTIFICADOR .)
+    MODULO          reduce using rule 49 (factor -> IDENTIFICADOR .)
+    PUNTOCOMA       reduce using rule 49 (factor -> IDENTIFICADOR .)
+    PARDER          reduce using rule 49 (factor -> IDENTIFICADOR .)
+    OR              reduce using rule 49 (factor -> IDENTIFICADOR .)
+    AND             reduce using rule 49 (factor -> IDENTIFICADOR .)
 
 
 state 51
 
-    (47) factor -> ENTERO .
+    (50) factor -> CADENA .
 
-    MENORQUE        reduce using rule 47 (factor -> ENTERO .)
-    MAYORQUE        reduce using rule 47 (factor -> ENTERO .)
-    MENORIGUAL      reduce using rule 47 (factor -> ENTERO .)
-    MAYORIGUAL      reduce using rule 47 (factor -> ENTERO .)
-    IGUAL           reduce using rule 47 (factor -> ENTERO .)
-    DISTINTO        reduce using rule 47 (factor -> ENTERO .)
-    SUMA            reduce using rule 47 (factor -> ENTERO .)
-    RESTA           reduce using rule 47 (factor -> ENTERO .)
-    MULT            reduce using rule 47 (factor -> ENTERO .)
-    DIV             reduce using rule 47 (factor -> ENTERO .)
-    POTENCIA        reduce using rule 47 (factor -> ENTERO .)
-    MODULO          reduce using rule 47 (factor -> ENTERO .)
-    PUNTOCOMA       reduce using rule 47 (factor -> ENTERO .)
-    PARDER          reduce using rule 47 (factor -> ENTERO .)
-    OR              reduce using rule 47 (factor -> ENTERO .)
-    AND             reduce using rule 47 (factor -> ENTERO .)
+    MENORQUE        reduce using rule 50 (factor -> CADENA .)
+    MAYORQUE        reduce using rule 50 (factor -> CADENA .)
+    MENORIGUAL      reduce using rule 50 (factor -> CADENA .)
+    MAYORIGUAL      reduce using rule 50 (factor -> CADENA .)
+    IGUAL           reduce using rule 50 (factor -> CADENA .)
+    DISTINTO        reduce using rule 50 (factor -> CADENA .)
+    SUMA            reduce using rule 50 (factor -> CADENA .)
+    RESTA           reduce using rule 50 (factor -> CADENA .)
+    MULT            reduce using rule 50 (factor -> CADENA .)
+    DIV             reduce using rule 50 (factor -> CADENA .)
+    POTENCIA        reduce using rule 50 (factor -> CADENA .)
+    MODULO          reduce using rule 50 (factor -> CADENA .)
+    PUNTOCOMA       reduce using rule 50 (factor -> CADENA .)
+    PARDER          reduce using rule 50 (factor -> CADENA .)
+    OR              reduce using rule 50 (factor -> CADENA .)
+    AND             reduce using rule 50 (factor -> CADENA .)
 
 
 state 52
 
-    (48) factor -> IDENTIFICADOR .
+    (25) sent_while -> MIENTRAS PARIZQ exp_bool . PARDER bloque
+    (31) exp_bool -> exp_bool . OR exp_bool
+    (32) exp_bool -> exp_bool . AND exp_bool
 
-    MENORQUE        reduce using rule 48 (factor -> IDENTIFICADOR .)
-    MAYORQUE        reduce using rule 48 (factor -> IDENTIFICADOR .)
-    MENORIGUAL      reduce using rule 48 (factor -> IDENTIFICADOR .)
-    MAYORIGUAL      reduce using rule 48 (factor -> IDENTIFICADOR .)
-    IGUAL           reduce using rule 48 (factor -> IDENTIFICADOR .)
-    DISTINTO        reduce using rule 48 (factor -> IDENTIFICADOR .)
-    SUMA            reduce using rule 48 (factor -> IDENTIFICADOR .)
-    RESTA           reduce using rule 48 (factor -> IDENTIFICADOR .)
-    MULT            reduce using rule 48 (factor -> IDENTIFICADOR .)
-    DIV             reduce using rule 48 (factor -> IDENTIFICADOR .)
-    POTENCIA        reduce using rule 48 (factor -> IDENTIFICADOR .)
-    MODULO          reduce using rule 48 (factor -> IDENTIFICADOR .)
-    PUNTOCOMA       reduce using rule 48 (factor -> IDENTIFICADOR .)
-    PARDER          reduce using rule 48 (factor -> IDENTIFICADOR .)
-    OR              reduce using rule 48 (factor -> IDENTIFICADOR .)
-    AND             reduce using rule 48 (factor -> IDENTIFICADOR .)
+    PARDER          shift and go to state 76
+    OR              shift and go to state 61
+    AND             shift and go to state 62
 
 
 state 53
 
-    (49) factor -> CADENA .
+    (26) sent_do -> DO bloque MIENTRAS . PARIZQ exp_bool PARDER PUNTOCOMA
 
-    MENORQUE        reduce using rule 49 (factor -> CADENA .)
-    MAYORQUE        reduce using rule 49 (factor -> CADENA .)
-    MENORIGUAL      reduce using rule 49 (factor -> CADENA .)
-    MAYORIGUAL      reduce using rule 49 (factor -> CADENA .)
-    IGUAL           reduce using rule 49 (factor -> CADENA .)
-    DISTINTO        reduce using rule 49 (factor -> CADENA .)
-    SUMA            reduce using rule 49 (factor -> CADENA .)
-    RESTA           reduce using rule 49 (factor -> CADENA .)
-    MULT            reduce using rule 49 (factor -> CADENA .)
-    DIV             reduce using rule 49 (factor -> CADENA .)
-    POTENCIA        reduce using rule 49 (factor -> CADENA .)
-    MODULO          reduce using rule 49 (factor -> CADENA .)
-    PUNTOCOMA       reduce using rule 49 (factor -> CADENA .)
-    PARDER          reduce using rule 49 (factor -> CADENA .)
-    OR              reduce using rule 49 (factor -> CADENA .)
-    AND             reduce using rule 49 (factor -> CADENA .)
+    PARIZQ          shift and go to state 77
 
 
 state 54
 
-    (24) sent_while -> MIENTRAS PARIZQ exp_bool . PARDER bloque
-    (30) exp_bool -> exp_bool . OR exp_bool
-    (31) exp_bool -> exp_bool . AND exp_bool
+    (30) bloque -> LLAIZQ lista_sent . LLADER
+    (11) lista_sent -> lista_sent . sent
+    (14) sent -> . sent_if
+    (15) sent -> . sent_while
+    (16) sent -> . sent_do
+    (17) sent -> . sent_read
+    (18) sent -> . sent_write
+    (19) sent -> . sent_assign
+    (20) sent -> . BREAK PUNTOCOMA
+    (21) sent -> . decl
+    (22) sent_if -> . SI PARIZQ exp_bool PARDER bloque SINO bloque
+    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque FI
+    (24) sent_if -> . SI PARIZQ exp_bool PARDER bloque
+    (25) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
+    (26) sent_do -> . DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
+    (27) sent_read -> . READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
+    (28) sent_write -> . WRITE PARIZQ exp PARDER PUNTOCOMA
+    (29) sent_assign -> . IDENTIFICADOR ASIGNAR exp PUNTOCOMA
+    (5) decl -> . tipo lista_id PUNTOCOMA
+    (6) tipo -> . INT
+    (7) tipo -> . FLOAT
+    (8) tipo -> . BOOL
 
-    PARDER          shift and go to state 77
-    OR              shift and go to state 62
-    AND             shift and go to state 63
+    LLADER          shift and go to state 78
+    BREAK           shift and go to state 21
+    SI              shift and go to state 22
+    MIENTRAS        shift and go to state 23
+    DO              shift and go to state 24
+    READ            shift and go to state 25
+    WRITE           shift and go to state 27
+    IDENTIFICADOR   shift and go to state 26
+    INT             shift and go to state 8
+    FLOAT           shift and go to state 9
+    BOOL            shift and go to state 10
 
+    sent                           shift and go to state 31
+    sent_if                        shift and go to state 15
+    sent_while                     shift and go to state 16
+    sent_do                        shift and go to state 17
+    sent_read                      shift and go to state 18
+    sent_write                     shift and go to state 19
+    sent_assign                    shift and go to state 20
+    decl                           shift and go to state 32
+    tipo                           shift and go to state 7
 
 state 55
 
-    (25) sent_do -> DO bloque MIENTRAS . PARIZQ exp_bool PARDER PUNTOCOMA
-
-    PARIZQ          shift and go to state 78
-
-
-state 56
-
-    (26) sent_read -> READ PARIZQ IDENTIFICADOR . PARDER PUNTOCOMA
+    (27) sent_read -> READ PARIZQ IDENTIFICADOR . PARDER PUNTOCOMA
 
     PARDER          shift and go to state 79
 
 
-state 57
+state 56
 
     (29) sent_assign -> IDENTIFICADOR ASIGNAR exp . PUNTOCOMA
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
     PUNTOCOMA       shift and go to state 80
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
+
+
+state 57
+
+    (28) sent_write -> WRITE PARIZQ exp . PARDER PUNTOCOMA
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
+
+    PARDER          shift and go to state 81
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
 
 state 58
-
-    (27) sent_write -> WRITE PARIZQ exp . PARDER PUNTOCOMA
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
-
-    PARDER          shift and go to state 81
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
-
-
-state 59
 
     (9) lista_id -> lista_id COMA IDENTIFICADOR .
 
@@ -1201,447 +1266,467 @@ state 59
     COMA            reduce using rule 9 (lista_id -> lista_id COMA IDENTIFICADOR .)
 
 
-state 60
+state 59
 
-    (50) factor -> PARIZQ exp . PARDER
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (51) factor -> PARIZQ exp . PARDER
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
     PARDER          shift and go to state 82
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
 
-state 61
+state 60
 
     (22) sent_if -> SI PARIZQ exp_bool PARDER . bloque SINO bloque
-    (23) sent_if -> SI PARIZQ exp_bool PARDER . bloque
-    (28) bloque -> . LLAIZQ lista_sent LLADER
+    (23) sent_if -> SI PARIZQ exp_bool PARDER . bloque FI
+    (24) sent_if -> SI PARIZQ exp_bool PARDER . bloque
+    (30) bloque -> . LLAIZQ lista_sent LLADER
 
-    LLAIZQ          shift and go to state 11
+    LLAIZQ          shift and go to state 37
 
     bloque                         shift and go to state 83
 
-state 62
+state 61
 
-    (30) exp_bool -> exp_bool OR . exp_bool
-    (30) exp_bool -> . exp_bool OR exp_bool
-    (31) exp_bool -> . exp_bool AND exp_bool
-    (32) exp_bool -> . NOT exp_bool
-    (33) exp_bool -> . exp_rel
-    (34) exp_rel -> . exp MENORQUE exp
-    (35) exp_rel -> . exp MAYORQUE exp
-    (36) exp_rel -> . exp MENORIGUAL exp
-    (37) exp_rel -> . exp MAYORIGUAL exp
-    (38) exp_rel -> . exp IGUAL exp
-    (39) exp_rel -> . exp DISTINTO exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (31) exp_bool -> exp_bool OR . exp_bool
+    (31) exp_bool -> . exp_bool OR exp_bool
+    (32) exp_bool -> . exp_bool AND exp_bool
+    (33) exp_bool -> . NOT exp_bool
+    (34) exp_bool -> . exp_rel
+    (35) exp_rel -> . exp MENORQUE exp
+    (36) exp_rel -> . exp MAYORQUE exp
+    (37) exp_rel -> . exp MENORIGUAL exp
+    (38) exp_rel -> . exp MAYORIGUAL exp
+    (39) exp_rel -> . exp IGUAL exp
+    (40) exp_rel -> . exp DISTINTO exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    NOT             shift and go to state 47
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    NOT             shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
     exp_bool                       shift and go to state 84
-    exp_rel                        shift and go to state 48
-    exp                            shift and go to state 49
-    factor                         shift and go to state 50
+    exp_rel                        shift and go to state 46
+    exp                            shift and go to state 47
+    factor                         shift and go to state 48
+
+state 62
+
+    (32) exp_bool -> exp_bool AND . exp_bool
+    (31) exp_bool -> . exp_bool OR exp_bool
+    (32) exp_bool -> . exp_bool AND exp_bool
+    (33) exp_bool -> . NOT exp_bool
+    (34) exp_bool -> . exp_rel
+    (35) exp_rel -> . exp MENORQUE exp
+    (36) exp_rel -> . exp MAYORQUE exp
+    (37) exp_rel -> . exp MENORIGUAL exp
+    (38) exp_rel -> . exp MAYORIGUAL exp
+    (39) exp_rel -> . exp IGUAL exp
+    (40) exp_rel -> . exp DISTINTO exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
+
+    NOT             shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
+
+    exp_bool                       shift and go to state 85
+    exp_rel                        shift and go to state 46
+    exp                            shift and go to state 47
+    factor                         shift and go to state 48
 
 state 63
 
-    (31) exp_bool -> exp_bool AND . exp_bool
-    (30) exp_bool -> . exp_bool OR exp_bool
-    (31) exp_bool -> . exp_bool AND exp_bool
-    (32) exp_bool -> . NOT exp_bool
-    (33) exp_bool -> . exp_rel
-    (34) exp_rel -> . exp MENORQUE exp
-    (35) exp_rel -> . exp MAYORQUE exp
-    (36) exp_rel -> . exp MENORIGUAL exp
-    (37) exp_rel -> . exp MAYORIGUAL exp
-    (38) exp_rel -> . exp IGUAL exp
-    (39) exp_rel -> . exp DISTINTO exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
-
-    NOT             shift and go to state 47
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
-
-    exp_bool                       shift and go to state 85
-    exp_rel                        shift and go to state 48
-    exp                            shift and go to state 49
-    factor                         shift and go to state 50
-
-state 64
-
-    (32) exp_bool -> NOT exp_bool .
-    (30) exp_bool -> exp_bool . OR exp_bool
-    (31) exp_bool -> exp_bool . AND exp_bool
+    (33) exp_bool -> NOT exp_bool .
+    (31) exp_bool -> exp_bool . OR exp_bool
+    (32) exp_bool -> exp_bool . AND exp_bool
 
   ! shift/reduce conflict for OR resolved as shift
   ! shift/reduce conflict for AND resolved as shift
-    PARDER          reduce using rule 32 (exp_bool -> NOT exp_bool .)
-    OR              shift and go to state 62
-    AND             shift and go to state 63
+    PARDER          reduce using rule 33 (exp_bool -> NOT exp_bool .)
+    OR              shift and go to state 61
+    AND             shift and go to state 62
 
-  ! OR              [ reduce using rule 32 (exp_bool -> NOT exp_bool .) ]
-  ! AND             [ reduce using rule 32 (exp_bool -> NOT exp_bool .) ]
+  ! OR              [ reduce using rule 33 (exp_bool -> NOT exp_bool .) ]
+  ! AND             [ reduce using rule 33 (exp_bool -> NOT exp_bool .) ]
 
+
+state 64
+
+    (35) exp_rel -> exp MENORQUE . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
+
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
+
+    exp                            shift and go to state 86
+    factor                         shift and go to state 48
 
 state 65
 
-    (34) exp_rel -> exp MENORQUE . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (36) exp_rel -> exp MAYORQUE . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 86
-    factor                         shift and go to state 50
+    exp                            shift and go to state 87
+    factor                         shift and go to state 48
 
 state 66
 
-    (35) exp_rel -> exp MAYORQUE . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (37) exp_rel -> exp MENORIGUAL . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 87
-    factor                         shift and go to state 50
+    exp                            shift and go to state 88
+    factor                         shift and go to state 48
 
 state 67
 
-    (36) exp_rel -> exp MENORIGUAL . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (38) exp_rel -> exp MAYORIGUAL . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 88
-    factor                         shift and go to state 50
+    exp                            shift and go to state 89
+    factor                         shift and go to state 48
 
 state 68
 
-    (37) exp_rel -> exp MAYORIGUAL . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (39) exp_rel -> exp IGUAL . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 89
-    factor                         shift and go to state 50
+    exp                            shift and go to state 90
+    factor                         shift and go to state 48
 
 state 69
 
-    (38) exp_rel -> exp IGUAL . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (40) exp_rel -> exp DISTINTO . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 90
-    factor                         shift and go to state 50
+    exp                            shift and go to state 91
+    factor                         shift and go to state 48
 
 state 70
 
-    (39) exp_rel -> exp DISTINTO . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (41) exp -> exp SUMA . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 91
-    factor                         shift and go to state 50
+    exp                            shift and go to state 92
+    factor                         shift and go to state 48
 
 state 71
 
-    (40) exp -> exp SUMA . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (42) exp -> exp RESTA . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 92
-    factor                         shift and go to state 50
+    exp                            shift and go to state 93
+    factor                         shift and go to state 48
 
 state 72
 
-    (41) exp -> exp RESTA . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (43) exp -> exp MULT . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 93
-    factor                         shift and go to state 50
+    exp                            shift and go to state 94
+    factor                         shift and go to state 48
 
 state 73
 
-    (42) exp -> exp MULT . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (44) exp -> exp DIV . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 94
-    factor                         shift and go to state 50
+    exp                            shift and go to state 95
+    factor                         shift and go to state 48
 
 state 74
 
-    (43) exp -> exp DIV . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (45) exp -> exp POTENCIA . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 95
-    factor                         shift and go to state 50
+    exp                            shift and go to state 96
+    factor                         shift and go to state 48
 
 state 75
 
-    (44) exp -> exp POTENCIA . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (46) exp -> exp MODULO . exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
-    exp                            shift and go to state 96
-    factor                         shift and go to state 50
+    exp                            shift and go to state 97
+    factor                         shift and go to state 48
 
 state 76
 
-    (45) exp -> exp MODULO . exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (25) sent_while -> MIENTRAS PARIZQ exp_bool PARDER . bloque
+    (30) bloque -> . LLAIZQ lista_sent LLADER
 
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
-
-    exp                            shift and go to state 97
-    factor                         shift and go to state 50
-
-state 77
-
-    (24) sent_while -> MIENTRAS PARIZQ exp_bool PARDER . bloque
-    (28) bloque -> . LLAIZQ lista_sent LLADER
-
-    LLAIZQ          shift and go to state 11
+    LLAIZQ          shift and go to state 37
 
     bloque                         shift and go to state 98
 
-state 78
+state 77
 
-    (25) sent_do -> DO bloque MIENTRAS PARIZQ . exp_bool PARDER PUNTOCOMA
-    (30) exp_bool -> . exp_bool OR exp_bool
-    (31) exp_bool -> . exp_bool AND exp_bool
-    (32) exp_bool -> . NOT exp_bool
-    (33) exp_bool -> . exp_rel
-    (34) exp_rel -> . exp MENORQUE exp
-    (35) exp_rel -> . exp MAYORQUE exp
-    (36) exp_rel -> . exp MENORIGUAL exp
-    (37) exp_rel -> . exp MAYORIGUAL exp
-    (38) exp_rel -> . exp IGUAL exp
-    (39) exp_rel -> . exp DISTINTO exp
-    (40) exp -> . exp SUMA exp
-    (41) exp -> . exp RESTA exp
-    (42) exp -> . exp MULT exp
-    (43) exp -> . exp DIV exp
-    (44) exp -> . exp POTENCIA exp
-    (45) exp -> . exp MODULO exp
-    (46) exp -> . factor
-    (47) factor -> . ENTERO
-    (48) factor -> . IDENTIFICADOR
-    (49) factor -> . CADENA
-    (50) factor -> . PARIZQ exp PARDER
+    (26) sent_do -> DO bloque MIENTRAS PARIZQ . exp_bool PARDER PUNTOCOMA
+    (31) exp_bool -> . exp_bool OR exp_bool
+    (32) exp_bool -> . exp_bool AND exp_bool
+    (33) exp_bool -> . NOT exp_bool
+    (34) exp_bool -> . exp_rel
+    (35) exp_rel -> . exp MENORQUE exp
+    (36) exp_rel -> . exp MAYORQUE exp
+    (37) exp_rel -> . exp MENORIGUAL exp
+    (38) exp_rel -> . exp MAYORIGUAL exp
+    (39) exp_rel -> . exp IGUAL exp
+    (40) exp_rel -> . exp DISTINTO exp
+    (41) exp -> . exp SUMA exp
+    (42) exp -> . exp RESTA exp
+    (43) exp -> . exp MULT exp
+    (44) exp -> . exp DIV exp
+    (45) exp -> . exp POTENCIA exp
+    (46) exp -> . exp MODULO exp
+    (47) exp -> . factor
+    (48) factor -> . ENTERO
+    (49) factor -> . IDENTIFICADOR
+    (50) factor -> . CADENA
+    (51) factor -> . PARIZQ exp PARDER
 
-    NOT             shift and go to state 47
-    ENTERO          shift and go to state 51
-    IDENTIFICADOR   shift and go to state 52
-    CADENA          shift and go to state 53
-    PARIZQ          shift and go to state 45
+    NOT             shift and go to state 45
+    ENTERO          shift and go to state 49
+    IDENTIFICADOR   shift and go to state 50
+    CADENA          shift and go to state 51
+    PARIZQ          shift and go to state 43
 
     exp_bool                       shift and go to state 99
-    exp_rel                        shift and go to state 48
-    exp                            shift and go to state 49
-    factor                         shift and go to state 50
+    exp_rel                        shift and go to state 46
+    exp                            shift and go to state 47
+    factor                         shift and go to state 48
+
+state 78
+
+    (30) bloque -> LLAIZQ lista_sent LLADER .
+
+    MIENTRAS        reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    SINO            reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    FI              reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    LLADER          reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    BREAK           reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    SI              reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    DO              reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    READ            reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    WRITE           reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    IDENTIFICADOR   reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    INT             reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    FLOAT           reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+    BOOL            reduce using rule 30 (bloque -> LLAIZQ lista_sent LLADER .)
+
 
 state 79
 
-    (26) sent_read -> READ PARIZQ IDENTIFICADOR PARDER . PUNTOCOMA
+    (27) sent_read -> READ PARIZQ IDENTIFICADOR PARDER . PUNTOCOMA
 
     PUNTOCOMA       shift and go to state 100
 
@@ -1657,223 +1742,229 @@ state 80
     DO              reduce using rule 29 (sent_assign -> IDENTIFICADOR ASIGNAR exp PUNTOCOMA .)
     READ            reduce using rule 29 (sent_assign -> IDENTIFICADOR ASIGNAR exp PUNTOCOMA .)
     WRITE           reduce using rule 29 (sent_assign -> IDENTIFICADOR ASIGNAR exp PUNTOCOMA .)
-    LLAIZQ          reduce using rule 29 (sent_assign -> IDENTIFICADOR ASIGNAR exp PUNTOCOMA .)
     IDENTIFICADOR   reduce using rule 29 (sent_assign -> IDENTIFICADOR ASIGNAR exp PUNTOCOMA .)
+    INT             reduce using rule 29 (sent_assign -> IDENTIFICADOR ASIGNAR exp PUNTOCOMA .)
+    FLOAT           reduce using rule 29 (sent_assign -> IDENTIFICADOR ASIGNAR exp PUNTOCOMA .)
+    BOOL            reduce using rule 29 (sent_assign -> IDENTIFICADOR ASIGNAR exp PUNTOCOMA .)
 
 
 state 81
 
-    (27) sent_write -> WRITE PARIZQ exp PARDER . PUNTOCOMA
+    (28) sent_write -> WRITE PARIZQ exp PARDER . PUNTOCOMA
 
     PUNTOCOMA       shift and go to state 101
 
 
 state 82
 
-    (50) factor -> PARIZQ exp PARDER .
+    (51) factor -> PARIZQ exp PARDER .
 
-    MENORQUE        reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    MAYORQUE        reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    MENORIGUAL      reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    MAYORIGUAL      reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    IGUAL           reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    DISTINTO        reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    SUMA            reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    RESTA           reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    MULT            reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    DIV             reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    POTENCIA        reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    MODULO          reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    PUNTOCOMA       reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    PARDER          reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    OR              reduce using rule 50 (factor -> PARIZQ exp PARDER .)
-    AND             reduce using rule 50 (factor -> PARIZQ exp PARDER .)
+    MENORQUE        reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    MAYORQUE        reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    MENORIGUAL      reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    MAYORIGUAL      reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    IGUAL           reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    DISTINTO        reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    SUMA            reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    RESTA           reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    MULT            reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    DIV             reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    POTENCIA        reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    MODULO          reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    PUNTOCOMA       reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    PARDER          reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    OR              reduce using rule 51 (factor -> PARIZQ exp PARDER .)
+    AND             reduce using rule 51 (factor -> PARIZQ exp PARDER .)
 
 
 state 83
 
     (22) sent_if -> SI PARIZQ exp_bool PARDER bloque . SINO bloque
-    (23) sent_if -> SI PARIZQ exp_bool PARDER bloque .
+    (23) sent_if -> SI PARIZQ exp_bool PARDER bloque . FI
+    (24) sent_if -> SI PARIZQ exp_bool PARDER bloque .
 
     SINO            shift and go to state 102
-    LLADER          reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
-    BREAK           reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
-    SI              reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
-    MIENTRAS        reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
-    DO              reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
-    READ            reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
-    WRITE           reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
-    LLAIZQ          reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
-    IDENTIFICADOR   reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
+    FI              shift and go to state 103
+    LLADER          reduce using rule 24 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
+    BREAK           reduce using rule 24 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
+    SI              reduce using rule 24 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
+    MIENTRAS        reduce using rule 24 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
+    DO              reduce using rule 24 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
+    READ            reduce using rule 24 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
+    WRITE           reduce using rule 24 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
+    IDENTIFICADOR   reduce using rule 24 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
+    INT             reduce using rule 24 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
+    FLOAT           reduce using rule 24 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
+    BOOL            reduce using rule 24 (sent_if -> SI PARIZQ exp_bool PARDER bloque .)
 
 
 state 84
 
-    (30) exp_bool -> exp_bool OR exp_bool .
-    (30) exp_bool -> exp_bool . OR exp_bool
-    (31) exp_bool -> exp_bool . AND exp_bool
+    (31) exp_bool -> exp_bool OR exp_bool .
+    (31) exp_bool -> exp_bool . OR exp_bool
+    (32) exp_bool -> exp_bool . AND exp_bool
 
   ! shift/reduce conflict for OR resolved as shift
   ! shift/reduce conflict for AND resolved as shift
-    PARDER          reduce using rule 30 (exp_bool -> exp_bool OR exp_bool .)
-    OR              shift and go to state 62
-    AND             shift and go to state 63
+    PARDER          reduce using rule 31 (exp_bool -> exp_bool OR exp_bool .)
+    OR              shift and go to state 61
+    AND             shift and go to state 62
 
-  ! OR              [ reduce using rule 30 (exp_bool -> exp_bool OR exp_bool .) ]
-  ! AND             [ reduce using rule 30 (exp_bool -> exp_bool OR exp_bool .) ]
+  ! OR              [ reduce using rule 31 (exp_bool -> exp_bool OR exp_bool .) ]
+  ! AND             [ reduce using rule 31 (exp_bool -> exp_bool OR exp_bool .) ]
 
 
 state 85
 
-    (31) exp_bool -> exp_bool AND exp_bool .
-    (30) exp_bool -> exp_bool . OR exp_bool
-    (31) exp_bool -> exp_bool . AND exp_bool
+    (32) exp_bool -> exp_bool AND exp_bool .
+    (31) exp_bool -> exp_bool . OR exp_bool
+    (32) exp_bool -> exp_bool . AND exp_bool
 
   ! shift/reduce conflict for OR resolved as shift
   ! shift/reduce conflict for AND resolved as shift
-    PARDER          reduce using rule 31 (exp_bool -> exp_bool AND exp_bool .)
-    OR              shift and go to state 62
-    AND             shift and go to state 63
+    PARDER          reduce using rule 32 (exp_bool -> exp_bool AND exp_bool .)
+    OR              shift and go to state 61
+    AND             shift and go to state 62
 
-  ! OR              [ reduce using rule 31 (exp_bool -> exp_bool AND exp_bool .) ]
-  ! AND             [ reduce using rule 31 (exp_bool -> exp_bool AND exp_bool .) ]
+  ! OR              [ reduce using rule 32 (exp_bool -> exp_bool AND exp_bool .) ]
+  ! AND             [ reduce using rule 32 (exp_bool -> exp_bool AND exp_bool .) ]
 
 
 state 86
 
-    (34) exp_rel -> exp MENORQUE exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (35) exp_rel -> exp MENORQUE exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
-    PARDER          reduce using rule 34 (exp_rel -> exp MENORQUE exp .)
-    OR              reduce using rule 34 (exp_rel -> exp MENORQUE exp .)
-    AND             reduce using rule 34 (exp_rel -> exp MENORQUE exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    PARDER          reduce using rule 35 (exp_rel -> exp MENORQUE exp .)
+    OR              reduce using rule 35 (exp_rel -> exp MENORQUE exp .)
+    AND             reduce using rule 35 (exp_rel -> exp MENORQUE exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
 
 state 87
 
-    (35) exp_rel -> exp MAYORQUE exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (36) exp_rel -> exp MAYORQUE exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
-    PARDER          reduce using rule 35 (exp_rel -> exp MAYORQUE exp .)
-    OR              reduce using rule 35 (exp_rel -> exp MAYORQUE exp .)
-    AND             reduce using rule 35 (exp_rel -> exp MAYORQUE exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    PARDER          reduce using rule 36 (exp_rel -> exp MAYORQUE exp .)
+    OR              reduce using rule 36 (exp_rel -> exp MAYORQUE exp .)
+    AND             reduce using rule 36 (exp_rel -> exp MAYORQUE exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
 
 state 88
 
-    (36) exp_rel -> exp MENORIGUAL exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (37) exp_rel -> exp MENORIGUAL exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
-    PARDER          reduce using rule 36 (exp_rel -> exp MENORIGUAL exp .)
-    OR              reduce using rule 36 (exp_rel -> exp MENORIGUAL exp .)
-    AND             reduce using rule 36 (exp_rel -> exp MENORIGUAL exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    PARDER          reduce using rule 37 (exp_rel -> exp MENORIGUAL exp .)
+    OR              reduce using rule 37 (exp_rel -> exp MENORIGUAL exp .)
+    AND             reduce using rule 37 (exp_rel -> exp MENORIGUAL exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
 
 state 89
 
-    (37) exp_rel -> exp MAYORIGUAL exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (38) exp_rel -> exp MAYORIGUAL exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
-    PARDER          reduce using rule 37 (exp_rel -> exp MAYORIGUAL exp .)
-    OR              reduce using rule 37 (exp_rel -> exp MAYORIGUAL exp .)
-    AND             reduce using rule 37 (exp_rel -> exp MAYORIGUAL exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    PARDER          reduce using rule 38 (exp_rel -> exp MAYORIGUAL exp .)
+    OR              reduce using rule 38 (exp_rel -> exp MAYORIGUAL exp .)
+    AND             reduce using rule 38 (exp_rel -> exp MAYORIGUAL exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
 
 state 90
 
-    (38) exp_rel -> exp IGUAL exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (39) exp_rel -> exp IGUAL exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
-    PARDER          reduce using rule 38 (exp_rel -> exp IGUAL exp .)
-    OR              reduce using rule 38 (exp_rel -> exp IGUAL exp .)
-    AND             reduce using rule 38 (exp_rel -> exp IGUAL exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    PARDER          reduce using rule 39 (exp_rel -> exp IGUAL exp .)
+    OR              reduce using rule 39 (exp_rel -> exp IGUAL exp .)
+    AND             reduce using rule 39 (exp_rel -> exp IGUAL exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
 
 state 91
 
-    (39) exp_rel -> exp DISTINTO exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (40) exp_rel -> exp DISTINTO exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
-    PARDER          reduce using rule 39 (exp_rel -> exp DISTINTO exp .)
-    OR              reduce using rule 39 (exp_rel -> exp DISTINTO exp .)
-    AND             reduce using rule 39 (exp_rel -> exp DISTINTO exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    PARDER          reduce using rule 40 (exp_rel -> exp DISTINTO exp .)
+    OR              reduce using rule 40 (exp_rel -> exp DISTINTO exp .)
+    AND             reduce using rule 40 (exp_rel -> exp DISTINTO exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
 
 state 92
 
-    (40) exp -> exp SUMA exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (41) exp -> exp SUMA exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
   ! shift/reduce conflict for SUMA resolved as shift
   ! shift/reduce conflict for RESTA resolved as shift
@@ -1881,40 +1972,40 @@ state 92
   ! shift/reduce conflict for DIV resolved as shift
   ! shift/reduce conflict for POTENCIA resolved as shift
   ! shift/reduce conflict for MODULO resolved as shift
-    MENORQUE        reduce using rule 40 (exp -> exp SUMA exp .)
-    MAYORQUE        reduce using rule 40 (exp -> exp SUMA exp .)
-    MENORIGUAL      reduce using rule 40 (exp -> exp SUMA exp .)
-    MAYORIGUAL      reduce using rule 40 (exp -> exp SUMA exp .)
-    IGUAL           reduce using rule 40 (exp -> exp SUMA exp .)
-    DISTINTO        reduce using rule 40 (exp -> exp SUMA exp .)
-    PUNTOCOMA       reduce using rule 40 (exp -> exp SUMA exp .)
-    PARDER          reduce using rule 40 (exp -> exp SUMA exp .)
-    OR              reduce using rule 40 (exp -> exp SUMA exp .)
-    AND             reduce using rule 40 (exp -> exp SUMA exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    MENORQUE        reduce using rule 41 (exp -> exp SUMA exp .)
+    MAYORQUE        reduce using rule 41 (exp -> exp SUMA exp .)
+    MENORIGUAL      reduce using rule 41 (exp -> exp SUMA exp .)
+    MAYORIGUAL      reduce using rule 41 (exp -> exp SUMA exp .)
+    IGUAL           reduce using rule 41 (exp -> exp SUMA exp .)
+    DISTINTO        reduce using rule 41 (exp -> exp SUMA exp .)
+    PUNTOCOMA       reduce using rule 41 (exp -> exp SUMA exp .)
+    PARDER          reduce using rule 41 (exp -> exp SUMA exp .)
+    OR              reduce using rule 41 (exp -> exp SUMA exp .)
+    AND             reduce using rule 41 (exp -> exp SUMA exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
-  ! SUMA            [ reduce using rule 40 (exp -> exp SUMA exp .) ]
-  ! RESTA           [ reduce using rule 40 (exp -> exp SUMA exp .) ]
-  ! MULT            [ reduce using rule 40 (exp -> exp SUMA exp .) ]
-  ! DIV             [ reduce using rule 40 (exp -> exp SUMA exp .) ]
-  ! POTENCIA        [ reduce using rule 40 (exp -> exp SUMA exp .) ]
-  ! MODULO          [ reduce using rule 40 (exp -> exp SUMA exp .) ]
+  ! SUMA            [ reduce using rule 41 (exp -> exp SUMA exp .) ]
+  ! RESTA           [ reduce using rule 41 (exp -> exp SUMA exp .) ]
+  ! MULT            [ reduce using rule 41 (exp -> exp SUMA exp .) ]
+  ! DIV             [ reduce using rule 41 (exp -> exp SUMA exp .) ]
+  ! POTENCIA        [ reduce using rule 41 (exp -> exp SUMA exp .) ]
+  ! MODULO          [ reduce using rule 41 (exp -> exp SUMA exp .) ]
 
 
 state 93
 
-    (41) exp -> exp RESTA exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (42) exp -> exp RESTA exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
   ! shift/reduce conflict for SUMA resolved as shift
   ! shift/reduce conflict for RESTA resolved as shift
@@ -1922,40 +2013,40 @@ state 93
   ! shift/reduce conflict for DIV resolved as shift
   ! shift/reduce conflict for POTENCIA resolved as shift
   ! shift/reduce conflict for MODULO resolved as shift
-    MENORQUE        reduce using rule 41 (exp -> exp RESTA exp .)
-    MAYORQUE        reduce using rule 41 (exp -> exp RESTA exp .)
-    MENORIGUAL      reduce using rule 41 (exp -> exp RESTA exp .)
-    MAYORIGUAL      reduce using rule 41 (exp -> exp RESTA exp .)
-    IGUAL           reduce using rule 41 (exp -> exp RESTA exp .)
-    DISTINTO        reduce using rule 41 (exp -> exp RESTA exp .)
-    PUNTOCOMA       reduce using rule 41 (exp -> exp RESTA exp .)
-    PARDER          reduce using rule 41 (exp -> exp RESTA exp .)
-    OR              reduce using rule 41 (exp -> exp RESTA exp .)
-    AND             reduce using rule 41 (exp -> exp RESTA exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    MENORQUE        reduce using rule 42 (exp -> exp RESTA exp .)
+    MAYORQUE        reduce using rule 42 (exp -> exp RESTA exp .)
+    MENORIGUAL      reduce using rule 42 (exp -> exp RESTA exp .)
+    MAYORIGUAL      reduce using rule 42 (exp -> exp RESTA exp .)
+    IGUAL           reduce using rule 42 (exp -> exp RESTA exp .)
+    DISTINTO        reduce using rule 42 (exp -> exp RESTA exp .)
+    PUNTOCOMA       reduce using rule 42 (exp -> exp RESTA exp .)
+    PARDER          reduce using rule 42 (exp -> exp RESTA exp .)
+    OR              reduce using rule 42 (exp -> exp RESTA exp .)
+    AND             reduce using rule 42 (exp -> exp RESTA exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
-  ! SUMA            [ reduce using rule 41 (exp -> exp RESTA exp .) ]
-  ! RESTA           [ reduce using rule 41 (exp -> exp RESTA exp .) ]
-  ! MULT            [ reduce using rule 41 (exp -> exp RESTA exp .) ]
-  ! DIV             [ reduce using rule 41 (exp -> exp RESTA exp .) ]
-  ! POTENCIA        [ reduce using rule 41 (exp -> exp RESTA exp .) ]
-  ! MODULO          [ reduce using rule 41 (exp -> exp RESTA exp .) ]
+  ! SUMA            [ reduce using rule 42 (exp -> exp RESTA exp .) ]
+  ! RESTA           [ reduce using rule 42 (exp -> exp RESTA exp .) ]
+  ! MULT            [ reduce using rule 42 (exp -> exp RESTA exp .) ]
+  ! DIV             [ reduce using rule 42 (exp -> exp RESTA exp .) ]
+  ! POTENCIA        [ reduce using rule 42 (exp -> exp RESTA exp .) ]
+  ! MODULO          [ reduce using rule 42 (exp -> exp RESTA exp .) ]
 
 
 state 94
 
-    (42) exp -> exp MULT exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (43) exp -> exp MULT exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
   ! shift/reduce conflict for SUMA resolved as shift
   ! shift/reduce conflict for RESTA resolved as shift
@@ -1963,40 +2054,40 @@ state 94
   ! shift/reduce conflict for DIV resolved as shift
   ! shift/reduce conflict for POTENCIA resolved as shift
   ! shift/reduce conflict for MODULO resolved as shift
-    MENORQUE        reduce using rule 42 (exp -> exp MULT exp .)
-    MAYORQUE        reduce using rule 42 (exp -> exp MULT exp .)
-    MENORIGUAL      reduce using rule 42 (exp -> exp MULT exp .)
-    MAYORIGUAL      reduce using rule 42 (exp -> exp MULT exp .)
-    IGUAL           reduce using rule 42 (exp -> exp MULT exp .)
-    DISTINTO        reduce using rule 42 (exp -> exp MULT exp .)
-    PUNTOCOMA       reduce using rule 42 (exp -> exp MULT exp .)
-    PARDER          reduce using rule 42 (exp -> exp MULT exp .)
-    OR              reduce using rule 42 (exp -> exp MULT exp .)
-    AND             reduce using rule 42 (exp -> exp MULT exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    MENORQUE        reduce using rule 43 (exp -> exp MULT exp .)
+    MAYORQUE        reduce using rule 43 (exp -> exp MULT exp .)
+    MENORIGUAL      reduce using rule 43 (exp -> exp MULT exp .)
+    MAYORIGUAL      reduce using rule 43 (exp -> exp MULT exp .)
+    IGUAL           reduce using rule 43 (exp -> exp MULT exp .)
+    DISTINTO        reduce using rule 43 (exp -> exp MULT exp .)
+    PUNTOCOMA       reduce using rule 43 (exp -> exp MULT exp .)
+    PARDER          reduce using rule 43 (exp -> exp MULT exp .)
+    OR              reduce using rule 43 (exp -> exp MULT exp .)
+    AND             reduce using rule 43 (exp -> exp MULT exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
-  ! SUMA            [ reduce using rule 42 (exp -> exp MULT exp .) ]
-  ! RESTA           [ reduce using rule 42 (exp -> exp MULT exp .) ]
-  ! MULT            [ reduce using rule 42 (exp -> exp MULT exp .) ]
-  ! DIV             [ reduce using rule 42 (exp -> exp MULT exp .) ]
-  ! POTENCIA        [ reduce using rule 42 (exp -> exp MULT exp .) ]
-  ! MODULO          [ reduce using rule 42 (exp -> exp MULT exp .) ]
+  ! SUMA            [ reduce using rule 43 (exp -> exp MULT exp .) ]
+  ! RESTA           [ reduce using rule 43 (exp -> exp MULT exp .) ]
+  ! MULT            [ reduce using rule 43 (exp -> exp MULT exp .) ]
+  ! DIV             [ reduce using rule 43 (exp -> exp MULT exp .) ]
+  ! POTENCIA        [ reduce using rule 43 (exp -> exp MULT exp .) ]
+  ! MODULO          [ reduce using rule 43 (exp -> exp MULT exp .) ]
 
 
 state 95
 
-    (43) exp -> exp DIV exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (44) exp -> exp DIV exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
   ! shift/reduce conflict for SUMA resolved as shift
   ! shift/reduce conflict for RESTA resolved as shift
@@ -2004,40 +2095,40 @@ state 95
   ! shift/reduce conflict for DIV resolved as shift
   ! shift/reduce conflict for POTENCIA resolved as shift
   ! shift/reduce conflict for MODULO resolved as shift
-    MENORQUE        reduce using rule 43 (exp -> exp DIV exp .)
-    MAYORQUE        reduce using rule 43 (exp -> exp DIV exp .)
-    MENORIGUAL      reduce using rule 43 (exp -> exp DIV exp .)
-    MAYORIGUAL      reduce using rule 43 (exp -> exp DIV exp .)
-    IGUAL           reduce using rule 43 (exp -> exp DIV exp .)
-    DISTINTO        reduce using rule 43 (exp -> exp DIV exp .)
-    PUNTOCOMA       reduce using rule 43 (exp -> exp DIV exp .)
-    PARDER          reduce using rule 43 (exp -> exp DIV exp .)
-    OR              reduce using rule 43 (exp -> exp DIV exp .)
-    AND             reduce using rule 43 (exp -> exp DIV exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    MENORQUE        reduce using rule 44 (exp -> exp DIV exp .)
+    MAYORQUE        reduce using rule 44 (exp -> exp DIV exp .)
+    MENORIGUAL      reduce using rule 44 (exp -> exp DIV exp .)
+    MAYORIGUAL      reduce using rule 44 (exp -> exp DIV exp .)
+    IGUAL           reduce using rule 44 (exp -> exp DIV exp .)
+    DISTINTO        reduce using rule 44 (exp -> exp DIV exp .)
+    PUNTOCOMA       reduce using rule 44 (exp -> exp DIV exp .)
+    PARDER          reduce using rule 44 (exp -> exp DIV exp .)
+    OR              reduce using rule 44 (exp -> exp DIV exp .)
+    AND             reduce using rule 44 (exp -> exp DIV exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
-  ! SUMA            [ reduce using rule 43 (exp -> exp DIV exp .) ]
-  ! RESTA           [ reduce using rule 43 (exp -> exp DIV exp .) ]
-  ! MULT            [ reduce using rule 43 (exp -> exp DIV exp .) ]
-  ! DIV             [ reduce using rule 43 (exp -> exp DIV exp .) ]
-  ! POTENCIA        [ reduce using rule 43 (exp -> exp DIV exp .) ]
-  ! MODULO          [ reduce using rule 43 (exp -> exp DIV exp .) ]
+  ! SUMA            [ reduce using rule 44 (exp -> exp DIV exp .) ]
+  ! RESTA           [ reduce using rule 44 (exp -> exp DIV exp .) ]
+  ! MULT            [ reduce using rule 44 (exp -> exp DIV exp .) ]
+  ! DIV             [ reduce using rule 44 (exp -> exp DIV exp .) ]
+  ! POTENCIA        [ reduce using rule 44 (exp -> exp DIV exp .) ]
+  ! MODULO          [ reduce using rule 44 (exp -> exp DIV exp .) ]
 
 
 state 96
 
-    (44) exp -> exp POTENCIA exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (45) exp -> exp POTENCIA exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
   ! shift/reduce conflict for SUMA resolved as shift
   ! shift/reduce conflict for RESTA resolved as shift
@@ -2045,40 +2136,40 @@ state 96
   ! shift/reduce conflict for DIV resolved as shift
   ! shift/reduce conflict for POTENCIA resolved as shift
   ! shift/reduce conflict for MODULO resolved as shift
-    MENORQUE        reduce using rule 44 (exp -> exp POTENCIA exp .)
-    MAYORQUE        reduce using rule 44 (exp -> exp POTENCIA exp .)
-    MENORIGUAL      reduce using rule 44 (exp -> exp POTENCIA exp .)
-    MAYORIGUAL      reduce using rule 44 (exp -> exp POTENCIA exp .)
-    IGUAL           reduce using rule 44 (exp -> exp POTENCIA exp .)
-    DISTINTO        reduce using rule 44 (exp -> exp POTENCIA exp .)
-    PUNTOCOMA       reduce using rule 44 (exp -> exp POTENCIA exp .)
-    PARDER          reduce using rule 44 (exp -> exp POTENCIA exp .)
-    OR              reduce using rule 44 (exp -> exp POTENCIA exp .)
-    AND             reduce using rule 44 (exp -> exp POTENCIA exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    MENORQUE        reduce using rule 45 (exp -> exp POTENCIA exp .)
+    MAYORQUE        reduce using rule 45 (exp -> exp POTENCIA exp .)
+    MENORIGUAL      reduce using rule 45 (exp -> exp POTENCIA exp .)
+    MAYORIGUAL      reduce using rule 45 (exp -> exp POTENCIA exp .)
+    IGUAL           reduce using rule 45 (exp -> exp POTENCIA exp .)
+    DISTINTO        reduce using rule 45 (exp -> exp POTENCIA exp .)
+    PUNTOCOMA       reduce using rule 45 (exp -> exp POTENCIA exp .)
+    PARDER          reduce using rule 45 (exp -> exp POTENCIA exp .)
+    OR              reduce using rule 45 (exp -> exp POTENCIA exp .)
+    AND             reduce using rule 45 (exp -> exp POTENCIA exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
-  ! SUMA            [ reduce using rule 44 (exp -> exp POTENCIA exp .) ]
-  ! RESTA           [ reduce using rule 44 (exp -> exp POTENCIA exp .) ]
-  ! MULT            [ reduce using rule 44 (exp -> exp POTENCIA exp .) ]
-  ! DIV             [ reduce using rule 44 (exp -> exp POTENCIA exp .) ]
-  ! POTENCIA        [ reduce using rule 44 (exp -> exp POTENCIA exp .) ]
-  ! MODULO          [ reduce using rule 44 (exp -> exp POTENCIA exp .) ]
+  ! SUMA            [ reduce using rule 45 (exp -> exp POTENCIA exp .) ]
+  ! RESTA           [ reduce using rule 45 (exp -> exp POTENCIA exp .) ]
+  ! MULT            [ reduce using rule 45 (exp -> exp POTENCIA exp .) ]
+  ! DIV             [ reduce using rule 45 (exp -> exp POTENCIA exp .) ]
+  ! POTENCIA        [ reduce using rule 45 (exp -> exp POTENCIA exp .) ]
+  ! MODULO          [ reduce using rule 45 (exp -> exp POTENCIA exp .) ]
 
 
 state 97
 
-    (45) exp -> exp MODULO exp .
-    (40) exp -> exp . SUMA exp
-    (41) exp -> exp . RESTA exp
-    (42) exp -> exp . MULT exp
-    (43) exp -> exp . DIV exp
-    (44) exp -> exp . POTENCIA exp
-    (45) exp -> exp . MODULO exp
+    (46) exp -> exp MODULO exp .
+    (41) exp -> exp . SUMA exp
+    (42) exp -> exp . RESTA exp
+    (43) exp -> exp . MULT exp
+    (44) exp -> exp . DIV exp
+    (45) exp -> exp . POTENCIA exp
+    (46) exp -> exp . MODULO exp
 
   ! shift/reduce conflict for SUMA resolved as shift
   ! shift/reduce conflict for RESTA resolved as shift
@@ -2086,104 +2177,127 @@ state 97
   ! shift/reduce conflict for DIV resolved as shift
   ! shift/reduce conflict for POTENCIA resolved as shift
   ! shift/reduce conflict for MODULO resolved as shift
-    MENORQUE        reduce using rule 45 (exp -> exp MODULO exp .)
-    MAYORQUE        reduce using rule 45 (exp -> exp MODULO exp .)
-    MENORIGUAL      reduce using rule 45 (exp -> exp MODULO exp .)
-    MAYORIGUAL      reduce using rule 45 (exp -> exp MODULO exp .)
-    IGUAL           reduce using rule 45 (exp -> exp MODULO exp .)
-    DISTINTO        reduce using rule 45 (exp -> exp MODULO exp .)
-    PUNTOCOMA       reduce using rule 45 (exp -> exp MODULO exp .)
-    PARDER          reduce using rule 45 (exp -> exp MODULO exp .)
-    OR              reduce using rule 45 (exp -> exp MODULO exp .)
-    AND             reduce using rule 45 (exp -> exp MODULO exp .)
-    SUMA            shift and go to state 71
-    RESTA           shift and go to state 72
-    MULT            shift and go to state 73
-    DIV             shift and go to state 74
-    POTENCIA        shift and go to state 75
-    MODULO          shift and go to state 76
+    MENORQUE        reduce using rule 46 (exp -> exp MODULO exp .)
+    MAYORQUE        reduce using rule 46 (exp -> exp MODULO exp .)
+    MENORIGUAL      reduce using rule 46 (exp -> exp MODULO exp .)
+    MAYORIGUAL      reduce using rule 46 (exp -> exp MODULO exp .)
+    IGUAL           reduce using rule 46 (exp -> exp MODULO exp .)
+    DISTINTO        reduce using rule 46 (exp -> exp MODULO exp .)
+    PUNTOCOMA       reduce using rule 46 (exp -> exp MODULO exp .)
+    PARDER          reduce using rule 46 (exp -> exp MODULO exp .)
+    OR              reduce using rule 46 (exp -> exp MODULO exp .)
+    AND             reduce using rule 46 (exp -> exp MODULO exp .)
+    SUMA            shift and go to state 70
+    RESTA           shift and go to state 71
+    MULT            shift and go to state 72
+    DIV             shift and go to state 73
+    POTENCIA        shift and go to state 74
+    MODULO          shift and go to state 75
 
-  ! SUMA            [ reduce using rule 45 (exp -> exp MODULO exp .) ]
-  ! RESTA           [ reduce using rule 45 (exp -> exp MODULO exp .) ]
-  ! MULT            [ reduce using rule 45 (exp -> exp MODULO exp .) ]
-  ! DIV             [ reduce using rule 45 (exp -> exp MODULO exp .) ]
-  ! POTENCIA        [ reduce using rule 45 (exp -> exp MODULO exp .) ]
-  ! MODULO          [ reduce using rule 45 (exp -> exp MODULO exp .) ]
+  ! SUMA            [ reduce using rule 46 (exp -> exp MODULO exp .) ]
+  ! RESTA           [ reduce using rule 46 (exp -> exp MODULO exp .) ]
+  ! MULT            [ reduce using rule 46 (exp -> exp MODULO exp .) ]
+  ! DIV             [ reduce using rule 46 (exp -> exp MODULO exp .) ]
+  ! POTENCIA        [ reduce using rule 46 (exp -> exp MODULO exp .) ]
+  ! MODULO          [ reduce using rule 46 (exp -> exp MODULO exp .) ]
 
 
 state 98
 
-    (24) sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .
+    (25) sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .
 
-    LLADER          reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
-    BREAK           reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
-    SI              reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
-    MIENTRAS        reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
-    DO              reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
-    READ            reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
-    WRITE           reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
-    LLAIZQ          reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
-    IDENTIFICADOR   reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    LLADER          reduce using rule 25 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    BREAK           reduce using rule 25 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    SI              reduce using rule 25 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    MIENTRAS        reduce using rule 25 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    DO              reduce using rule 25 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    READ            reduce using rule 25 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    WRITE           reduce using rule 25 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    IDENTIFICADOR   reduce using rule 25 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    INT             reduce using rule 25 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    FLOAT           reduce using rule 25 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    BOOL            reduce using rule 25 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
 
 
 state 99
 
-    (25) sent_do -> DO bloque MIENTRAS PARIZQ exp_bool . PARDER PUNTOCOMA
-    (30) exp_bool -> exp_bool . OR exp_bool
-    (31) exp_bool -> exp_bool . AND exp_bool
+    (26) sent_do -> DO bloque MIENTRAS PARIZQ exp_bool . PARDER PUNTOCOMA
+    (31) exp_bool -> exp_bool . OR exp_bool
+    (32) exp_bool -> exp_bool . AND exp_bool
 
-    PARDER          shift and go to state 103
-    OR              shift and go to state 62
-    AND             shift and go to state 63
+    PARDER          shift and go to state 104
+    OR              shift and go to state 61
+    AND             shift and go to state 62
 
 
 state 100
 
-    (26) sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .
+    (27) sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .
 
-    LLADER          reduce using rule 26 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
-    BREAK           reduce using rule 26 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
-    SI              reduce using rule 26 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
-    MIENTRAS        reduce using rule 26 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
-    DO              reduce using rule 26 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
-    READ            reduce using rule 26 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
-    WRITE           reduce using rule 26 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
-    LLAIZQ          reduce using rule 26 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
-    IDENTIFICADOR   reduce using rule 26 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
+    LLADER          reduce using rule 27 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
+    BREAK           reduce using rule 27 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
+    SI              reduce using rule 27 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
+    MIENTRAS        reduce using rule 27 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
+    DO              reduce using rule 27 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
+    READ            reduce using rule 27 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
+    WRITE           reduce using rule 27 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
+    IDENTIFICADOR   reduce using rule 27 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
+    INT             reduce using rule 27 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
+    FLOAT           reduce using rule 27 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
+    BOOL            reduce using rule 27 (sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA .)
 
 
 state 101
 
-    (27) sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .
+    (28) sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .
 
-    LLADER          reduce using rule 27 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
-    BREAK           reduce using rule 27 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
-    SI              reduce using rule 27 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
-    MIENTRAS        reduce using rule 27 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
-    DO              reduce using rule 27 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
-    READ            reduce using rule 27 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
-    WRITE           reduce using rule 27 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
-    LLAIZQ          reduce using rule 27 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
-    IDENTIFICADOR   reduce using rule 27 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
+    LLADER          reduce using rule 28 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
+    BREAK           reduce using rule 28 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
+    SI              reduce using rule 28 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
+    MIENTRAS        reduce using rule 28 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
+    DO              reduce using rule 28 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
+    READ            reduce using rule 28 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
+    WRITE           reduce using rule 28 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
+    IDENTIFICADOR   reduce using rule 28 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
+    INT             reduce using rule 28 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
+    FLOAT           reduce using rule 28 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
+    BOOL            reduce using rule 28 (sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA .)
 
 
 state 102
 
     (22) sent_if -> SI PARIZQ exp_bool PARDER bloque SINO . bloque
-    (28) bloque -> . LLAIZQ lista_sent LLADER
+    (30) bloque -> . LLAIZQ lista_sent LLADER
 
-    LLAIZQ          shift and go to state 11
+    LLAIZQ          shift and go to state 37
 
-    bloque                         shift and go to state 104
+    bloque                         shift and go to state 105
 
 state 103
 
-    (25) sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER . PUNTOCOMA
+    (23) sent_if -> SI PARIZQ exp_bool PARDER bloque FI .
 
-    PUNTOCOMA       shift and go to state 105
+    LLADER          reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FI .)
+    BREAK           reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FI .)
+    SI              reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FI .)
+    MIENTRAS        reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FI .)
+    DO              reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FI .)
+    READ            reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FI .)
+    WRITE           reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FI .)
+    IDENTIFICADOR   reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FI .)
+    INT             reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FI .)
+    FLOAT           reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FI .)
+    BOOL            reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FI .)
 
 
 state 104
+
+    (26) sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 106
+
+
+state 105
 
     (22) sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque .
 
@@ -2194,23 +2308,27 @@ state 104
     DO              reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque .)
     READ            reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque .)
     WRITE           reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque .)
-    LLAIZQ          reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque .)
     IDENTIFICADOR   reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque .)
+    INT             reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque .)
+    FLOAT           reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque .)
+    BOOL            reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque .)
 
 
-state 105
+state 106
 
-    (25) sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .
+    (26) sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .
 
-    LLADER          reduce using rule 25 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
-    BREAK           reduce using rule 25 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
-    SI              reduce using rule 25 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
-    MIENTRAS        reduce using rule 25 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
-    DO              reduce using rule 25 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
-    READ            reduce using rule 25 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
-    WRITE           reduce using rule 25 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
-    LLAIZQ          reduce using rule 25 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
-    IDENTIFICADOR   reduce using rule 25 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
+    LLADER          reduce using rule 26 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
+    BREAK           reduce using rule 26 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
+    SI              reduce using rule 26 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
+    MIENTRAS        reduce using rule 26 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
+    DO              reduce using rule 26 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
+    READ            reduce using rule 26 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
+    WRITE           reduce using rule 26 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
+    IDENTIFICADOR   reduce using rule 26 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
+    INT             reduce using rule 26 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
+    FLOAT           reduce using rule 26 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
+    BOOL            reduce using rule 26 (sent_do -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA .)
 
 WARNING: 
 WARNING: Conflicts:
@@ -2219,23 +2337,27 @@ WARNING: shift/reduce conflict for INT in state 3 resolved as shift
 WARNING: shift/reduce conflict for FLOAT in state 3 resolved as shift
 WARNING: shift/reduce conflict for BOOL in state 3 resolved as shift
 WARNING: shift/reduce conflict for BREAK in state 4 resolved as shift
+WARNING: shift/reduce conflict for INT in state 4 resolved as shift
+WARNING: shift/reduce conflict for FLOAT in state 4 resolved as shift
+WARNING: shift/reduce conflict for BOOL in state 4 resolved as shift
 WARNING: shift/reduce conflict for SI in state 4 resolved as shift
 WARNING: shift/reduce conflict for MIENTRAS in state 4 resolved as shift
 WARNING: shift/reduce conflict for DO in state 4 resolved as shift
 WARNING: shift/reduce conflict for READ in state 4 resolved as shift
 WARNING: shift/reduce conflict for WRITE in state 4 resolved as shift
-WARNING: shift/reduce conflict for LLAIZQ in state 4 resolved as shift
 WARNING: shift/reduce conflict for IDENTIFICADOR in state 4 resolved as shift
-WARNING: shift/reduce conflict for BREAK in state 11 resolved as shift
-WARNING: shift/reduce conflict for SI in state 11 resolved as shift
-WARNING: shift/reduce conflict for MIENTRAS in state 11 resolved as shift
-WARNING: shift/reduce conflict for DO in state 11 resolved as shift
-WARNING: shift/reduce conflict for READ in state 11 resolved as shift
-WARNING: shift/reduce conflict for WRITE in state 11 resolved as shift
-WARNING: shift/reduce conflict for LLAIZQ in state 11 resolved as shift
-WARNING: shift/reduce conflict for IDENTIFICADOR in state 11 resolved as shift
-WARNING: shift/reduce conflict for OR in state 64 resolved as shift
-WARNING: shift/reduce conflict for AND in state 64 resolved as shift
+WARNING: shift/reduce conflict for BREAK in state 37 resolved as shift
+WARNING: shift/reduce conflict for SI in state 37 resolved as shift
+WARNING: shift/reduce conflict for MIENTRAS in state 37 resolved as shift
+WARNING: shift/reduce conflict for DO in state 37 resolved as shift
+WARNING: shift/reduce conflict for READ in state 37 resolved as shift
+WARNING: shift/reduce conflict for WRITE in state 37 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFICADOR in state 37 resolved as shift
+WARNING: shift/reduce conflict for INT in state 37 resolved as shift
+WARNING: shift/reduce conflict for FLOAT in state 37 resolved as shift
+WARNING: shift/reduce conflict for BOOL in state 37 resolved as shift
+WARNING: shift/reduce conflict for OR in state 63 resolved as shift
+WARNING: shift/reduce conflict for AND in state 63 resolved as shift
 WARNING: shift/reduce conflict for OR in state 84 resolved as shift
 WARNING: shift/reduce conflict for AND in state 84 resolved as shift
 WARNING: shift/reduce conflict for OR in state 85 resolved as shift
@@ -2276,3 +2398,5 @@ WARNING: shift/reduce conflict for MULT in state 97 resolved as shift
 WARNING: shift/reduce conflict for DIV in state 97 resolved as shift
 WARNING: shift/reduce conflict for POTENCIA in state 97 resolved as shift
 WARNING: shift/reduce conflict for MODULO in state 97 resolved as shift
+WARNING: reduce/reduce conflict in state 12 resolved using rule (lista_decl -> lista_decl decl)
+WARNING: rejected rule (sent -> decl) in state 12

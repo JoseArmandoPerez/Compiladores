@@ -52,16 +52,14 @@ def p_sent(p):
             | sent_do
             | sent_read
             | sent_write
-            | bloque
             | sent_assign
-            | BREAK PUNTOCOMA'''
-    if len(p) == 3:
-        p[0] = ('break',)
-    else:
-        p[0] = p[1]
+            | BREAK PUNTOCOMA
+            | decl'''
+    p[0] = p[1]
 
 def p_sent_if(p):
     '''sent_if : SI PARIZQ exp_bool PARDER bloque SINO bloque
+               | SI PARIZQ exp_bool PARDER bloque FI
                | SI PARIZQ exp_bool PARDER bloque'''
     if len(p) == 8:
         p[0] = ('if_else', p[3], p[5], p[7])
@@ -74,7 +72,7 @@ def p_sent_while(p):
 
 def p_sent_do(p):
     '''sent_do : DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA'''
-    p[0] = ('do_while', p[5], p[2])
+    p[0] = ('do_while', p[2], p[5])
 
 def p_sent_read(p):
     '''sent_read : READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA'''
@@ -84,13 +82,13 @@ def p_sent_write(p):
     '''sent_write : WRITE PARIZQ exp PARDER PUNTOCOMA'''
     p[0] = ('write', p[3])
 
-def p_bloque(p):
-    '''bloque : LLAIZQ lista_sent LLADER'''
-    p[0] = ('bloque', p[2])
-
 def p_sent_assign(p):
     '''sent_assign : IDENTIFICADOR ASIGNAR exp PUNTOCOMA'''
     p[0] = ('assign', p[1], p[3])
+
+def p_bloque(p):
+    '''bloque : LLAIZQ lista_sent LLADER'''
+    p[0] = ('bloque', p[2])
 
 def p_exp_bool(p):
     '''exp_bool : exp_bool OR exp_bool
@@ -170,8 +168,26 @@ def formatear_arbol(arbol, nivel=0, order=1):
 if __name__ == '__main__':
     data = '''
     program {
-        int a;
-        write ;
+        int x, y;
+        float a, b;
+        bool c;
+        c = false;
+        x=5; 
+        y=4; 
+        a=0;
+        b=3;
+        do {
+            if(x<y && y>=0) {
+                c=true;
+            } else {
+                x=x-2;
+                a=a*x+b;
+                y=y-1;
+            }
+        } while(c == true);
+        write (a);
+        a=a+1;
+        x=a-y;
     }
     '''
     arbol = analizar_sintactico(data)

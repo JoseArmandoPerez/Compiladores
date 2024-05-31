@@ -23,6 +23,10 @@ reservada = (
     'READ',
     'DO',
     'BREAK',
+    'IF',
+    'ELSE',   # Agrega ELSE como palabra reservada
+    'WHILE',
+    'FOR',
 )
 tokens = reservada + (
     'IDENTIFICADOR',
@@ -61,6 +65,7 @@ tokens = reservada + (
     'COMDOB',
     'MAYORDER',
     'MAYORIZQ',
+    'FI',     # Agrega FI como un token
 )
 
 # Reglas de Expresiones Regulares para tokens de Contexto simple
@@ -220,6 +225,10 @@ def t_DISTINTO(t):
     r'!='
     return t
 
+def t_FI(t):
+    r'fi'
+    return t
+
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
@@ -227,12 +236,10 @@ def t_newline(t):
 def t_comments(t):
     r'/\*(.|\n)*?\*/'
     t.lexer.lineno += t.value.count('\n')
-    print("Comentario de multiple línea")
 
 def t_comments_ONELine(t):
     r'\/\/(.)*\n'
     t.lexer.lineno += 1
-    print("Comentario de una línea")
 
 t_ignore = ' \t'
 
@@ -267,6 +274,6 @@ analizador = lex.lex()
 
 if __name__ == '__main__':
     while True:
-        data = input("ingrese: ")
+        data = input("Ingrese un programa: ")
         prueba(data)
         print(resultado_lexema)
