@@ -3,7 +3,7 @@ from Lexico import tokens
 
 # Definición de reglas gramaticales
 def p_programa(p):
-    '''programa : PROGRAM LLAIZQ lista_decl lista_sent LLADER'''
+    '''programa : PROGRAM LLAIZQ lista_decl lista_sent LLADER''' # program {}
     p[0] = ('programa', p[3], p[4])
 
 def p_lista_decl(p):
@@ -126,6 +126,7 @@ def p_exp(p):
 
 def p_factor(p):
     '''factor : ENTERO
+              | FLOTANTE
               | IDENTIFICADOR
               | CADENA
               | PARIZQ exp PARDER'''
@@ -174,8 +175,8 @@ if __name__ == '__main__':
         c = false;
         x=5; 
         y=4; 
-        a=0;
-        b=3;
+        a=0.0;
+        b=3.0;
         do {
             if(x<y && y>=0) {
                 c=true;
@@ -186,7 +187,7 @@ if __name__ == '__main__':
             }
         } while(c == true);
         write (a);
-        a=a+1;
+        a=a+1.0;
         x=a-y;
     }
     '''

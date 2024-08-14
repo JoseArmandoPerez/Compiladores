@@ -31,6 +31,7 @@ reservada = (
 tokens = reservada + (
     'IDENTIFICADOR',
     'ENTERO',
+    'FLOTANTE',
     'ASIGNAR',
     'SUMA',
     'RESTA',
@@ -178,6 +179,11 @@ def t_MIENTRAS(t):
 
 def t_PARA(t):
     r'for'
+    return t
+
+def t_FLOTANTE(t):
+    r'\d+\.\d+'
+    t.value = float(t.value)
     return t
 
 def t_ENTERO(t):
