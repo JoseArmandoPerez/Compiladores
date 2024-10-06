@@ -5,7 +5,7 @@ import Lexico
 from tabulate import tabulate
 import Sintactico
 from Semantico import analizar_texto
-from Semantico import obtener_tabla_simbolos
+from Semantico import tabla_simbolos
 
 
 
@@ -124,13 +124,14 @@ def analyze_semantic():
     # Llama a la función para analizar el texto
     try:
         analizar_texto(text)  # Llama a la función que procesa el texto
-        # Obtener la tabla de símbolos
-        symbols_table = obtener_tabla_simbolos()
+        
+        # Obtener la tabla de símbolos directamente
+        symbols_table_str = str(tabla_simbolos)  # Convertir a string
         
         # Mostrar la tabla de símbolos en el widget de resultados semánticos
         result_text_semantic.config(state="normal")
         result_text_semantic.delete("1.0", "end")
-        result_text_semantic.insert("1.0", symbols_table)
+        result_text_semantic.insert("1.0", symbols_table_str)
         result_text_semantic.config(state="disabled")
         
     except Exception as e:
@@ -138,8 +139,6 @@ def analyze_semantic():
         result_text_semantic.delete("1.0", "end")
         result_text_semantic.insert("1.0", f"Error: {str(e)}")
         result_text_semantic.config(state="disabled")
-
-
 
 def generate_intermediate_code():
     # Placeholder para generación de código intermedio

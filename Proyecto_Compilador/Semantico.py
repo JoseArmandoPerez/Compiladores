@@ -1,4 +1,3 @@
-# Clases para la tabla de símbolos
 class Symbol:
     def __init__(self, name, symbol_type, line_declared):
         self.name = name
@@ -6,6 +5,7 @@ class Symbol:
         self.value = None  # Almacenará el valor directo solo en la declaración
         self.line_declared = line_declared
         self.references = []  # Lista de líneas donde se hace referencia
+        self.location = hex(id(self))  # Simulación de dirección de memoria
 
     def add_reference(self, line):
         if line not in self.references:
@@ -15,18 +15,44 @@ class SymbolTable:
     def __init__(self):
         self.symbols = {}
 
+    def _hash(self, name):
+        return hash(name) % 100  # Ejemplo de tamaño de tabla de 100
+
     def add_symbol(self, name, symbol_type, line_declared):
-        if name in self.symbols:
-            raise Exception(f"Error: '{name}' ya está definido en la línea {self.symbols[name].line_declared}.")
-        self.symbols[name] = Symbol(name, symbol_type, line_declared)
+        index = self._hash(name)
+        if index not in self.symbols:
+            self.symbols[index] = []
+
+        # Verificar si el símbolo ya existe en la lista de ese índice
+        for symbol in self.symbols[index]:
+            if symbol.name == name:
+                raise Exception(f"Error: El símbolo '{name}' ya está definido en la línea {symbol.line_declared}.")
+
+        # Agregar el nuevo símbolo
+        self.symbols[index].append(Symbol(name, symbol_type, line_declared))
 
     def lookup(self, name):
-        return self.symbols.get(name, None)
+        index = self._hash(name)
+        if index in self.symbols:
+            for symbol in self.symbols[index]:
+                if symbol.name == name:
+                    return symbol
+        return None
 
-    def set_value(self, name, value):
+    def set_value(self, name, value, line_number):
         symbol = self.lookup(name)
         if not symbol:
-            raise Exception(f"Error: '{name}' no está definido.")
+            raise Exception(f"Error: El símbolo '{name}' no está definido en la línea {line_number}. No se puede asignar el valor.")
+
+        # Verificación de tipo
+        if isinstance(value, bool) and symbol.type != 'bool':
+            raise Exception(f"Error de tipo: La asignación de '{name}' con valor '{value}' no coincide con su tipo declarado '{symbol.type}' en la línea {symbol.line_declared}.")
+        elif isinstance(value, int) and symbol.type not in ['int', 'float']:
+            raise Exception(f"Error de tipo: La asignación de '{name}' con valor '{value}' no coincide con su tipo declarado '{symbol.type}' en la línea {symbol.line_declared}.")
+        elif isinstance(value, float) and symbol.type != 'float':
+            raise Exception(f"Error de tipo: La asignación de '{name}' con valor '{value}' no coincide con su tipo declarado '{symbol.type}' en la línea {symbol.line_declared}.")
+        elif isinstance(value, str) and symbol.type == 'int':
+            raise Exception(f"Error de tipo: Se intentó asignar un string '{value}' a la variable '{name}', que se declaró como tipo 'int' en la línea {symbol.line_declared}.")
         
         # Solo almacenar el valor si es una declaración inicial
         if symbol.value is None:  # Asegurarse de que solo se almacene el valor en la declaración
@@ -37,11 +63,20 @@ class SymbolTable:
         if symbol:
             symbol.add_reference(line)
         else:
-            raise Exception(f"Error: '{name}' no está definido en la línea {line}.")
+            raise Exception(f"Error: El símbolo '{name}' no está definido en la línea {line}. No se puede agregar la referencia.")
 
     def __str__(self):
-        return '\n'.join([f"{s.name}: {s.type}, Valor: {s.value}, Declarada en: {s.line_declared}, Referencias: {s.references}"
-                          for s in self.symbols.values()])
+        # Cabecera de la tabla
+        header = f"{'Nombre de Variable':<20} {'Tipo':<10} {'Valor':<10} {'Número de Registro (loc)':<25} {'Número de Línea':<15} {'Referencias':<30}"
+        lines = [header]
+
+        # Agregar los símbolos en formato tabular
+        for bucket in self.symbols.values():
+            for s in bucket:
+                line = f"{s.name:<20} {s.type:<10} {s.value:<10} {s.location:<25} {s.line_declared:<15} {str(s.references):<30}"
+                lines.append(line)
+        
+        return '\n'.join(lines)
 
 # Inicializa la tabla de símbolos
 tabla_simbolos = SymbolTable()
@@ -69,8 +104,26 @@ def procesar_sent(sent, line_number):
         var_name = sent[1]
         value = sent[2]  # Suponiendo que el valor está en sent[2]
 
+        # Verificación de tipo
+        symbol = tabla_simbolos.lookup(var_name)
+        if not symbol:
+            raise Exception(f"Error: El símbolo '{var_name}' no está definido antes de la asignación en la línea {line_number}.")
+        
+        # Comprobar si el valor es un literal o una variable
+        if isinstance(value, str):
+            if value.isnumeric():  # Si es un número, convertirlo a int
+                value = int(value)
+            else:
+                # Comprobando si el valor es una variable
+                referenced_symbol = tabla_simbolos.lookup(value)
+                if referenced_symbol:
+                    value = referenced_symbol.value
+                else:
+                    # Si no es una variable, se lanza una excepción mencionando el nombre de la variable
+                    raise Exception(f"Error: El símbolo '{value}' no está definido en la línea {line_number}. No se puede asignar.")
+
         # Solo se permite almacenar el valor inicial
-        tabla_simbolos.set_value(var_name, value)  # Asignar valor directo
+        tabla_simbolos.set_value(var_name, value, line_number)  # Asignar valor directo
 
         # Agregar referencia a la variable, que es la línea actual donde se asigna
         tabla_simbolos.add_reference(var_name, line_number)
@@ -79,15 +132,88 @@ def procesar_sent(sent, line_number):
         var_name = sent[1]
         symbol = tabla_simbolos.lookup(var_name)
         if not symbol:
-            raise Exception(f"Error: '{var_name}' no está definido en la línea {line_number}.")
+            raise Exception(f"Error: El símbolo '{var_name}' no está definido en la línea {line_number}. No se puede escribir su valor.")
 
         # Agregar referencia a la variable
         tabla_simbolos.add_reference(var_name, line_number)
 
         print(f"Escribiendo valor de {var_name}: {symbol.value}")  # Imprimir valor
 
-    # Procesar otros tipos de sentencias según sea necesario
-    # Asegúrate de registrar las referencias en cada parte donde se usa la variable
+    if sent[0] == 'decl':
+        procesar_decl(sent, line_number)
+    elif sent[0] == 'assign':
+        var_name = sent[1]
+        value = sent[2]  # Suponiendo que el valor está en sent[2]
+
+        # Verificación de tipo
+        symbol = tabla_simbolos.lookup(var_name)
+        if not symbol:
+            raise Exception(f"Error: El símbolo '{var_name}' no está definido antes de la asignación en la línea {line_number}.")
+        
+        # Aquí ajustamos para manejar correctamente valores literales y variables
+        if isinstance(value, str) and not value.isdigit():  # Verifica que no sea un literal numérico
+            referenced_symbol = tabla_simbolos.lookup(value)
+            if referenced_symbol:
+                value = referenced_symbol.value
+            else:
+                raise Exception(f"Error: El símbolo '{value}' no está definido en la línea {line_number}. No se puede asignar.")
+        
+        # Solo se permite almacenar el valor inicial
+        tabla_simbolos.set_value(var_name, value, line_number)  # Asignar valor directo
+
+        # Agregar referencia a la variable, que es la línea actual donde se asigna
+        tabla_simbolos.add_reference(var_name, line_number)
+
+    elif sent[0] == 'write':
+        var_name = sent[1]
+        symbol = tabla_simbolos.lookup(var_name)
+        if not symbol:
+            raise Exception(f"Error: El símbolo '{var_name}' no está definido en la línea {line_number}. No se puede escribir su valor.")
+
+        # Agregar referencia a la variable
+        tabla_simbolos.add_reference(var_name, line_number)
+
+        print(f"Escribiendo valor de {var_name}: {symbol.value}")  # Imprimir valor
+
+    elif sent[0] == 'if' or sent[0] == 'do':
+        for expr in sent[1:]:  # Asumiendo que todas las expresiones pueden referirse a variables
+            procesar_exp(expr, line_number)
+    if sent[0] == 'decl':
+        procesar_decl(sent, line_number)
+    elif sent[0] == 'assign':
+        var_name = sent[1]
+        value = sent[2]  # Suponiendo que el valor está en sent[2]
+
+        # Verificación de tipo
+        symbol = tabla_simbolos.lookup(var_name)
+        if not symbol:
+            raise Exception(f"Error: El símbolo '{var_name}' no está definido antes de la asignación en la línea {line_number}.")
+        
+        if isinstance(value, str):
+            # Comprobando si el valor es una variable o un literal
+            referenced_symbol = tabla_simbolos.lookup(value)
+            if referenced_symbol:
+                value = referenced_symbol.value
+            else:
+                raise Exception(f"Error: El símbolo '{value}' no está definido en la línea {line_number}. No se puede asignar.")
+
+        # Solo se permite almacenar el valor inicial
+        tabla_simbolos.set_value(var_name, value, line_number)  # Asignar valor directo
+
+        # Agregar referencia a la variable, que es la línea actual donde se asigna
+        tabla_simbolos.add_reference(var_name, line_number)
+
+    elif sent[0] == 'write':
+        var_name = sent[1]
+        symbol = tabla_simbolos.lookup(var_name)
+        if not symbol:
+            raise Exception(f"Error: El símbolo '{var_name}' no está definido en la línea {line_number}. No se puede escribir su valor.")
+
+        # Agregar referencia a la variable
+        tabla_simbolos.add_reference(var_name, line_number)
+
+        print(f"Escribiendo valor de {var_name}: {symbol.value}")  # Imprimir valor
+
     elif sent[0] == 'if' or sent[0] == 'do':
         for expr in sent[1:]:  # Asumiendo que todas las expresiones pueden referirse a variables
             procesar_exp(expr, line_number)
@@ -98,6 +224,36 @@ def procesar_exp(expr, line_number):
         for elem in expr:
             if isinstance(elem, str):  # Supongamos que es un identificador
                 tabla_simbolos.add_reference(elem, line_number)
+
+def evaluar_expresion(expr):
+    # Lógica para evaluar expresiones constantes
+    if isinstance(expr, (int, float, bool)):
+        return expr  # Retorna el valor literal
+    elif isinstance(expr, str):
+        symbol = tabla_simbolos.lookup(expr)
+        if symbol:
+            return symbol.value
+        else:
+            raise Exception(f"Error: La variable '{expr}' no está definida. No se puede evaluar la expresión.")
+
+    # Para expresiones más complejas, como aritméticas
+    if isinstance(expr, list) and len(expr) == 3:  # Suponiendo una expresión binaria
+        left = evaluar_expresion(expr[0])
+        operator = expr[1]
+        right = evaluar_expresion(expr[2])
+        
+        if operator == '+':
+            return left + right
+        elif operator == '-':
+            return left - right
+        elif operator == '*':
+            return left * right
+        elif operator == '/':
+            if right == 0:
+                raise Exception("Error: División por cero.")
+            return left / right
+        else:
+            raise Exception(f"Error: Operador '{operator}' no reconocido.")
 
 def analizar_texto(texto):
     from Sintactico import analizar_sintactico  # Asegúrate de importar tu analizador sintáctico
@@ -111,37 +267,23 @@ def analizar_texto(texto):
         except Exception as e:
             print(f"Error semántico: {e}")
     else:
-        print("No se pudo generar el árbol de análisis sintáctico.")
+        print("Error: No se pudo generar el árbol de análisis sintáctico.")
 
 # Ejemplo de uso
 if __name__ == '__main__':
     text = '''
     program {
-        int x, y;    
-        float a, b;
-        bool c;
-        c = false;  // Línea 4
-        x = 5;      // Línea 5
-        y = 4;      // Línea 6
-        a = 0.0;    // Línea 7
-        b = 3.0;    // Línea 8
-        do {        // Línea 9
-            if(x < y && y >= 0) { // Línea 10
-                c = true;       // Línea 11
-            } else {
-                x = x - 2;     // Línea 13
-                a = a * x + b; // Línea 14
-                y = y - 1;     // Línea 15
-            }
-        } while(c == true); // Línea 16
-        write(a);           // Línea 17
-        a = a + 1.0;       // Línea 18
-        x = a - y;         // Línea 19
+        int a, b;          // Declaraciones correctas
+        float c;          // Declaración correcta
+        a = 10;           // Asignación correcta
+        b = "5";          // Error: tipo de dato incorrecto, se esperaba un int
+        c = a + b;        // Error: inferencia de tipos, b no se puede usar aquí
+        d = 3.14;         // Error: 'd' no está declarado antes de su uso
+        e = a + 1;        // Error: 'e' no está declarado antes de su uso
+
+        // Evaluación de expresiones aritméticas
+        resultado = a * (b + c); // Error: b tiene un tipo de dato incorrecto
+        write(resultado);         // Debe imprimir el resultado de la expresión 
     }
     '''
-    
     analizar_texto(text)
-
-# Al final de Semantico.py
-def obtener_tabla_simbolos():
-    return str(tabla_simbolos)
