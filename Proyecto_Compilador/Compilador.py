@@ -4,6 +4,10 @@ import re
 import Lexico
 from tabulate import tabulate
 import Sintactico
+from Semantico import analizar_texto
+from Semantico import obtener_tabla_simbolos
+
+
 
 # Definir las palabras clave y operadores
 keywords = {"int", "float", "double", "char", "string", "bool", "print", "main", "for", "while", "true", "if", "void", "while", "do", "switch", "case"}
@@ -15,7 +19,6 @@ def highlight(event):
     text_entry.tag_remove("keyword", "1.0", "end")
     text_entry.tag_remove("operator", "1.0", "end")
     
-    # Buscar palabras clave y operadores
     for word in text.split():
         if word in keywords:
             start = "1.0"
@@ -41,16 +44,14 @@ def highlight(event):
                     break
                 start = pos
     
-    # Buscar y resaltar la palabra "else" en rojo
     for match in re.finditer(r'\belse\b', text):
         start = "1.0 +{}c".format(match.start())
         end = "1.0 +{}c".format(match.end())
         text_entry.tag_add("red_keyword", start, end)
     
-    # Buscar y resaltar el número después de "case"
     for match in re.finditer(r'\bcase\s+(\d+)\b', text):
-        start = f"1.0 +{match.start(1)}c"  # Inicio del número después de "case"
-        end = f"1.0 +{match.end(1)}c"  # Fin del número después de "case"
+        start = f"1.0 +{match.start(1)}c"
+        end = f"1.0 +{match.end(1)}c"
         text_entry.tag_add("purple_number", start, end)
 
 def open_file():
@@ -79,16 +80,13 @@ def analyze_lexical():
     text = text_entry.get("1.0", "end-1c")
     lexical_result = Lexico.prueba(text)
     
-    # Formatear el resultado léxico como tabla
     table = [["Linea", "Tipo", "Valor", "Posicion"]]
     for item in lexical_result:
         parts = item.split()
         table.append([parts[1], parts[3], parts[5], parts[7]])
     
-    # Convertir la tabla a texto
     table_text = tabulate(table, headers="firstrow", tablefmt="plain")
     
-    # Actualizar el texto en la ventana del analizador léxico como tabla
     result_text_lexical.config(state="normal")
     result_text_lexical.delete("1.0", "end")
     result_text_lexical.insert("1.0", table_text)
@@ -98,7 +96,6 @@ def analyze_syntactic():
     text = text_entry.get("1.0", "end-1c")
     result = Sintactico.parser.parse(text, lexer=Lexico.analizador)
     
-    # Mostrar el resultado del análisis sintáctico
     if result:
         tree, _ = Sintactico.formatear_arbol(result)
         tree_text = "\n".join(tree)
@@ -109,74 +106,86 @@ def analyze_syntactic():
     result_text_syntax.delete("1.0", "end")
     result_text_syntax.insert("1.0", tree_text)
     result_text_syntax.config(state="disabled")
+
+def analyze_semantic():
+    # Obtén el texto del widget de entrada (ej. un Text en Tkinter)
+    text = text_entry.get("1.0", "end-1c")
     
+    # Llama a la función para analizar el texto
+    try:
+        analizar_texto(text)  # Llama a la función que procesa el texto
+        # Obtener la tabla de símbolos
+        symbols_table = obtener_tabla_simbolos()
+        
+        # Mostrar la tabla de símbolos en el widget de resultados semánticos
+        result_text_semantic.config(state="normal")
+        result_text_semantic.delete("1.0", "end")
+        result_text_semantic.insert("1.0", symbols_table)
+        result_text_semantic.config(state="disabled")
+        
+    except Exception as e:
+        result_text_semantic.config(state="normal")
+        result_text_semantic.delete("1.0", "end")
+        result_text_semantic.insert("1.0", f"Error: {str(e)}")
+        result_text_semantic.config(state="disabled")
+
+
+
+def generate_intermediate_code():
+    # Placeholder para generación de código intermedio
+    intermediate_code = "Código intermedio generado: No implementado aún."
+    
+    result_text_intermediate_code.config(state="normal")
+    result_text_intermediate_code.delete("1.0", "end")
+    result_text_intermediate_code.insert("1.0", intermediate_code)
+    result_text_intermediate_code.config(state="disabled")
 
 def analyze_both():
     analyze_lexical()
     analyze_syntactic()
 
-# Crear la ventana principal
 root = tk.Tk()
 root.title("Editor de Código")
 
-# Menú
 menu_bar = tk.Menu(root)
 root.config(menu=menu_bar)
 
-# Menú Archivo
 file_menu = tk.Menu(menu_bar, tearoff=0)
 menu_bar.add_cascade(label="Archivo", menu=file_menu)
 file_menu.add_command(label="Abrir", command=open_file)
 file_menu.add_command(label="Guardar", command=save_file)
 file_menu.add_command(label="Guardar como", command=save_as_file)
 
-# Menú Editar
-edit_menu = tk.Menu(menu_bar, tearoff=0)
-menu_bar.add_cascade(label="Editar", menu=edit_menu)
-
-# Menú Formato
-format_menu = tk.Menu(menu_bar, tearoff=0)
-menu_bar.add_cascade(label="Formato", menu=format_menu)
-
-# Menú Compilar
 compile_menu = tk.Menu(menu_bar, tearoff=0)
 menu_bar.add_cascade(label="Compilar", menu=compile_menu)
 compile_menu.add_command(label="Analizar léxico", command=analyze_lexical)
 compile_menu.add_command(label="Analizar sintáctico", command=analyze_syntactic)
+compile_menu.add_command(label="Analizar semántico", command=analyze_semantic)
+compile_menu.add_command(label="Generar código intermedio", command=generate_intermediate_code)
 compile_menu.add_command(label="Analizar ambos", command=analyze_both)
 
-# Menú Ayuda
-help_menu = tk.Menu(menu_bar, tearoff=0)
-menu_bar.add_cascade(label="Ayuda", menu=help_menu)
-
-# Dividir la ventana en tres secciones
 left_frame = tk.Frame(root)
 left_frame.pack(side="left", fill="both", expand=True)
 
 right_frame = tk.Frame(root)
 right_frame.pack(side="right", fill="both", expand=True)
 
-# Sección izquierda: área de entrada de texto
 text_entry = tk.Text(left_frame, wrap="word", width=60, height=20)
 text_entry.pack(side="left", expand=True, fill="both")
 
-# Configurar las etiquetas de texto para resaltar palabras clave y operadores
 text_entry.tag_config("keyword", foreground="blue")
-text_entry.tag_config("red_keyword", foreground="red")  # Etiqueta para resaltar "else" en rojo
+text_entry.tag_config("red_keyword", foreground="red")
 text_entry.tag_config("operator", foreground="red")
-text_entry.tag_config("purple_number", foreground="purple")  # Etiqueta para resaltar números después de "case"
+text_entry.tag_config("purple_number", foreground="purple")
 
-# Llamar a la función highlight cuando se presione una tecla
 text_entry.bind("<KeyRelease>", highlight)
 
-# Sección derecha: dividirla en dos partes
 top_right_frame = tk.Frame(right_frame)
 top_right_frame.pack(side="top", fill="both", expand=True)
 
 bottom_right_frame = tk.Frame(right_frame)
 bottom_right_frame.pack(side="bottom", fill="both", expand=True)
 
-# Crear pestañas para el analizador léxico y sintáctico en la sección superior derecha
 analyzer_notebook = ttk.Notebook(top_right_frame)
 
 lexical_tab = ttk.Frame(analyzer_notebook)
@@ -185,16 +194,26 @@ analyzer_notebook.add(lexical_tab, text="Analizador Léxico")
 syntax_tab = ttk.Frame(analyzer_notebook)
 analyzer_notebook.add(syntax_tab, text="Analizador Sintáctico")
 
+semantic_tab = ttk.Frame(analyzer_notebook)
+analyzer_notebook.add(semantic_tab, text="Análisis Semántico")
+
+intermediate_code_tab = ttk.Frame(analyzer_notebook)
+analyzer_notebook.add(intermediate_code_tab, text="Código Intermedio")
+
 analyzer_notebook.pack(expand=True, fill="both")
 
-# Crear recuadros de texto en las pestañas de los analizadores, sin permitir edición
 result_text_lexical = tk.Text(lexical_tab, state="disabled")
 result_text_lexical.pack(expand=True, fill="both")
 
 result_text_syntax = tk.Text(syntax_tab, state="disabled")
 result_text_syntax.pack(expand=True, fill="both")
 
-# Crear pestañas para errores y resultado en la sección inferior derecha
+result_text_semantic = tk.Text(semantic_tab, state="disabled")
+result_text_semantic.pack(expand=True, fill="both")
+
+result_text_intermediate_code = tk.Text(intermediate_code_tab, state="disabled")
+result_text_intermediate_code.pack(expand=True, fill="both")
+
 error_notebook = ttk.Notebook(bottom_right_frame)
 
 error_tab = ttk.Frame(error_notebook)
@@ -205,13 +224,10 @@ error_notebook.add(result_tab, text="Resultado")
 
 error_notebook.pack(expand=True, fill="both")
 
-# Permitir la edición en el área de texto de errores
 error_text = tk.Text(error_tab)
 error_text.pack(expand=True, fill="both")
 
-# resultado, sin permitir edición
 result_text = tk.Text(result_tab, state="disabled")
 result_text.pack(expand=True, fill="both")
 
-# Iniciar el bucle principal
 root.mainloop()
