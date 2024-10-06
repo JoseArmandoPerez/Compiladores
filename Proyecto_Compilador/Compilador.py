@@ -14,7 +14,7 @@ keywords = {"int", "float", "double", "char", "string", "bool", "print", "main",
 operators = {";", ")", "(", "{", "}", "+", "-", "*", "/", "%", "=", "==", "!=", ">", "<", ">=", "<=", "&&", "||", "!", "++", "--", "+=", "-=", "=", "/=", "%="}
 
 # Función para resaltar las palabras clave y operadores
-def highlight(event):
+def highlight(event=None):
     text = text_entry.get("1.0", "end-1c")
     text_entry.tag_remove("keyword", "1.0", "end")
     text_entry.tag_remove("operator", "1.0", "end")
@@ -53,6 +53,15 @@ def highlight(event):
         start = f"1.0 +{match.start(1)}c"
         end = f"1.0 +{match.end(1)}c"
         text_entry.tag_add("purple_number", start, end)
+        
+# Actualizar números de línea
+    update_line_numbers()
+
+def update_line_numbers():
+    line_count = int(text_entry.index('end-1c').split('.')[0])  # Contar líneas
+    line_numbers = '\n'.join(str(i) for i in range(1, line_count + 1))  # Crear texto de números de línea
+    line_number_canvas.delete('all')  # Limpiar el canvas
+    line_number_canvas.create_text(5, 5, anchor='nw', text=line_numbers, font=('Courier', 10), fill='gray')  # Insertar números de línea
 
 def open_file():
     file_path = filedialog.askopenfilename()
@@ -61,6 +70,7 @@ def open_file():
             text = file.read()
             text_entry.delete("1.0", "end")
             text_entry.insert("1.0", text)
+            highlight()
 
 def save_file():
     file_path = filedialog.asksaveasfilename(defaultextension=".txt")
@@ -170,6 +180,12 @@ left_frame.pack(side="left", fill="both", expand=True)
 right_frame = tk.Frame(root)
 right_frame.pack(side="right", fill="both", expand=True)
 
+text_frame = tk.Frame(left_frame)
+text_frame.pack(side="left", fill="both", expand=True)
+
+line_number_canvas = tk.Canvas(text_frame, width=30, bg='white', highlightthickness=0)
+line_number_canvas.pack(side="left", fill="y")
+
 text_entry = tk.Text(left_frame, wrap="word", width=60, height=20)
 text_entry.pack(side="left", expand=True, fill="both")
 
@@ -229,5 +245,7 @@ error_text.pack(expand=True, fill="both")
 
 result_text = tk.Text(result_tab, state="disabled")
 result_text.pack(expand=True, fill="both")
+
+highlight()
 
 root.mainloop()
