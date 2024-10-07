@@ -1,3 +1,5 @@
+import sys
+import io
 import tkinter as tk
 from tkinter import ttk, filedialog
 import re
@@ -6,6 +8,30 @@ from tabulate import tabulate
 import Sintactico
 from Semantico import analizar_texto
 from Semantico import tabla_simbolos
+
+# Clase personalizada para redirigir stdout y stderr
+class RedirectText(io.StringIO):
+    def __init__(self, text_widget):
+        super().__init__()
+        self.text_widget = text_widget
+
+    def write(self, message):
+        self.text_widget.config(state='normal')
+        if "Error" in message or "error" in message:  # Verifica si el mensaje contiene "Error"
+            self.text_widget.insert('end', message, 'error')  # Aplica el estilo 'error'
+        else:
+            self.text_widget.insert('end', message)
+        self.text_widget.see('end')
+        self.text_widget.config(state='disabled')
+
+    def flush(self):
+        pass
+
+# Función para redirigir stdout y stderr a la pestaña de errores
+def setup_output_redirection():
+    redirect_text = RedirectText(error_text)
+    sys.stdout = redirect_text  # Redirige stdout a error_text
+    sys.stderr = redirect_text  # Redirige stderr a error_text
 
 
 
@@ -121,9 +147,15 @@ def analyze_semantic():
     # Obtén el texto del widget de entrada (ej. un Text en Tkinter)
     text = text_entry.get("1.0", "end-1c")
     
+    # Limpiar el área de errores antes de realizar el análisis
+    error_text.config(state="normal")
+    error_text.delete("1.0", "end")
+    
     # Llama a la función para analizar el texto
     try:
+        print("Iniciando análisis semántico...")
         analizar_texto(text)  # Llama a la función que procesa el texto
+        print("Análisis semántico completado sin errores.")
         
         # Obtener la tabla de símbolos directamente
         symbols_table_str = str(tabla_simbolos)  # Convertir a string
@@ -139,6 +171,7 @@ def analyze_semantic():
         result_text_semantic.delete("1.0", "end")
         result_text_semantic.insert("1.0", f"Error: {str(e)}")
         result_text_semantic.config(state="disabled")
+        print(f"Error Semántico: {str(e)}")
 
 def generate_intermediate_code():
     # Placeholder para generación de código intermedio
@@ -244,6 +277,9 @@ error_text.pack(expand=True, fill="both")
 
 result_text = tk.Text(result_tab, state="disabled")
 result_text.pack(expand=True, fill="both")
+
+error_text.tag_config('error', foreground='red')  # Configurar el tag para el estilo de error en rojo
+setup_output_redirection()
 
 highlight()
 
