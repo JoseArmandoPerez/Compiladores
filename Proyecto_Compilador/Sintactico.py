@@ -53,6 +53,8 @@ def p_sent(p):
             | sent_read
             | sent_write
             | sent_assign
+            | sent_cout
+            | sent_cin
             | BREAK PUNTOCOMA
             | decl'''
     p[0] = p[1]
@@ -85,6 +87,14 @@ def p_sent_write(p):
 def p_sent_assign(p):
     '''sent_assign : IDENTIFICADOR ASIGNAR exp PUNTOCOMA'''
     p[0] = ('assign', p[1], p[3])
+
+def p_sent_cin(p):
+    '''sent_cin : CIN PUNTOCOMA IDENTIFICADOR PUNTOCOMA'''
+    p[0] = ('cin', p[3]) # p[3] es el identificador donde se almacenará el valor
+
+def p_sent_cout(p):
+    '''sent_cout : COUT PARIZQ exp PARDER PUNTOCOMA'''
+    p[0] = ('cout', p[3]) 
 
 def p_bloque(p):
     '''bloque : LLAIZQ lista_sent LLADER'''
@@ -168,28 +178,34 @@ def formatear_arbol(arbol, nivel=0, order=1):
 
 if __name__ == '__main__':
     data = '''
-    program {
-        int x, y;
-        float a, b;
-        bool c;
-        c = false;
-        x=5; 
-        y=4; 
-        a=0.0;
-        b=3.0;
-        do {
-            if(x<y && y>=0) {
-                c=true;
-            } else {
-                x=x-2;
-                a=a*x+b;
-                y=y-1;
-            }
-        } while(c == true);
-        write (a);
-        a=a+1.0;
-        x=a-y;
-    }
+program { 
+int x, y, z, suma;  
+float a, b, c; 
+suma = 45; 
+x = 23;  
+y = 2 + 3 - 1; 
+z = y + 7; 
+y = y + 1; 
+a = 24.0 + 4 - 1 / 3 * 2 + 34 - 1; 
+x = (5 - 3) * (8 / 2); 
+y = 5 + 3 - 2 * 4 / 7 - 9; 
+z = 8 / 2 + 15 * 4; 
+y = 14.54; 
+if (2 > 3) {
+  y = a + b; 
+} 
+else {
+        y = 9;
+}
+while (a < 2){ 
+        y = y - 1; 
+ }
+ do {
+        y = y + 1; 
+    } while (y < 10); 
+write (x);
+read (y);   
+}
     '''
     arbol = analizar_sintactico(data)
     tree, _ = formatear_arbol(arbol)

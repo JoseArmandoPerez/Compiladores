@@ -1,0 +1,170 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    COMDOB
+    CORDER
+    CORIZQ
+    ELSE
+    ENDL
+    FOR
+    GET
+    IF
+    INCLUDE
+    MINUSMINUS
+    NAMESPACE
+    NUMERAL
+    PLUSPLUS
+    RETURN
+    STD
+    USING
+    VOID
+    WHILE
+
+Grammar
+
+Rule 0     S' -> programa
+Rule 1     programa -> PROGRAM LLAIZQ lista_decl lista_sent LLADER
+Rule 2     lista_decl -> lista_decl decl
+Rule 3     lista_decl -> decl
+Rule 4     lista_decl -> empty
+Rule 5     decl -> tipo lista_id PUNTOCOMA
+Rule 6     tipo -> INT
+Rule 7     tipo -> FLOAT
+Rule 8     tipo -> BOOL
+Rule 9     lista_id -> lista_id COMA IDENTIFICADOR
+Rule 10    lista_id -> IDENTIFICADOR
+Rule 11    lista_sent -> lista_sent sent
+Rule 12    lista_sent -> sent
+Rule 13    lista_sent -> empty
+Rule 14    sent -> sent_if
+Rule 15    sent -> sent_while
+Rule 16    sent -> sent_do_while
+Rule 17    sent -> sent_read
+Rule 18    sent -> sent_write
+Rule 19    sent -> sent_assign
+Rule 20    sent -> sent_cin
+Rule 21    sent -> sent_cout
+Rule 22    sent -> BREAK PUNTOCOMA
+Rule 23    sent -> decl
+Rule 24    sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque
+Rule 25    sent_if -> SI PARIZQ exp_bool PARDER bloque FI
+Rule 26    sent_if -> SI PARIZQ exp_bool PARDER bloque
+Rule 27    sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque
+Rule 28    sent_do_while -> DO bloque MIENTRAS PARIZQ exp_bool PARDER PUNTOCOMA
+Rule 29    sent_read -> READ PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
+Rule 30    sent_write -> WRITE PARIZQ exp PARDER PUNTOCOMA
+Rule 31    sent_assign -> IDENTIFICADOR ASIGNAR exp PUNTOCOMA
+Rule 32    sent_cin -> CIN PARIZQ IDENTIFICADOR PARDER PUNTOCOMA
+Rule 33    sent_cout -> COUT PARIZQ exp PARDER PUNTOCOMA
+Rule 34    bloque -> LLAIZQ lista_sent LLADER
+Rule 35    exp_bool -> exp_bool OR exp_bool
+Rule 36    exp_bool -> exp_bool AND exp_bool
+Rule 37    exp_bool -> NOT exp_bool
+Rule 38    exp_bool -> exp_rel
+Rule 39    exp_rel -> exp MENORQUE exp
+Rule 40    exp_rel -> exp MAYORQUE exp
+Rule 41    exp_rel -> exp MENORIGUAL exp
+Rule 42    exp_rel -> exp MAYORIGUAL exp
+Rule 43    exp_rel -> exp IGUAL exp
+Rule 44    exp_rel -> exp DISTINTO exp
+Rule 45    exp -> exp SUMA exp
+Rule 46    exp -> exp RESTA exp
+Rule 47    exp -> exp MULT exp
+Rule 48    exp -> exp DIV exp
+Rule 49    exp -> exp POTENCIA exp
+Rule 50    exp -> exp MODULO exp
+Rule 51    exp -> factor
+Rule 52    factor -> ENTERO
+Rule 53    factor -> FLOTANTE
+Rule 54    factor -> IDENTIFICADOR
+Rule 55    factor -> CADENA
+Rule 56    factor -> PARIZQ exp PARDER
+Rule 57    empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 36
+ASIGNAR              : 31
+BOOL                 : 8
+BREAK                : 22
+CADENA               : 55
+CIN                  : 32
+COMA                 : 9
+COMDOB               : 
+CORDER               : 
+CORIZQ               : 
+COUT                 : 33
+DISTINTO             : 44
+DIV                  : 48
+DO                   : 28
+ELSE                 : 
+ENDL                 : 
+ENTERO               : 52
+FI                   : 25
+FLOAT                : 7
+FLOTANTE             : 53
+FOR                  : 
+GET                  : 
+IDENTIFICADOR        : 9 10 29 31 32 54
+IF                   : 
+IGUAL                : 43
+INCLUDE              : 
+INT                  : 6
+LLADER               : 1 34
+LLAIZQ               : 1 34
+MAYORIGUAL           : 42
+MAYORQUE             : 40
+MENORIGUAL           : 41
+MENORQUE             : 39
+MINUSMINUS           : 
+MODULO               : 50
+MULT                 : 47
+NAMESPACE            : 
+NOT                  : 37
+NUMERAL              : 
+OR                   : 35
+PARDER               : 24 25 26 27 28 29 30 32 33 56
+PARIZQ               : 24 25 26 27 28 29 30 32 33 56
+PLUSPLUS             : 
+POTENCIA             : 49
+PROGRAM              : 1
+PUNTOCOMA            : 5 22 28 29 30 31 32 33
+READ                 : 29
+RESTA                : 46
+RETURN               : 
+SI                   : 24 25 26
+SINO                 : 24
+STD                  : 
+SUMA                 : 45
+USING                : 
+VOID                 : 
+WHILE                : 
+WRITE                : 30
+error                : 
+
+Nonterminals, with rules where they appear
+
+MIENTRAS             : 27 28
+bloque               : 24 24 25 26 27 28
+decl                 : 2 3 23
+empty                : 4 13
+exp                  : 30 31 33 39 39 40 40 41 41 42 42 43 43 44 44 45 45 46 46 47 47 48 48 49 49 50 50 56
+exp_bool             : 24 25 26 27 28 35 35 36 36 37
+exp_rel              : 38
+factor               : 51
+lista_decl           : 1 2
+lista_id             : 5 9
+lista_sent           : 1 11 34
+programa             : 0
+sent                 : 11 12
+sent_assign          : 19
+sent_cin             : 20
+sent_cout            : 21
+sent_do_while        : 16
+sent_if              : 14
+sent_read            : 17
+sent_while           : 15
+sent_write           : 18
+tipo                 : 5
+
