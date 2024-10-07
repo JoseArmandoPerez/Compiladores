@@ -38,11 +38,6 @@ class Symbol:
         if line not in self.references:
             self.references.append(line)  # Agrega la línea a las referencias
 
-    def calculate_hash(self):
-        if self.value is not None:
-            return hashlib.sha256(str(self.value).encode()).hexdigest()
-        return None
-
 class SymbolTable:
     def __init__(self):
         self.symbols = {}
@@ -61,16 +56,10 @@ class SymbolTable:
         if not symbol:
             raise Exception(f"Error: '{name}' no está definido.")
 
-        # Solo almacenar el valor si es una declaración inicial
-        if symbol.value is None:  # Asegurarse de que solo se almacene el valor en la declaración
-            symbol.value = value
-            # Almacenar el hash de la variable junto con los operandos
-            self.hash_table.add_hash(name, value, operands)
-
-        # Si el valor ya ha sido definido, se puede alterar
-        else:
-            symbol.value = value  # Actualiza el valor de la variable
-            self.hash_table.add_hash(name, value, operands)  # Actualiza el hash
+        # Actualiza el valor de la variable
+        symbol.value = value  
+        # Almacenar el hash de la variable junto con los operandos
+        self.hash_table.add_hash(name, value, operands)
 
     def add_reference(self, name, line):
         symbol = self.lookup(name)
@@ -115,13 +104,13 @@ def procesar_sent(sent, line_number):
         procesar_decl(sent, line_number)
     elif sent[0] == 'assign':
         var_name = sent[1]
-        value = sent[2]  # Suponiendo que el valor está en sent[2]
+        value = procesar_expresion(sent[2])  # Evaluar la expresión
 
         # Verificación de tipos de datos
         verificar_tipos_datos(var_name, value, line_number)
 
-        # Solo se permite almacenar el valor inicial
-        tabla_simbolos.set_value(var_name, value, operands=[str(sent[0]), var_name, value])  # Agregar operandos
+        # Almacenar el valor de la variable
+        tabla_simbolos.set_value(var_name, value, operands=[str(sent[0]), var_name, str(value)])
 
         # Agregar referencia a la variable, que es la línea actual donde se asigna
         tabla_simbolos.add_reference(var_name, line_number)
@@ -137,17 +126,53 @@ def procesar_sent(sent, line_number):
 
         print(f"Escribiendo valor de {var_name}: {symbol.value}")  # Imprimir valor
 
-    # Procesar otros tipos de sentencias según sea necesario
-    elif sent[0] == 'if' or sent[0] == 'do':
-        for expr in sent[1:]:  # Asumiendo que todas las expresiones pueden referirse a variables
-            procesar_exp(expr, line_number)
 
-def procesar_exp(expr, line_number):
-    # Aquí puedes agregar la lógica para procesar expresiones y registrar referencias
+def procesar_expresion(expr):
     if isinstance(expr, list):
-        for elem in expr:
-            if isinstance(elem, str):  # Supongamos que es un identificador
-                tabla_simbolos.add_reference(elem, line_number)
+        # Asegúrate de que la expresión es una lista de operandos y operadores
+        operadores = []
+        operandos = []
+
+        for elemento in expr:
+            if elemento in ['+', '-', '*', '/']:
+                operadores.append(elemento)
+            else:
+                # Evaluar y agregar el operando
+                operandos.append(procesar_operando(elemento))
+
+        # Realizar la evaluación de los operandos y operadores
+        resultado = operandos[0]
+
+        for i in range(len(operadores)):
+            if operadores[i] == '+':
+                resultado += operandos[i + 1]
+            elif operadores[i] == '-':
+                resultado -= operandos[i + 1]
+            elif operadores[i] == '*':
+                resultado *= operandos[i + 1]
+            elif operadores[i] == '/':
+                if operandos[i + 1] == 0:
+                    raise Exception("Error: División por cero.")
+                resultado /= operandos[i + 1]
+
+        return resultado  # Asegúrate de devolver solo el resultado final
+
+    # Si es un valor literal (int, float, bool)
+    return expr
+
+
+def procesar_operando(operand):
+    # Procesa el operando: puede ser un identificador o un literal
+    if isinstance(operand, str):  # Si es una variable
+        return procesar_identificador(operand)  # Devuelve el valor actual de la variable
+    return operand  # Retorna el valor literal directamente
+
+def procesar_identificador(var_name):
+    # Supongamos que aquí se realiza la búsqueda en la tabla de símbolos
+    simbolo = tabla_simbolos.lookup(var_name)
+    if simbolo:
+        return simbolo.value  # Retorna el valor asociado a la variable
+    raise Exception(f"Error: '{var_name}' no está definido.")
 
 def verificar_tipos_datos(var_name, value, line_number):
     symbol = tabla_simbolos.lookup(var_name)
@@ -156,21 +181,12 @@ def verificar_tipos_datos(var_name, value, line_number):
 
     # Comprobar el tipo de dato
     if symbol.type == 'int':
-        if not isinstance(value, int):
+        if not isinstance(value, (int, float)):
             raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' debe ser un int, se recibió '{value}'.")
     elif symbol.type == 'float':
         if not isinstance(value, (int, float)):  # Permitir tanto int como float
             raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' debe ser un float, se recibió '{value}'.")
     elif symbol.type == 'bool':
-        # Asegúrate de que el valor booleano sea verdadero o falso
-        if isinstance(value, str):
-            if value.lower() == 'true':
-                value = True
-            elif value.lower() == 'false':
-                value = False
-            else:
-                raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' debe ser un bool, se recibió '{value}'.")
-
         if not isinstance(value, bool):
             raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' debe ser un bool, se recibió '{value}'.")
 
@@ -185,8 +201,11 @@ def analizar_texto(texto):
         try:
             analizar_semantico(arbol)
             print("Tabla de Símbolos:")
-            print(tabla_simbolos)
-            print("\nTabla de Hashes:")
-            print(tabla_simbolos.hash_table)
+            print(tabla_simbolos)  # Imprimir la tabla de símbolos
+            print("Tabla de Hashes:")
+            print(tabla_simbolos.hash_table)  # Imprimir la tabla de hashes
         except Exception as e:
-            print(e)
+            print(str(e))
+
+# Aquí llamas a analizar_texto con el código a analizar
+# Ejemplo: analizar_texto("programa { ... }")
