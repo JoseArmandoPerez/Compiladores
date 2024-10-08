@@ -75,6 +75,9 @@ class SymbolTable:
             else:
                 raise Exception(f"Error: '{var_name}' no está definido.")
 
+    def lookup2(self, name):
+        return self.symbols.get(name, None)
+
     def set_value(self, name, value, operands=None):
         symbol = self.lookup(name, None)
         if not symbol:
