@@ -2,10 +2,6 @@ import hashlib
 from prettytable import PrettyTable  # Importa PrettyTable
 
 # Clase para la tabla de hashes
-import hashlib
-from prettytable import PrettyTable  # Importa PrettyTable
-
-# Clase para la tabla de hashes
 class HashTable:
     def __init__(self):
         self.hashes = {}
@@ -43,12 +39,13 @@ class HashTable:
 
 # Clases para la tabla de símbolos
 class Symbol:
-    def __init__(self, name, symbol_type, line_declared):
+    def __init__(self, name, symbol_type, line_declared, memory_address):
         self.name = name
         self.type = symbol_type
         self.value = None  # Almacena el valor en la declaración o asignación
         self.line_declared = line_declared
         self.references = []  # Lista de líneas donde se hace referencia
+        self.memory_address = memory_address  # Número de registro en memoria
 
     def add_reference(self, line):
         if line not in self.references:
@@ -59,12 +56,18 @@ class SymbolTable:
     def __init__(self):
         self.symbols = {}
         self.hash_table = HashTable()
+        self.memory_counter = 0  # Contador para las direcciones de memoria (número de registro)
 
     def add_symbol(self, name, symbol_type, line_declared):
         if name in self.symbols:
             raise Exception(f"Error: La variable '{name}' ya fue declarada en la línea {self.symbols[name].line_declared + 1} y no se puede redeclarar en la línea {line_declared + 1}.")
         else:
-            self.symbols[name] = Symbol(name, symbol_type, line_declared)
+            # Asignar una dirección de memoria secuencial
+            memory_address = self.memory_counter
+            self.memory_counter += 1  # Incrementar para la siguiente variable
+
+            # Crear el símbolo con su número de registro (dirección de memoria)
+            self.symbols[name] = Symbol(name, symbol_type, line_declared, memory_address)
 
     def lookup(self, var_name, line_number=None):
         if var_name in self.symbols:
@@ -96,14 +99,15 @@ class SymbolTable:
     def reset(self):
         self.symbols.clear()
         self.hash_table = HashTable()
+        self.memory_counter = 0  # Reiniciar el contador de memoria
 
     # Mostrar referencias en la tabla de símbolos
     def __str__(self):
         table = PrettyTable()
-        table.field_names = ["Nombre de Variable", "Tipo", "Valor", "Declarado en Línea", "Referencias"]
+        table.field_names = ["Nombre de Variable", "Tipo", "Valor", "Declarado en Línea", "Referencias", "Dirección de Memoria"]
         for s in self.symbols.values():
             referencias_str = ", ".join(map(str, s.references)) if s.references else "N/A"
-            table.add_row([s.name, s.type, s.value if s.value is not None else 'N/A', s.line_declared, referencias_str])
+            table.add_row([s.name, s.type, s.value if s.value is not None else 'N/A', s.line_declared, referencias_str, s.memory_address])
         return str(table)
 
 # Inicializa la tabla de símbolos
