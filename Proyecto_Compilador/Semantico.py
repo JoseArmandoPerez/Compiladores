@@ -62,11 +62,9 @@ class SymbolTable:
 
     def add_symbol(self, name, symbol_type, line_declared):
         if name in self.symbols:
-        # Ajuste: sumamos 1 a la línea del error
             raise Exception(f"Error: La variable '{name}' ya fue declarada en la línea {self.symbols[name].line_declared + 1} y no se puede redeclarar en la línea {line_declared + 1}.")
         else:
             self.symbols[name] = Symbol(name, symbol_type, line_declared)
-
 
     def lookup(self, var_name, line_number=None):
         if var_name in self.symbols:
@@ -91,8 +89,6 @@ class SymbolTable:
         symbol = self.lookup(name, line)
         if symbol:
             symbol.add_reference(line)
-        else:
-            raise Exception(f"Error: '{name}' no está definido en la línea {line}.")
 
     def reset(self):
         self.symbols.clear()
@@ -127,10 +123,10 @@ def procesar_decl(decl, line_number):
     for id in decl[2]:  # Lista de identificadores
         tabla_simbolos.add_symbol(id, tipo, line_number)  # Agregar línea de declaración
 
+
 def verificar_variable_decl(var_name, line_number):
     if var_name not in tabla_simbolos.symbols:
         raise Exception(f"Error: La variable '{var_name}' se usa antes de ser declarada en la línea {line_number}.")
-
 
 def procesar_sent(sent, line_number):
     if sent[0] == 'decl':
@@ -205,38 +201,45 @@ def procesar_expresion(expr, line_number=None):
         return False
     return expr
 
-def procesar_operando(operand):
+def procesar_operando(operand, line_number):
     # Procesa el operando: puede ser un identificador o un literal
     if isinstance(operand, str):  # Si es una variable
-        return procesar_identificador(operand)  # Devuelve el valor actual de la variable
+        return procesar_identificador(operand, line_number)  # Devuelve el valor actual de la variable
     return operand  # Retorna el valor literal directamente
 
 def procesar_identificador(var_name, line_number):
     # Verificar que la variable está declarada antes de su uso
     simbolo = tabla_simbolos.lookup(var_name, line_number)
-    if simbolo:
-        return simbolo.value  # Retorna el valor asociado a la variable
-    raise Exception(f"Error: '{var_name}' no está definido en la línea {line_number}.")
+    if not simbolo:
+        raise Exception(f"Error: Variable '{var_name}' no declarada en línea {line_number}.")
+    
+    # Agregar referencia a la variable
+    tabla_simbolos.add_reference(var_name, line_number)
 
-
+    return simbolo.value  # Retorna el valor actual de la variable
 
 def verificar_tipos_datos(var_name, value, line_number):
     symbol = tabla_simbolos.lookup(var_name, line_number)
     if not symbol:
         raise Exception(f"Error: '{var_name}' no está definido en la línea {line_number}.")
-
+    
     # Verificación del tipo de dato y el valor asignado
     if symbol.type == 'int':
-        if isinstance(value, float):
+        if isinstance(value, bool):
+            raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' es int, pero se asignó un valor booleano '{value}'.")
+        elif isinstance(value, float):
             raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' es int, pero se asignó un número real '{value}'.")
         elif not isinstance(value, int):
             raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' debe ser un int, se recibió '{value}'.")
+    
     elif symbol.type == 'float':
         if not isinstance(value, (int, float)):
             raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' debe ser un float, se recibió '{value}'.")
+    
     elif symbol.type == 'bool':
         if not isinstance(value, bool):
             raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' debe ser un bool, se recibió '{value}'.")
+
 
 
 
