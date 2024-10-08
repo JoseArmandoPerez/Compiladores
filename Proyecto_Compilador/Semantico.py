@@ -103,7 +103,6 @@ class SymbolTable:
             table.add_row([s.name, s.type, s.value if s.value is not None else 'N/A', s.line_declared, referencias_str])
         return str(table)
 
-
 # Inicializa la tabla de símbolos
 tabla_simbolos = SymbolTable()
 
@@ -266,5 +265,3 @@ def analizar_texto(texto):
         raise Exception("Error sintáctico: No se pudo generar el árbol de análisis sintáctico.")
 
 
-# Aquí llamas a analizar_texto con el código a analizar
-# Ejemplo: analizar_texto("programa { ... }")
