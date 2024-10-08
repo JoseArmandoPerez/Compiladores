@@ -196,16 +196,22 @@ def analizar_texto(texto):
     # Reiniciar la tabla de símbolos antes de analizar el nuevo texto
     tabla_simbolos.reset()
 
+    # Ejecuta el análisis sintáctico
     arbol = analizar_sintactico(texto)
+
     if arbol:  # Verifica si se generó un árbol de análisis sintáctico
         try:
-            analizar_semantico(arbol)
-            print("Tabla de Símbolos:")
-            print(tabla_simbolos)  # Imprimir la tabla de símbolos
-            print("Tabla de Hashes:")
-            print(tabla_simbolos.hash_table)  # Imprimir la tabla de hashes
+            analizar_semantico(arbol)  # Realiza el análisis semántico
+
+            # En lugar de imprimir, retorna las tablas para que se manejen en la interfaz
+            return tabla_simbolos, tabla_simbolos.hash_table
+
         except Exception as e:
-            print(str(e))
+            # En lugar de imprimir el error, lanzamos la excepción para que se maneje externamente
+            raise Exception(f"Error semántico: {str(e)}")
+    else:
+        raise Exception("Error sintáctico: No se pudo generar el árbol de análisis sintáctico.")
+
 
 # Aquí llamas a analizar_texto con el código a analizar
 # Ejemplo: analizar_texto("programa { ... }")

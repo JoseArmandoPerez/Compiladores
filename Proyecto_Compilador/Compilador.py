@@ -27,6 +27,7 @@ class RedirectText(io.StringIO):
     def flush(self):
         pass
 
+
 # Función para redirigir stdout y stderr a la pestaña de errores
 def setup_output_redirection():
     redirect_text = RedirectText(error_text)
@@ -144,34 +145,56 @@ def analyze_syntactic():
     result_text_syntax.config(state="disabled")
 
 def analyze_semantic():
-    # Obtén el texto del widget de entrada (ej. un Text en Tkinter)
+    # Obtener el texto del widget de entrada
     text = text_entry.get("1.0", "end-1c")
-    
-    # Limpiar el área de errores antes de realizar el análisis
+
+    # Limpiar las áreas de errores y resultados semánticos antes de realizar el análisis
     error_text.config(state="normal")
     error_text.delete("1.0", "end")
-    
-    # Llama a la función para analizar el texto
+    error_text.config(state="disabled")
+
+    result_text_semantic.config(state="normal")
+    result_text_semantic.delete("1.0", "end")
+    result_text_semantic.config(state="disabled")
+
+    # Crear instancias de RedirectText para capturar stdout y stderr
+    redirect_stdout = RedirectText(error_text)
+    redirect_stderr = RedirectText(error_text)
+
+    # Guardar las referencias originales de stdout y stderr
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+
     try:
+        # Redirigir stdout y stderr
+        sys.stdout = redirect_stdout
+        sys.stderr = redirect_stderr
+
         print("Iniciando análisis semántico...")
-        analizar_texto(text)  # Llama a la función que procesa el texto
-        print("Análisis semántico completado sin errores.")
-        
-        # Obtener la tabla de símbolos directamente
-        symbols_table_str = str(tabla_simbolos)  # Convertir a string
-        
-        # Mostrar la tabla de símbolos en el widget de resultados semánticos
+
+        # Llama a la función analizar_texto y maneja el retorno de tablas
+        tabla_simbolos, tabla_hashes = analizar_texto(text)
+
+        # Mostrar el mensaje de éxito si no hay errores
         result_text_semantic.config(state="normal")
-        result_text_semantic.delete("1.0", "end")
-        result_text_semantic.insert("1.0", symbols_table_str)
+        result_text_semantic.insert("1.0", "Análisis semántico completado sin errores.\n\n")
+        result_text_semantic.insert("end", "Tabla de Símbolos:\n")
+        result_text_semantic.insert("end", str(tabla_simbolos) + "\n\n")
+        result_text_semantic.insert("end", "Tabla de Hashes:\n")
+        result_text_semantic.insert("end", str(tabla_hashes))
         result_text_semantic.config(state="disabled")
-        
+
     except Exception as e:
-        result_text_semantic.config(state="normal")
-        result_text_semantic.delete("1.0", "end")
-        result_text_semantic.insert("1.0", f"Error: {str(e)}")
-        result_text_semantic.config(state="disabled")
-        print(f"Error Semántico: {str(e)}")
+        # Mostrar cualquier error que ocurra en el análisis semántico
+        error_text.config(state="normal")
+        error_text.insert("end", f"{str(e)}\n")
+        error_text.config(state="disabled")
+
+    finally:
+        # Restaurar stdout y stderr a sus valores originales
+        sys.stdout = original_stdout
+        sys.stderr = original_stderr
+
 
 def generate_intermediate_code():
     # Placeholder para generación de código intermedio
