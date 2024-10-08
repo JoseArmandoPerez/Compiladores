@@ -1,3 +1,4 @@
+import ast
 import sys
 import io
 import tkinter as tk
@@ -6,8 +7,10 @@ import re
 import Lexico
 from tabulate import tabulate
 import Sintactico
+import Sintactico2
 from Semantico import analizar_texto
 from Semantico import tabla_simbolos
+import Arbol
 
 # Clase personalizada para redirigir stdout y stderr
 class RedirectText(io.StringIO):
@@ -129,6 +132,7 @@ def analyze_lexical():
     result_text_lexical.insert("1.0", table_text)
     result_text_lexical.config(state="disabled")
 
+'''
 def analyze_syntactic():
     text = text_entry.get("1.0", "end-1c")
     result = Sintactico.parser.parse(text, lexer=Lexico.analizador)
@@ -136,6 +140,23 @@ def analyze_syntactic():
     if result:
         tree, _ = Sintactico.formatear_arbol(result)
         tree_text = "\n".join(tree)
+    else:
+        tree_text = "Errores en el análisis sintáctico."
+
+    result_text_syntax.config(state="normal")
+    result_text_syntax.delete("1.0", "end")
+    result_text_syntax.insert("1.0", tree_text)
+    result_text_syntax.config(state="disabled")
+'''
+
+def analyze_syntactic():
+    text = text_entry.get("1.0", "end-1c")
+    result = Sintactico.parser.parse(text, lexer=Lexico.analizador)
+    
+    if result:
+        tree = Sintactico2.formatear_arbol(result)
+        #tree_text = "\n".join(tree)
+        tree_text = tree
     else:
         tree_text = "Errores en el análisis sintáctico."
 
@@ -205,6 +226,38 @@ def generate_intermediate_code():
     result_text_intermediate_code.insert("1.0", intermediate_code)
     result_text_intermediate_code.config(state="disabled")
 
+def generar_arbol_anotado():
+    #Aqui esta lo necesario para generar el arbol.
+    text = text_entry.get("1.0", "end-1c")
+    result = Sintactico2.parser.parse(text, lexer=Lexico.analizador)
+    
+    if result:
+        tree = Sintactico2.formatear_arbol(result)
+        #print('Este es el arbol que voy a enviar:',tree)
+        #print('Este es el tipo de arbol:',type(tree))  # Verifica el tipo del árbol en general
+        #Arbol.generar_arbol(tree)
+
+        # Convierte tree de str a tupla
+        try:
+            tree_tupla = ast.literal_eval(tree)  # Convierte la cadena a una tupla
+        except Exception as e:
+            print(f"Error al convertir a tupla: {e}")
+            return
+        
+        #print('Voy a enviar un arbol de tipo: ',type(tree_tupla))
+        #print("Arbol que voy a enviar: ",tree_tupla)
+        Arbol.visualizar_arbol(tree_tupla, tabla_simbolos)
+
+        # Obtener la tabla de símbolos directamente
+        symbols_table_str = str(tabla_simbolos)  # Convertir a string
+        print('Tabla de Simbolos despues de Arbol:', symbols_table_str)
+        
+        # Mostrar la tabla de símbolos en el widget de resultados semánticos
+        result_text_semantic.config(state="normal")
+        result_text_semantic.delete("1.0", "end")
+        result_text_semantic.insert("1.0", symbols_table_str)
+        result_text_semantic.config(state="disabled")
+
 def analyze_both():
     analyze_lexical()
     analyze_syntactic()
@@ -228,6 +281,7 @@ compile_menu.add_command(label="Analizar sintáctico", command=analyze_syntactic
 compile_menu.add_command(label="Analizar semántico", command=analyze_semantic)
 compile_menu.add_command(label="Generar código intermedio", command=generate_intermediate_code)
 compile_menu.add_command(label="Analizar ambos", command=analyze_both)
+compile_menu.add_command(label="Generar Arbol Semantico", command=generar_arbol_anotado)
 
 left_frame = tk.Frame(root)
 left_frame.pack(side="left", fill="both", expand=True)
