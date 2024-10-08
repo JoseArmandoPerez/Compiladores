@@ -2,6 +2,10 @@ import hashlib
 from prettytable import PrettyTable  # Importa PrettyTable
 
 # Clase para la tabla de hashes
+import hashlib
+from prettytable import PrettyTable  # Importa PrettyTable
+
+# Clase para la tabla de hashes
 class HashTable:
     def __init__(self):
         self.hashes = {}
@@ -9,20 +13,32 @@ class HashTable:
     def add_hash(self, name, value, operands=None):
         # Calcular el hash usando SHA256
         hash_value = hashlib.sha256(str(value).encode()).hexdigest()
-        # Guardar el hash junto con los operandos
-        self.hashes[name] = {
-            "hash": hash_value,
-            "value": value,
-            "operands": operands
-        }
+        
+        # Si la variable ya existe en la tabla, agregamos a la lista (encadenamiento)
+        if name in self.hashes:
+            self.hashes[name].append({
+                "hash": hash_value,
+                "value": value,
+                "operands": operands
+            })
+        else:
+            # Si no existe, creamos una nueva lista para manejar las colisiones
+            self.hashes[name] = [{
+                "hash": hash_value,
+                "value": value,
+                "operands": operands
+            }]
 
     def __str__(self):
         # Usar PrettyTable para formatear la salida
         table = PrettyTable()
         table.field_names = ["Variable", "Hash", "Valor", "Operandos"]
-        for name, data in self.hashes.items():
-            operands_str = ", ".join(data["operands"]) if data["operands"] else "N/A"
-            table.add_row([name, data["hash"], data["value"], operands_str])
+        
+        for name, data_list in self.hashes.items():
+            for data in data_list:
+                operands_str = ", ".join(data["operands"]) if data["operands"] else "N/A"
+                table.add_row([name, data["hash"], data["value"], operands_str])
+        
         return str(table)
 
 # Clases para la tabla de símbolos
@@ -30,7 +46,7 @@ class Symbol:
     def __init__(self, name, symbol_type, line_declared):
         self.name = name
         self.type = symbol_type
-        self.value = None  # Almacenará el valor directo solo en la declaración
+        self.value = None  # Almacena el valor en la declaración o asignación
         self.line_declared = line_declared
         self.references = []  # Lista de líneas donde se hace referencia
 
@@ -38,47 +54,59 @@ class Symbol:
         if line not in self.references:
             self.references.append(line)  # Agrega la línea a las referencias
 
+# Modificar la clase SymbolTable para que muestre las referencias
 class SymbolTable:
     def __init__(self):
         self.symbols = {}
-        self.hash_table = HashTable()  # Inicializa la tabla de hashes
+        self.hash_table = HashTable()
 
     def add_symbol(self, name, symbol_type, line_declared):
         if name in self.symbols:
-            raise Exception(f"Error: '{name}' ya está definido en la línea {self.symbols[name].line_declared}.")
-        self.symbols[name] = Symbol(name, symbol_type, line_declared)
+        # Ajuste: sumamos 1 a la línea del error
+            raise Exception(f"Error: La variable '{name}' ya fue declarada en la línea {self.symbols[name].line_declared + 1} y no se puede redeclarar en la línea {line_declared + 1}.")
+        else:
+            self.symbols[name] = Symbol(name, symbol_type, line_declared)
 
-    def lookup(self, name):
-        return self.symbols.get(name, None)
+
+    def lookup(self, var_name, line_number=None):
+        if var_name in self.symbols:
+            return self.symbols[var_name]
+        else:
+            if line_number is not None:
+                raise Exception(f"Error: '{var_name}' no está definido en la línea {line_number}.")
+            else:
+                raise Exception(f"Error: '{var_name}' no está definido.")
 
     def set_value(self, name, value, operands=None):
-        symbol = self.lookup(name)
+        symbol = self.lookup(name, None)
         if not symbol:
             raise Exception(f"Error: '{name}' no está definido.")
 
         # Actualiza el valor de la variable
         symbol.value = value  
-        # Almacenar el hash de la variable junto con los operandos
+        # Almacena el hash de la variable junto con los operandos
         self.hash_table.add_hash(name, value, operands)
 
     def add_reference(self, name, line):
-        symbol = self.lookup(name)
+        symbol = self.lookup(name, line)
         if symbol:
             symbol.add_reference(line)
         else:
             raise Exception(f"Error: '{name}' no está definido en la línea {line}.")
 
     def reset(self):
-        self.symbols.clear()  # Limpia la tabla de símbolos
-        self.hash_table = HashTable()  # Reinicia la tabla de hashes
+        self.symbols.clear()
+        self.hash_table = HashTable()
 
+    # Mostrar referencias en la tabla de símbolos
     def __str__(self):
-        # Usar PrettyTable para formatear la tabla de símbolos
         table = PrettyTable()
-        table.field_names = ["Nombre de Variable", "Tipo", "Valor", "Número de Registro (loc)", "Números de Línea"]
+        table.field_names = ["Nombre de Variable", "Tipo", "Valor", "Declarado en Línea", "Referencias"]
         for s in self.symbols.values():
-            table.add_row([s.name, s.type, s.value if s.value is not None else 'N/A', hex(id(s)), s.line_declared])
+            referencias_str = ", ".join(map(str, s.references)) if s.references else "N/A"
+            table.add_row([s.name, s.type, s.value if s.value is not None else 'N/A', s.line_declared, referencias_str])
         return str(table)
+
 
 # Inicializa la tabla de símbolos
 tabla_simbolos = SymbolTable()
@@ -99,12 +127,21 @@ def procesar_decl(decl, line_number):
     for id in decl[2]:  # Lista de identificadores
         tabla_simbolos.add_symbol(id, tipo, line_number)  # Agregar línea de declaración
 
+def verificar_variable_decl(var_name, line_number):
+    if var_name not in tabla_simbolos.symbols:
+        raise Exception(f"Error: La variable '{var_name}' se usa antes de ser declarada en la línea {line_number}.")
+
+
 def procesar_sent(sent, line_number):
     if sent[0] == 'decl':
         procesar_decl(sent, line_number)
     elif sent[0] == 'assign':
         var_name = sent[1]
-        value = procesar_expresion(sent[2])  # Evaluar la expresión
+        
+        # Verificar si la variable está siendo declarada antes de la asignación
+        verificar_variable_decl(var_name, line_number)
+
+        value = procesar_expresion(sent[2], line_number)  # Evaluar la expresión
 
         # Verificación de tipos de datos
         verificar_tipos_datos(var_name, value, line_number)
@@ -117,7 +154,7 @@ def procesar_sent(sent, line_number):
 
     elif sent[0] == 'write':
         var_name = sent[1]
-        symbol = tabla_simbolos.lookup(var_name)
+        symbol = tabla_simbolos.lookup(var_name, line_number)
         if not symbol:
             raise Exception(f"Error: '{var_name}' no está definido en la línea {line_number}.")
 
@@ -127,7 +164,7 @@ def procesar_sent(sent, line_number):
         print(f"Escribiendo valor de {var_name}: {symbol.value}")  # Imprimir valor
 
 
-def procesar_expresion(expr):
+def procesar_expresion(expr, line_number=None):
     if isinstance(expr, list):
         # Asegúrate de que la expresión es una lista de operandos y operadores
         operadores = []
@@ -138,12 +175,16 @@ def procesar_expresion(expr):
                 operadores.append(elemento)
             else:
                 # Evaluar y agregar el operando
-                operandos.append(procesar_operando(elemento))
+                operandos.append(procesar_operando(elemento, line_number))
 
         # Realizar la evaluación de los operandos y operadores
         resultado = operandos[0]
 
         for i in range(len(operadores)):
+            # Asegúrate de que los operandos sean del tipo correcto antes de operar
+            if not isinstance(operandos[i + 1], (int, float)):
+                raise Exception(f"Error: Operando inválido '{operandos[i + 1]}' en la operación '{operadores[i]}'.")
+            
             if operadores[i] == '+':
                 resultado += operandos[i + 1]
             elif operadores[i] == '-':
@@ -158,8 +199,11 @@ def procesar_expresion(expr):
         return resultado  # Asegúrate de devolver solo el resultado final
 
     # Si es un valor literal (int, float, bool)
+    if expr == 'true':
+        return True
+    elif expr == 'false':
+        return False
     return expr
-
 
 def procesar_operando(operand):
     # Procesa el operando: puede ser un identificador o un literal
@@ -167,28 +211,34 @@ def procesar_operando(operand):
         return procesar_identificador(operand)  # Devuelve el valor actual de la variable
     return operand  # Retorna el valor literal directamente
 
-def procesar_identificador(var_name):
-    # Supongamos que aquí se realiza la búsqueda en la tabla de símbolos
-    simbolo = tabla_simbolos.lookup(var_name)
+def procesar_identificador(var_name, line_number):
+    # Verificar que la variable está declarada antes de su uso
+    simbolo = tabla_simbolos.lookup(var_name, line_number)
     if simbolo:
         return simbolo.value  # Retorna el valor asociado a la variable
-    raise Exception(f"Error: '{var_name}' no está definido.")
+    raise Exception(f"Error: '{var_name}' no está definido en la línea {line_number}.")
+
+
 
 def verificar_tipos_datos(var_name, value, line_number):
-    symbol = tabla_simbolos.lookup(var_name)
+    symbol = tabla_simbolos.lookup(var_name, line_number)
     if not symbol:
         raise Exception(f"Error: '{var_name}' no está definido en la línea {line_number}.")
 
-    # Comprobar el tipo de dato
+    # Verificación del tipo de dato y el valor asignado
     if symbol.type == 'int':
-        if not isinstance(value, (int, float)):
+        if isinstance(value, float):
+            raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' es int, pero se asignó un número real '{value}'.")
+        elif not isinstance(value, int):
             raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' debe ser un int, se recibió '{value}'.")
     elif symbol.type == 'float':
-        if not isinstance(value, (int, float)):  # Permitir tanto int como float
+        if not isinstance(value, (int, float)):
             raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' debe ser un float, se recibió '{value}'.")
     elif symbol.type == 'bool':
         if not isinstance(value, bool):
             raise Exception(f"Error de tipo en línea {line_number}: '{var_name}' debe ser un bool, se recibió '{value}'.")
+
+
 
 def analizar_texto(texto):
     from Sintactico import analizar_sintactico  # Asegúrate de importar tu analizador sintáctico
