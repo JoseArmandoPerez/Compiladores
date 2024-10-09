@@ -8,8 +8,9 @@ import Lexico
 from tabulate import tabulate
 import Sintactico
 import Sintactico2
-from Semantico import analizar_texto
-from Semantico import tabla_simbolos
+import Tabla
+#from Tabla import analizar_texto
+from Tabla import tabla_simbolos
 import Arbol
 
 # Clase personalizada para redirigir stdout y stderr
@@ -40,7 +41,7 @@ def setup_output_redirection():
 
 
 # Definir las palabras clave y operadores
-keywords = {"int", "float", "double", "char", "string", "bool", "print", "main", "for", "while", "true", "if", "void", "while", "do", "switch", "case"}
+keywords = {"int", "float", "double", "char", "string", "bool", "print", "main", "for", "while", "true", "if", "void", "while", "do", "switch", "case", "else"}
 operators = {";", ")", "(", "{", "}", "+", "-", "*", "/", "%", "=", "==", "!=", ">", "<", ">=", "<=", "&&", "||", "!", "++", "--", "+=", "-=", "=", "/=", "%="}
 
 # Función para resaltar las palabras clave y operadores
@@ -165,6 +166,8 @@ def analyze_syntactic():
     result_text_syntax.insert("1.0", tree_text)
     result_text_syntax.config(state="disabled")
 
+
+'''
 def analyze_semantic():
     # Obtener el texto del widget de entrada
     text = text_entry.get("1.0", "end-1c")
@@ -194,7 +197,7 @@ def analyze_semantic():
         print("Iniciando análisis semántico...")
 
         # Llama a la función analizar_texto y maneja el retorno de tablas
-        tabla_simbolos, tabla_hashes = analizar_texto(text)
+        #tabla_simbolos, tabla_hashes = analizar_texto(text)
 
         # Mostrar el mensaje de éxito si no hay errores
         result_text_semantic.config(state="normal")
@@ -215,6 +218,8 @@ def analyze_semantic():
         # Restaurar stdout y stderr a sus valores originales
         sys.stdout = original_stdout
         sys.stderr = original_stderr
+
+'''
 
 
 def generate_intermediate_code():
@@ -249,8 +254,23 @@ def generar_arbol_anotado():
         Arbol.visualizar_arbol(tree_tupla, tabla_simbolos)
 
         # Obtener la tabla de símbolos directamente
+        # symbols_table_str = str(tabla_simbolos)  # Convertir a string
+        # print('Tabla de Simbolos despues de Arbol:', symbols_table_str)
+        
+        # Mostrar la tabla de símbolos en el widget de resultados semánticos
+        result_text_semantic.config(state="normal")
+        result_text_semantic.delete("1.0", "end")
+        result_text_semantic.insert("end", "Tabla de Símbolos:\n")
+        result_text_semantic.insert("end", str(tabla_simbolos) + "\n\n")
+        result_text_semantic.insert("end", "Tabla de Hashes:\n")
+        result_text_semantic.insert("end", str(Tabla.tabla_hashes))
+        result_text_semantic.config(state="disabled")
+
+
+def actualizar_tabla():
+    # Obtener la tabla de símbolos directamente
         symbols_table_str = str(tabla_simbolos)  # Convertir a string
-        print('Tabla de Simbolos despues de Arbol:', symbols_table_str)
+        #print('Tabla de Simbolos despues de Arbol:', symbols_table_str)
         
         # Mostrar la tabla de símbolos en el widget de resultados semánticos
         result_text_semantic.config(state="normal")
@@ -278,10 +298,11 @@ compile_menu = tk.Menu(menu_bar, tearoff=0)
 menu_bar.add_cascade(label="Compilar", menu=compile_menu)
 compile_menu.add_command(label="Analizar léxico", command=analyze_lexical)
 compile_menu.add_command(label="Analizar sintáctico", command=analyze_syntactic)
-compile_menu.add_command(label="Analizar semántico", command=analyze_semantic)
+#compile_menu.add_command(label="Analizar semántico", command=analyze_semantic)
 compile_menu.add_command(label="Generar código intermedio", command=generate_intermediate_code)
 compile_menu.add_command(label="Analizar ambos", command=analyze_both)
 compile_menu.add_command(label="Generar Arbol Semantico", command=generar_arbol_anotado)
+compile_menu.add_command(label="Actualizar Tabla de Simbolos", command=actualizar_tabla)
 
 left_frame = tk.Frame(root)
 left_frame.pack(side="left", fill="both", expand=True)
