@@ -64,9 +64,11 @@ def p_sent_if(p):
                | SI PARIZQ exp_bool PARDER bloque FI
                | SI PARIZQ exp_bool PARDER bloque'''
     if len(p) == 8:
-        p[0] = ('if', p[3], ('bloque', p[5]), ('bloque', p[7]))  # Cambiar la estructura aquí
+        p[0] = ('if_else', p[3], ('bloque', p[5]), ('bloque', p[7]))  # Cambiar la estructura aquí
+        #print(f'Impresion de Sintactico, condiconal: {p[0]} (debe ser if_else)')
     else:
         p[0] = ('if', p[3], ('bloque', p[5]))
+        #print(f'Impresion de Sintactico, condiconal: {p[0]}')
 
 def p_sent_while(p):
     '''sent_while : MIENTRAS PARIZQ exp_bool PARDER bloque'''
@@ -121,18 +123,34 @@ def p_exp_rel(p):
                | exp DISTINTO exp'''
     p[0] = (p[2], p[1], p[3])
 
+# Expresiones con precedencia adecuada
 def p_exp(p):
-    '''exp : exp SUMA exp
-           | exp RESTA exp
-           | exp MULT exp
-           | exp DIV exp
-           | exp POTENCIA exp
-           | exp MODULO exp
+    '''exp : exp SUMA term
+           | exp RESTA term
+           | term'''
+    if len(p) == 4:
+        p[0] = (p[2], p[1], p[3])
+    else:
+        p[0] = p[1]
+
+def p_term(p):
+    '''term : term MULT pot
+            | term DIV pot
+            | term MODULO pot
+            | pot'''
+    if len(p) == 4:
+        p[0] = (p[2], p[1], p[3])
+    else:
+        p[0] = p[1]
+
+def p_pot(p):
+    '''pot : pot POTENCIA factor
            | factor'''
     if len(p) == 4:
         p[0] = (p[2], p[1], p[3])
     else:
         p[0] = p[1]
+
 
 def p_factor(p):
     '''factor : ENTERO
