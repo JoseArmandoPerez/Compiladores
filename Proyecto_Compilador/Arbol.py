@@ -1,44 +1,54 @@
 import tkinter as tk
 from tkinter import ttk
 
+errores = []  # Vector global para almacenar los errores
+linea = 1
+
 def evaluar_expresion(arbol, tabla_simbolos):
+    global linea  # Asegurarse de que la variable global se usa correctamente
     if isinstance(arbol, tuple):
         operador = arbol[0]
-        operando1 = evaluar_expresion(arbol[1], tabla_simbolos)
-        operando2 = evaluar_expresion(arbol[2], tabla_simbolos)
-        
-        if operando1 is None or operando2 is None:
-            raise ValueError(f"Uno de los operandos es None: {operando1}, {operando2}. Operador: {operador}, Árbol: {arbol}")
+        try:
+            operando1 = evaluar_expresion(arbol[1], tabla_simbolos)
+            operando2 = evaluar_expresion(arbol[2], tabla_simbolos)
 
-        if operador == '+':
-            return operando1 + operando2
-        elif operador == '-':
-            return operando1 - operando2
-        elif operador == '*':
-            return operando1 * operando2
-        elif operador == '/':
-            if operando2 == 0:
-                raise ZeroDivisionError("Intento de división por cero.")
-            return operando1 / operando2
-        elif operador == '^':
-            return operando1 ** operando2
-        elif operador == '%':
-            return operando1 % operando2
-        elif operador == '<':
-            return operando1 < operando2
-        elif operador == '>':
-            return operando1 > operando2
-        elif operador == '<=':
-            return operando1 <= operando2
-        elif operador == '>=':
-            return operando1 >= operando2
-        elif operador == '==':
-            return operando1 == operando2
-        elif operador == '!=':
-            return operando1 != operando2
-        else:
-            raise ValueError(f"Operador no reconocido: {operador}")
+            if operando1 is None or operando2 is None:
+                errores.append(f"Error: Uno de los operandos es None. Operando1: {operando1}, Operando2: {operando2}. Operador: {operador}. En la linea: {linea}")
+                return None
 
+            if operador == '+':
+                return operando1 + operando2
+            elif operador == '-':
+                return operando1 - operando2
+            elif operador == '*':
+                return operando1 * operando2
+            elif operador == '/':
+                if operando2 == 0:
+                    errores.append(f"Error: Intento de división por cero. Linea: {linea}")
+                    return None
+                return operando1 / operando2
+            elif operador == '^':
+                return operando1 ** operando2
+            elif operador == '%':
+                return operando1 % operando2
+            elif operador == '<':
+                return operando1 < operando2
+            elif operador == '>':
+                return operando1 > operando2
+            elif operador == '<=':
+                return operando1 <= operando2
+            elif operador == '>=':
+                return operando1 >= operando2
+            elif operador == '==':
+                return operando1 == operando2
+            elif operador == '!=':
+                return operando1 != operando2
+            else:
+                errores.append(f"Error: Operador no reconocido {operador}. En la Linea: {linea}")
+                return None
+        except Exception as e:
+            errores.append(f"Linea: {linea} Error evaluando la expresión {arbol}: {str(e)}.")
+            return None
     else:
         # Manejo de valores atómicos (números y variables)
         if isinstance(arbol, (int, float)):
@@ -46,20 +56,24 @@ def evaluar_expresion(arbol, tabla_simbolos):
         elif isinstance(arbol, str):
             simbolo = tabla_simbolos.lookup2(arbol)
             if simbolo is not None:
+                tabla_simbolos.add_reference(simbolo.name, linea)
                 return simbolo.value
             else:
-                raise ValueError(f"Símbolo no encontrado en la tabla: {arbol}. Verifica si la variable está declarada y tiene un valor.")
+                errores.append(f"Error: Símbolo no encontrado en la tabla: {arbol}. En la linea: {linea}")
+                return None
         else:
-            raise ValueError(f"Tipo de dato no reconocido: {type(arbol)}")
-    return None
-
+            errores.append(f"Error: Tipo de dato no reconocido: {type(arbol)} para el valor {arbol}. En la linea: {linea}")
+            return None
 
 
 def crear_arbol_sintactico(tree, arbol, tabla_simbolos, padre=""):
-    
+    global linea
     if isinstance(arbol, tuple):
         nodo_texto = arbol[0]
         if nodo_texto == "assign":
+            linea += 1
+            #print(f'L: {linea}: Encontro asignacion: {arbol[0]} -> {arbol[1]}= {arbol[2]}')
+
             var_nombre = arbol[1]
             valor = evaluar_expresion(arbol[2], tabla_simbolos)
 
@@ -70,53 +84,134 @@ def crear_arbol_sintactico(tree, arbol, tabla_simbolos, padre=""):
                 # Si el tipo es 'int' y el valor es flotante, redondeamos
                 if tipo == 'int' and isinstance(valor, float):
                     valor = round(valor)
+            else:
+                errores.append(f"Error: Simbolo no Encontrado: {var_nombre}. En la linea: {linea}")
 
-            tabla_simbolos.set_value(var_nombre, valor)  # Actualizamos el valor en la tabla correcta
-            texto_nodo = f"{var_nombre} = {valor}"
+
+            # Si hubo error en la evaluación, el valor será None, pero continuamos
+            if valor is not None:
+                tabla_simbolos.set_value(var_nombre, valor)  # Actualizamos el valor en la tabla correcta
+                texto_nodo = f"{var_nombre} = {valor}"
+                tabla_simbolos.add_reference(var_nombre, linea)
+            else:
+                texto_nodo = f"{var_nombre} = None (Error)"
+
         elif nodo_texto == "decl":
+            linea += 1
             tipo = arbol[1]
             variables = arbol[2]
+            #print(f'L: {linea}: Encontro declaracion: {arbol[0]} -> {arbol[1]} {arbol[2]}')
             for var in variables:
-                if not tabla_simbolos.lookup2(var):
-                    tabla_simbolos.add_symbol(var, tipo, 0)  # Agregamos el símbolo en la tabla correcta
+                if tabla_simbolos.lookup2(var):
+                    errores.append(f"Error: Variable ya declarada: {var} En la Linea: {linea}")
+                else:
+                    tabla_simbolos.add_symbol(var, tipo, linea)  # Agregamos el símbolo en la tabla correcta
             texto_nodo = f"decl {tipo}: {', '.join(variables)}"
+
+        elif nodo_texto == "if_else":
+            linea += 1
+            #print(f'L: {linea}: Encontro condicional if_else: {arbol[0]} ({arbol[1]}) bloaque 1: {arbol[2]} bloque 2: {arbol[3]} ')
+            condicion = arbol[1]
+            bloque_if = arbol[2]
+            bloque_else = arbol[3]
+            resultado_condicion = evaluar_expresion(condicion, tabla_simbolos)
+            texto_nodo = f"if_else {resultado_condicion}"
+            item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
+
+            # Agregar referencia de las variables usadas en la condición
+            for var in condicion:
+                if isinstance(var, str):
+                    if tabla_simbolos.lookup2(var):
+                        tabla_simbolos.add_reference(var, linea)
+
+            for instruccion in bloque_if[1]:
+                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item)
+
+
+            for instruccion in bloque_else[1]:
+                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item)
+            
+
+            return
+
         elif nodo_texto == "if":
+            linea += 1
+            #print(f'L: {linea}: Encontro condicional if: {arbol[0]} ({arbol[1]}) bloaque 1: {arbol[2]}')
             condicion = arbol[1]
             bloque = arbol[2]
-            texto_nodo = f"if {evaluar_expresion(condicion, tabla_simbolos)}"
+            resultado_condicion = evaluar_expresion(condicion, tabla_simbolos)
+            texto_nodo = f"if {resultado_condicion}"
             item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
+
             # Agregar la condición como hijo
             tree.insert(item, 'end', text=str(condicion), values=("", ""))
+
             # Agregar el bloque
             for instruccion in bloque[1]:
                 crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item)
+            
             return
+        
+        elif nodo_texto == "while":
+            linea += 1
+            #print(f'L: {linea}: Encontro ciclo: {arbol[0]} Condicion: {arbol[1]} bloque 1: {arbol[2]} ')
+            condicion = arbol[1]
+            bloque = arbol[2]
+            resultado_condicion = evaluar_expresion(condicion, tabla_simbolos)
+            texto_nodo = f"while {resultado_condicion}"
+            item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
+
+            # Agregar referencia de las variables usadas en la condición
+            for var in condicion:
+                if isinstance(var, str):
+                    if tabla_simbolos.lookup2(var):
+                        tabla_simbolos.add_reference(var, linea)
+            
+            for instruccion in bloque[1]:
+                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item)
+            return
+        
+        elif nodo_texto == "do_while":
+            linea += 1
+            #print(f'L: {linea}: Encontro ciclo: {arbol[0]} bloque 1: {arbol[1]} condicion: {arbol[2]} ')
+            bloque = arbol[1]
+            condicion = arbol[2]
+            resultado_condicion = evaluar_expresion(condicion, tabla_simbolos)
+            texto_nodo = f"do_while {resultado_condicion}"
+            item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
+
+            for instruccion in bloque[1]:
+                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item)
+            return
+        
         elif nodo_texto == "write":
+            linea += 1
             texto_nodo = f"write {arbol[1]}"
             item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
         elif nodo_texto == "read":
+            linea += 1
             texto_nodo = f"read {arbol[1]}"
             item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
         else:
+            #linea += 1
             texto_nodo = nodo_texto
 
         item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
         for hijo in arbol[1:]:
             crear_arbol_sintactico(tree, hijo, tabla_simbolos, item)
     elif isinstance(arbol, list):
-        # Si arbol es una lista, iterar sobre sus elementos
         for sub_arbol in arbol:
             crear_arbol_sintactico(tree, sub_arbol, tabla_simbolos, padre)
     else:
-        # Verificar que el nodo sea una variable (cadena) antes de buscarlo en la tabla de símbolos
         if isinstance(arbol, str):
-            tipo_valor = tabla_simbolos.lookup2(arbol)  # Usamos lookup en vez de obtener
+            tipo_valor = tabla_simbolos.lookup2(arbol)
             tipo = tipo_valor.type if tipo_valor else 'none'
             valor = tipo_valor.value if tipo_valor else 'none'
             texto_nodo = f"{arbol}"
             tree.insert(padre, 'end', text=texto_nodo, values=(tipo, valor))
         else:
             tree.insert(padre, 'end', text=str(arbol), values=("num", arbol))
+
 
 
 # Función para mostrar la tabla de símbolos
@@ -152,9 +247,13 @@ def mostrar_tabla_simbolos(tabla_simbolos):
 
 # Función para visualizar el árbol
 def visualizar_arbol(arbol, tabla_s):
+    tabla_s.reset()
+    global linea
+    linea = 1
     # Crear ventana principal
     ventana = tk.Tk()
     ventana.title("Árbol Sintáctico Expandible")
+    ventana.geometry("530x600")  # Ajustar el tamaño inicial de la ventana
     #ventana.attributes('-fullscreen', True)
 
     # Crear un Frame con un scrollbar
@@ -166,6 +265,9 @@ def visualizar_arbol(arbol, tabla_s):
 
     scrollbar = ttk.Scrollbar(main_frame, orient=tk.VERTICAL, command=canvas.yview)
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    
+    # Vincular el desplazamiento del ratón al canvas
+    canvas.bind_all("<MouseWheel>", lambda event: canvas.yview_scroll(int(-1*(event.delta/120)), "units"))
 
     canvas.configure(yscrollcommand=scrollbar.set)
     canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
@@ -179,9 +281,9 @@ def visualizar_arbol(arbol, tabla_s):
     tree.heading("#0", text="Expresión")
     tree.heading("Tipo", text="Tipo")
     tree.heading("Valor", text="Valor")
-    tree.column("#0", width=1130)
-    tree.column("Tipo", width=100)
-    tree.column("Valor", width=100)
+    tree.column("#0", width=300, anchor='w')
+    tree.column("Tipo", width=100, anchor='center')
+    tree.column("Valor", width=100, anchor='center')
     tree.pack(fill=tk.BOTH, expand=True)
 
     # Asegurarse de que el Treeview ocupe el alto completo
@@ -214,8 +316,14 @@ def visualizar_arbol(arbol, tabla_s):
     tree_frame.update_idletasks()
     canvas.config(scrollregion=canvas.bbox("all"))
 
+    if errores:
+        print("Errores encontrados durante la ejecución:")
+        for error in errores:
+            print(error)
+
     ventana.mainloop()
 
+    
 
 
 
