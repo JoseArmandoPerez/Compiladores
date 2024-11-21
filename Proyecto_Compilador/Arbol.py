@@ -21,16 +21,46 @@ def evaluar_expresion(arbol, tabla_simbolos):
             elif operador == '-':
                 return operando1 - operando2
             elif operador == '*':
-                return operando1 * operando2
+                ress = operando1 * operando2
+                t1 = type(operando1)
+                t2 = type(operando2)
+            #    print(f'Tipo op1: {t1}    Tipo op2: {t2}')
+                if t1 == int and t2 == int:
+            #        print(f'Resultado de Multiplicacion: {ress}')
+                    raai = round(ress)
+            #        print(f'Resultado Redondeado: {raai}')
+                    return raai
+            #    print(f'Resultado de Multiplicacion: {ress}')
+                return ress
+                #return operando1 * operando2
             elif operador == '/':
-                if operando2 == 0:
-                    errores.append(f"Error: Intento de división por cero. Linea: {linea}")
-                    return None
-                return operando1 / operando2
+                    ress = operando1 / operando2
+                    t1 = type(operando1)
+                    t2 = type(operando2)
+            #        print(f'Tipo op1: {t1}    Tipo op2: {t2}')
+                    if t1 == int and t2 == int:
+            #            print(f'Resultado de Division: {ress}')
+                        raai = round(ress)
+            #            print(f'Resultado Redondeado: {raai}')
+                        return raai
+            #        print(f'Resultado de Division: {ress}')
+                    return ress
+                #return operando1 / operando2
             elif operador == '^':
                 return operando1 ** operando2
             elif operador == '%':
-                return operando1 % operando2
+                ress = operando1 % operando2
+                t1 = type(operando1)
+                t2 = type(operando2)
+            #    print(f'Tipo op1: {t1}    Tipo op2: {t2}')
+                if t1 == int and t2 == int:
+            #        print(f'Resultado de Residuo: {ress}')
+                    raai = round(ress)
+            #        print(f'Resultado Redondeado: {raai}')
+                    return raai
+            #    print(f'Resultado de Residuo: {ress}')
+                return ress
+                #return operando1 % operando2
             elif operador == '<':
                 return operando1 < operando2
             elif operador == '>':
@@ -52,11 +82,14 @@ def evaluar_expresion(arbol, tabla_simbolos):
     else:
         # Manejo de valores atómicos (números y variables)
         if isinstance(arbol, (int, float)):
+            #print(f'Se encontro el numero: {arbol} en la linea: {linea}')
             return arbol
         elif isinstance(arbol, str):
+            #print(f'Se encontro un simbolo: {arbol} en la Linea: {linea}')
             simbolo = tabla_simbolos.lookup2(arbol)
             if simbolo is not None:
-                tabla_simbolos.add_reference(simbolo.name, linea)
+                #print(f'Se va añadir referencia a la variable: {simbolo.name} en la Linea: {linea}')
+                #tabla_simbolos.add_reference(simbolo.name, linea)
                 return simbolo.value
             else:
                 errores.append(f"Error: Símbolo no encontrado en la tabla: {arbol}. En la linea: {linea}")
@@ -84,6 +117,8 @@ def crear_arbol_sintactico(tree, arbol, tabla_simbolos, padre=""):
                 # Si el tipo es 'int' y el valor es flotante, redondeamos
                 if tipo == 'int' and isinstance(valor, float):
                     valor = round(valor)
+                #print(f'Se va añadir referencia a la variable: {var_nombre} en la Linea: {linea}')
+                #tabla_simbolos.add_reference(var_nombre, linea)
             else:
                 errores.append(f"Error: Simbolo no Encontrado: {var_nombre}. En la linea: {linea}")
 
@@ -92,7 +127,7 @@ def crear_arbol_sintactico(tree, arbol, tabla_simbolos, padre=""):
             if valor is not None:
                 tabla_simbolos.set_value(var_nombre, valor)  # Actualizamos el valor en la tabla correcta
                 texto_nodo = f"{var_nombre} = {valor}"
-                tabla_simbolos.add_reference(var_nombre, linea)
+                #tabla_simbolos.add_reference(var_nombre, linea)
             else:
                 texto_nodo = f"{var_nombre} = None (Error)"
 
@@ -118,19 +153,28 @@ def crear_arbol_sintactico(tree, arbol, tabla_simbolos, padre=""):
             texto_nodo = f"if_else {resultado_condicion}"
             item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
 
+            crear_arbol_sintactico(tree, condicion, tabla_simbolos, item)
+
+            # Agregar la condición como hijo
+            #tree.insert(item, 'end', text=str(condicion), values=("", ""))
+
             # Agregar referencia de las variables usadas en la condición
-            for var in condicion:
-                if isinstance(var, str):
-                    if tabla_simbolos.lookup2(var):
-                        tabla_simbolos.add_reference(var, linea)
+            #for var in condicion:
+            #    print(f'Analizando condicion de if_else:')
+            #    if isinstance(var, str):
+            #        if tabla_simbolos.lookup2(var):
+            #            #print(f'Se va añadir referencia a la variable: {var} en la Linea: {linea}')
+            #            tabla_simbolos.add_reference(var, linea)
 
+            texto_nodo_bloque = "bloque 1"
+            item_bloque = tree.insert(item, 'end', text=texto_nodo_bloque, values=("", ""))
             for instruccion in bloque_if[1]:
-                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item)
+                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item_bloque)
 
-
+            texto_nodo_bloque = "bloque else"
+            item_bloque = tree.insert(item, 'end', text=texto_nodo_bloque, values=("", ""))
             for instruccion in bloque_else[1]:
-                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item)
-            
+                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item_bloque)
 
             return
 
@@ -141,66 +185,120 @@ def crear_arbol_sintactico(tree, arbol, tabla_simbolos, padre=""):
             bloque = arbol[2]
             resultado_condicion = evaluar_expresion(condicion, tabla_simbolos)
             texto_nodo = f"if {resultado_condicion}"
-            item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
+            item_if = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
 
-            # Agregar la condición como hijo
-            tree.insert(item, 'end', text=str(condicion), values=("", ""))
+            crear_arbol_sintactico(tree, condicion, tabla_simbolos, item_if)
+
+            # Agregar referencia de las variables usadas en la condición
+            #for var in condicion:
+            #    print(f'Analizando condicion de if:')
+            #    if isinstance(var, str):
+            #        if tabla_simbolos.lookup2(var):
+                        #print(f'Se va añadir referencia a la variable: {var} en la Linea: {linea}')
+                        #tabla_simbolos.add_reference(var, linea)
+
+            # Crear nodo para el bloque que se maneje como nodo padre
+            texto_nodo_bloque = "bloque"
+            item_bloque = tree.insert(item_if, 'end', text=texto_nodo_bloque, values=("", ""))
 
             # Agregar el bloque
             for instruccion in bloque[1]:
-                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item)
-            
+            #    print(f"Esto se envio de Bloque: {instruccion}")
+                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item_bloque)
             return
         
         elif nodo_texto == "while":
             linea += 1
-            #print(f'L: {linea}: Encontro ciclo: {arbol[0]} Condicion: {arbol[1]} bloque 1: {arbol[2]} ')
+        #    print(f'L: {linea}: Encontro ciclo: {arbol[0]} Condicion: {arbol[1]} bloque 1: {arbol[2]} ')
             condicion = arbol[1]
             bloque = arbol[2]
             resultado_condicion = evaluar_expresion(condicion, tabla_simbolos)
             texto_nodo = f"while {resultado_condicion}"
             item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
 
-            # Agregar referencia de las variables usadas en la condición
-            for var in condicion:
-                if isinstance(var, str):
-                    if tabla_simbolos.lookup2(var):
-                        tabla_simbolos.add_reference(var, linea)
+            crear_arbol_sintactico(tree, condicion, tabla_simbolos, item)
+
+            # Agregar la condición como hijo
+            #tree.insert(item, 'end', text=str(condicion), values=("", ""))
+
+            # Agregar referencia de las variables usadas en la condición    
+            #for var in condicion:
+            #    if isinstance(var, str):
+            #        if tabla_simbolos.lookup2(var):
+            #            #print(f'Se va añadir referencia a la variable: {var} en la Linea: {linea}')
+            #            tabla_simbolos.add_reference(var, linea)
+
+            # Crear nodo para el bloque que se maneje como nodo padre
+            texto_nodo_bloque = "bloque"
+            item_bloque = tree.insert(item, 'end', text=texto_nodo_bloque, values=("", ""))
             
             for instruccion in bloque[1]:
-                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item)
+                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item_bloque)
             return
         
         elif nodo_texto == "do_while":
             linea += 1
-            #print(f'L: {linea}: Encontro ciclo: {arbol[0]} bloque 1: {arbol[1]} condicion: {arbol[2]} ')
+        #    print(f'L: {linea}: Encontro ciclo: {arbol[0]} bloque 1: {arbol[1]} condicion: {arbol[2]} ')
             bloque = arbol[1]
             condicion = arbol[2]
             resultado_condicion = evaluar_expresion(condicion, tabla_simbolos)
             texto_nodo = f"do_while {resultado_condicion}"
             item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
 
+            crear_arbol_sintactico(tree, condicion, tabla_simbolos, item)
+
+
+            # Agregar la condición como hijo
+            #tree.insert(item, 'end', text=str(condicion), values=("", ""))
+
+            # Agregar referencia de las variables usadas en la condición
+            #for var in condicion:
+            #    if isinstance(var, str):
+            #        if tabla_simbolos.lookup2(var):
+                        #print(f'Se va añadir referencia a la variable: {var} en la Linea: {linea}')
+                        #tabla_simbolos.add_reference(var, linea)
+
+                        # Crear nodo para el bloque que se maneje como nodo padre
+
+            texto_nodo_bloque = "bloque"
+            item_bloque = tree.insert(item, 'end', text=texto_nodo_bloque, values=("", ""))
+
             for instruccion in bloque[1]:
-                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item)
+                crear_arbol_sintactico(tree, instruccion, tabla_simbolos, item_bloque)
             return
         
         elif nodo_texto == "write":
             linea += 1
             texto_nodo = f"write {arbol[1]}"
+            var = arbol[1]
+            # Agregar referencia de las variables usadas en la condición
+            #if isinstance(var, str):
+            #    if tabla_simbolos.lookup2(var):
+                    #print(f'Se va añadir referencia a la variable: {var} en la Linea: {linea}')
+                    #tabla_simbolos.add_reference(var, linea)
             item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
         elif nodo_texto == "read":
             linea += 1
             texto_nodo = f"read {arbol[1]}"
+            var = arbol[1]
+            # Agregar referencia de las variables usadas en la condición
+            #if isinstance(var, str):
+            #    if tabla_simbolos.lookup2(var):
+                    #print(f'Se va añadir referencia a la variable: {var} en la Linea: {linea}')
+                    #tabla_simbolos.add_reference(var, linea)
             item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
         else:
             #linea += 1
             texto_nodo = nodo_texto
 
+        #print(f'1. Se va añadir nodo padre al arbol: {texto_nodo}')
         item = tree.insert(padre, 'end', text=texto_nodo, values=("", ""))
         for hijo in arbol[1:]:
+            #print(f'1. Se envia de nuevo a Creacion de Arbol: {hijo}')
             crear_arbol_sintactico(tree, hijo, tabla_simbolos, item)
     elif isinstance(arbol, list):
         for sub_arbol in arbol:
+            #print(f'2. Se envia de nuevo a Creacion de Arbol: {sub_arbol}')
             crear_arbol_sintactico(tree, sub_arbol, tabla_simbolos, padre)
     else:
         if isinstance(arbol, str):
@@ -208,8 +306,13 @@ def crear_arbol_sintactico(tree, arbol, tabla_simbolos, padre=""):
             tipo = tipo_valor.type if tipo_valor else 'none'
             valor = tipo_valor.value if tipo_valor else 'none'
             texto_nodo = f"{arbol}"
+            #print(f'Se va añadir referencia a la variable (arbol): {arbol} en la Linea: {linea}')
+            #tabla_simbolos.add_reference(arbol, linea)
+            #print(f'2. Se va añadir nodo padre al arbol: {texto_nodo}')
             tree.insert(padre, 'end', text=texto_nodo, values=(tipo, valor))
         else:
+            txx = text = str(arbol)
+            #print(f'3. Se va añadir nodo padre al arbol: {txx}')
             tree.insert(padre, 'end', text=str(arbol), values=("num", arbol))
 
 
@@ -293,10 +396,6 @@ def visualizar_arbol(arbol, tabla_s):
 
     ventana.bind("<Configure>", ajustar_alto)
 
-    # Tabla de símbolos auxiliar
-    # from Semantico import tabla_simbolos
-    # tabla_simbolos = TablaSimbolos()
-
     # Generar el árbol sintáctico
     crear_arbol_sintactico(tree, arbol, tabla_s)
 
@@ -330,150 +429,42 @@ def visualizar_arbol(arbol, tabla_s):
 '''
 # Ejemplo de uso
 codigo_fuente = """
-program { 
-    int a,c;
-    a = 10 + 5;
-    c = a * 2;
-    if (a>0){
-        a = a-1;
-        c = c+a;
-    }
+program {
+    int x, z, y;
+    float a, b, c; 
+    suma = 45; 
+    x = 23; 
+    y = 2 + 3 - 1;
+    z = y + 7;
+    y = y + 1;
+    a = 24.0 + 4 - 1 / 3.0 * 2 + 34 - 1; 
+    x = (5 - 3) * (8 / 2);
+    y = 5 + 3 - 2 * 4 / 7 - 9;
+    z = 8 / 2 + 15 * 4;
+    y = 14.54;
+    if (2 > 3) { 
+        y = a + 3;} else { 
+        if (4 > 2 && 4 < 2) { 
+            b = 3.2;} else {
+            b = 5.0;}    }
+    y = y + 1; 
+    a = a + 1;
+    c = c - 1; 
+    x = 3 + 4;
+    do {
+        y = (y + 1) * 2 + 1;
+        while (x > 7) {
+            x = 6 + 8 / 9.0 * 8 / 3; 
+            write(x); 
+            mas = 36 / 7; }  
+    } while (y == 5); 
+    while (y == 0) {
+        write (mas); 
+        read (x);}
 }
 """
 '''
 
-
-# Ejemplo de uso con la nueva gramática y correcciones:
-# arbol_de_ejemplo =
-''' 
-('programa',
-   ('decl', 'int', ['a', 'c']),
-   ('assign', 'a', ('+', 10, 5)),
-   ('assign', 'c', ('*', 'a', 2)),
-   ('if_else', ('>', 'a', 0), ('bloque', [
-       ('assign', 'a', ('+', 'a', 1)),
-       ('assign', 'c', ('-', 'c', 'a'))
-   ]),         ('bloque', [
-       ('assign', 'a', ('-', 'a', 1)),
-       ('assign', 'c', ('+', 'c', 'a'))
-   ])),
-   ('switch', 'a', 
-       ('case', 1, ('assign', 'c', 10)),
-       ('case', 2, ('assign', 'c', 20)),
-       ('case', 3, ('assign', 'c', 30))
-   ),
-   ('for', ('decl', 'int', ['i']), 
-       ('assign', 'i', 0),
-       ('bloque', [
-           ('assign', 'a', ('+', 'a', 'i')),
-           ('assign', 'i', ('+', 'i', 1))
-       ])
-   )
-)
-'''
-'''
-#Arbol Funcional
-arbol_de_ejemplo = ('programa',
-    ('decl', 'int', ['a', 'c']),
-    ('assign', 'a', ('+', 10, 5)),
-    ('assign', 'c', ('*', 'a', 2)),
-    ('if', ('>', 'a', 0), ('bloque', [
-        ('assign', 'a', ('-', 'a', 1)),
-        ('assign', 'c', ('+', 'c', 'a'))
-    ]))
-)
-'''
-
-'''
-Arbol No Funcional
-arbol_de_ejemplo = ('programa', 
-    (('decl', 'int', ('a', 'c'))), 
-    (('assign', 'a', ('+', 10, 5)), 
-     ('assign', 'c', ('*', 'a', 2)), 
-     ('if', ('>', 'a', 0), ('bloque', (
-         ('assign', 'a', ('-', 'a', 1)), 
-         ('assign', 'c', ('+', 'c', 'a'))
-    )))
-))
-
-'''
-'''
-arbol_de_ejemplo = ('programa', 
-  [('decl', 'int', ['a', 'c'])], 
-  ('assign', 'a', ('+', '10', '5')), 
-  ('assign', 'c', ('*', 'a', '2')), 
-  ('if', ('>', 'a', '0'), ('bloque', [
-      ('assign', 'a', ('-', 'a', '1')), 
-      ('assign', 'c', ('+', 'c', 'a'))]
-   ))
-)
-'''
-
-'''
-arbol_de_ejemplo = ('programa', 
-                    [('decl', 'int', ['a', 'c'])], 
-                    ('assign', 'a', ('+', '10', '5')), 
-                    ('assign', 'c', ('*', 'a', '2')), 
-                    ('decl', 'float', ['x', 'y']), 
-                    ('assign', 'x', '0.1'), 
-                    ('assign', 'y', ('+', 'x', '1.2')), 
-                    ('decl', 'float', ['w']), 
-                    ('assign', 'w', ('/', 'a', '3')), 
-                    ('decl', 'float', ['t']), 
-                    ('assign', 't', ('*', 'c', 'y')))
-'''
-'''                    
-arbol_de_ejemplo = ('programa', 
-                    [('decl', 'int', ['a', 'c'])], 
-                    ('assign', 'a', ('+', 10, 5)), 
-                    ('assign', 'c', ('*', 'a', 2)), 
-                    ('decl', 'float', ['x', 'y']), 
-                    ('assign', 'x', 0.1), 
-                    ('assign', 'y', ('+', 'x', 1.2)), 
-                    ('decl', 'float', ['w']), 
-                    ('assign', 'w', ('/', 'a', 3)), 
-                    ('decl', 'float', ['t']), 
-                    ('assign', 't', ('*', 'c', 'y')))
-'''
-'''
-arbol_de_ejemplo = ('programa', 
-                    [('decl', 'int', ['x', 'y', 'z', 'suma']), 
-                     ('decl', 'float', ['a', 'b', 'c'])], 
-                     ('assign', 'suma', 45), ('assign', 'x', 23), 
-                     ('assign', 'y', ('+', 2, ('-', 3, 1))), 
-                     ('assign', 'z', ('+', 'y', 7)), 
-                     ('assign', 'y', ('+', 'y', 1)), 
-                     ('assign', 'a', ('+', 24.0, ('-', 4, ('/', 1, ('*', 3, ('+', 2, ('-', 34, 1))))))), 
-                     ('assign', 'x', ('*', ('-', 5, 3), ('/', 8, 2))), 
-                     ('assign', 'y', ('+', 5, ('-', 3, ('*', 2, ('/', 4, ('-', 7, 9)))))), 
-                     ('assign', 'z', ('/', 8, ('+', 2, ('*', 15, 4)))), 
-                     ('assign', 'y', 14.54), 
-                     ('if', ('>', 2, 3), ('bloque', [('assign', 'y', ('+', 'a', 'b'))]), ('bloque', [('assign', 'y', 9)])), ('while', ('<', 'a', 2), ('bloque', [('assign', 'y', ('-', 'y', 1))])), ('do_while', ('bloque', [('assign', 'y', ('+', 'y', 1))]), ('<', 'y', 10)), 
-                     ('write', 'x'), 
-                     ('read', 'y'))
-'''
-'''
-arbol_de_ejemplo = ('programa', 
-                    [('decl', 'int', ['x', 'y', 'z', 'suma']), 
-                     ('decl', 'float', ['a', 'b', 'c'])], 
-                     ('assign', 'suma', 45), 
-                     ('assign', 'x', 23), 
-                     ('assign', 'y', ('+', 2, ('-', 3, 1))), 
-                     ('assign', 'z', ('+', 'y', 7)), 
-                     ('assign', 'y', ('+', 'y', 1)), 
-                     ('assign', 'a', ('+', 24.0, ('-', 4, ('/', 1, ('*', 3, ('+', 2, ('-', 34, 1))))))), 
-                     ('assign', 'x', ('*', ('-', 5, 3), ('/', 8, 2))), 
-                     ('assign', 'y', ('+', 5, ('-', 3, ('*', 2, ('/', 4, ('-', 7, 9)))))), 
-                     ('assign', 'z', ('/', 8, ('+', 2, ('*', 15, 4)))), 
-                     ('assign', 'y', 14.54), 
-                     ('if', ('<', 2, 3), ('bloque', [('assign', 'b', 10), ('assign', 'y', ('+', 'a', 'b'))]), ('bloque', [('assign', 'y', 9)])), ('while', ('<', 'a', 2), ('bloque', [('assign', 'y', ('-', 'y', 1))])), ('do_while', ('bloque', [('assign', 'y', ('+', 'y', 1))]), ('<', 'y', 10)), 
-                     ('write', 'x'), 
-                     ('read', 'y'))
-'''
-
-#arbol_de_ejemplo = ('programa', [('decl', 'int', ['x', 'y', 'z', 'suma']), ('decl', 'float', ['a', 'b', 'c'])], ('assign', 'suma', 45), ('assign', 'x', 23), ('assign', 'y', ('+', 2, ('-', 3, 1))), ('assign', 'z', ('+', 'y', 7)), ('assign', 'y', ('+', 'y', 1)), ('assign', 'a', ('+', 24.0, ('-', 4, ('/', 1, ('*', 3, ('+', 2, ('-', 34, 1))))))), ('assign', 'x', ('*', ('-', 5, 3), ('/', 8, 2))), ('assign', 'y', ('+', 5, ('-', 3, ('*', 2, ('/', 4, ('-', 7, 9)))))), ('assign', 'z', ('/', 8, ('+', 2, ('*', 15, 4)))), ('assign', 'y', 14.54), ('if', ('<', 2, 3), ('bloque', [('assign', 'b', 10), ('assign', 'y', ('+', 'a', 'b'))]), ('bloque', [('assign', 'y', 9)])), ('while', ('<', 'a', 2), ('bloque', [('assign', 'y', ('-', 'y', 1))])), ('do_while', ('bloque', [('assign', 'y', ('+', 'y', 1))]), ('<', 'y', 10)), ('write', 'x'), ('read', 'y'))
-#print('Tipo de Funcional: ',type(arbol_de_ejemplo))
-#visualizar_arbol(arbol_de_ejemplo)
 
 '''
 def generar_arbol(arbol):
@@ -481,3 +472,4 @@ def generar_arbol(arbol):
     print('Arbol a Analizar y Desglozar:',arbol_apl)
     visualizar_arbol(arbol_apl)
     '''
+
