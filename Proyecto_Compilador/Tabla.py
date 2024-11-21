@@ -49,7 +49,7 @@ class Symbol:
         self.references = []  # Lista de líneas donde se hace referencia
 
     def add_reference(self, line):
-        if line not in self.references:
+       # if line not in self.references:
             self.references.append(line)  # Agrega la línea a las referencias
 
 # Modificar la clase SymbolTable para que muestre las referencias
@@ -107,12 +107,26 @@ class SymbolTable:
     # Mostrar referencias en la tabla de símbolos
     def __str__(self):
         table = PrettyTable()
-        table.field_names = ["Nombre de Variable", "Tipo", "Valor", "Declarado en Línea", "Referencias"]
-        for s in self.symbols.values():
-            referencias_str = ", ".join(map(str, s.references)) if s.references else "N/A"
-            table.add_row([s.name, s.type, s.value if s.value is not None else 'N/A', s.line_declared, referencias_str])
-        return str(table)
+        table.field_names = ["Nombre de Variable", "Tipo", "Valor", "DeclLínea", "Referencias"]
 
+        # Limitar el ancho de las columnas
+        table.max_width["Nombre de Variable"] = 15
+        table.max_width["Tipo"] = 8
+        table.max_width["Valor"] = 10
+        table.max_width["Decl Línea"] = 15
+        table.max_width["Referencias"] = 40 # Mantener ancho amplio para evitar truncamiento
+        
+        for s in self.symbols.values():
+            referencias_str = ", ".join(map(str, s.references)) if s.references else 'N/A'
+            table.add_row([
+                s.name[:15],  # Limitar el nombre de la variable a 15 caracteres
+                s.type,
+                s.value if s.value is not None else 'N/A',
+                s.line_declared,
+                referencias_str  # Mostrar todas las referencias sin truncar
+            ])
+        
+        return str(table)
 # Inicializa la tabla de símbolos
 tabla_simbolos = SymbolTable()
 
