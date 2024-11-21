@@ -1,4 +1,5 @@
 import ast
+import csv
 import sys
 import io
 import tkinter as tk
@@ -6,7 +7,7 @@ from tkinter import ttk, filedialog
 import re
 import Lexico
 from tabulate import tabulate
-import Sintactico
+#import Sintactico
 import Sintactico2
 import Tabla
 #from Tabla import analizar_texto
@@ -133,26 +134,16 @@ def analyze_lexical():
     result_text_lexical.insert("1.0", table_text)
     result_text_lexical.config(state="disabled")
 
-'''
-def analyze_syntactic():
-    text = text_entry.get("1.0", "end-1c")
-    result = Sintactico.parser.parse(text, lexer=Lexico.analizador)
-    
-    if result:
-        tree, _ = Sintactico.formatear_arbol(result)
-        tree_text = "\n".join(tree)
-    else:
-        tree_text = "Errores en el análisis sintáctico."
-
-    result_text_syntax.config(state="normal")
-    result_text_syntax.delete("1.0", "end")
-    result_text_syntax.insert("1.0", tree_text)
-    result_text_syntax.config(state="disabled")
-'''
+#--------------------------------------------------
+#   Guardar la tabla léxica en un archivo CSV
+    with open('tabla_lexica.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(table)  # Escribe la tabla en el archivo CSV
+#-------------------------------------------------
 
 def analyze_syntactic():
     text = text_entry.get("1.0", "end-1c")
-    result = Sintactico.parser.parse(text, lexer=Lexico.analizador)
+    result = Sintactico2.parser.parse(text, lexer=Lexico.analizador)
     
     if result:
         tree = Sintactico2.formatear_arbol(result)
@@ -167,61 +158,6 @@ def analyze_syntactic():
     result_text_syntax.config(state="disabled")
 
 
-'''
-def analyze_semantic():
-    # Obtener el texto del widget de entrada
-    text = text_entry.get("1.0", "end-1c")
-
-    # Limpiar las áreas de errores y resultados semánticos antes de realizar el análisis
-    error_text.config(state="normal")
-    error_text.delete("1.0", "end")
-    error_text.config(state="disabled")
-
-    result_text_semantic.config(state="normal")
-    result_text_semantic.delete("1.0", "end")
-    result_text_semantic.config(state="disabled")
-
-    # Crear instancias de RedirectText para capturar stdout y stderr
-    redirect_stdout = RedirectText(error_text)
-    redirect_stderr = RedirectText(error_text)
-
-    # Guardar las referencias originales de stdout y stderr
-    original_stdout = sys.stdout
-    original_stderr = sys.stderr
-
-    try:
-        # Redirigir stdout y stderr
-        sys.stdout = redirect_stdout
-        sys.stderr = redirect_stderr
-
-        print("Iniciando análisis semántico...")
-
-        # Llama a la función analizar_texto y maneja el retorno de tablas
-        #tabla_simbolos, tabla_hashes = analizar_texto(text)
-
-        # Mostrar el mensaje de éxito si no hay errores
-        result_text_semantic.config(state="normal")
-        result_text_semantic.insert("1.0", "Análisis semántico completado sin errores.\n\n")
-        result_text_semantic.insert("end", "Tabla de Símbolos:\n")
-        result_text_semantic.insert("end", str(tabla_simbolos) + "\n\n")
-        result_text_semantic.insert("end", "Tabla de Hashes:\n")
-        result_text_semantic.insert("end", str(tabla_hashes))
-        result_text_semantic.config(state="disabled")
-
-    except Exception as e:
-        # Mostrar cualquier error que ocurra en el análisis semántico
-        error_text.config(state="normal")
-        error_text.insert("end", f"{str(e)}\n")
-        error_text.config(state="disabled")
-
-    finally:
-        # Restaurar stdout y stderr a sus valores originales
-        sys.stdout = original_stdout
-        sys.stderr = original_stderr
-
-'''
-
-
 def generate_intermediate_code():
     # Placeholder para generación de código intermedio
     intermediate_code = "Código intermedio generado: No implementado aún."
@@ -232,15 +168,12 @@ def generate_intermediate_code():
     result_text_intermediate_code.config(state="disabled")
 
 def generar_arbol_anotado():
-    #Aqui esta lo necesario para generar el arbol.
+
     text = text_entry.get("1.0", "end-1c")
     result = Sintactico2.parser.parse(text, lexer=Lexico.analizador)
     
     if result:
         tree = Sintactico2.formatear_arbol(result)
-        #print('Este es el arbol que voy a enviar:',tree)
-        #print('Este es el tipo de arbol:',type(tree))  # Verifica el tipo del árbol en general
-        #Arbol.generar_arbol(tree)
 
         # Convierte tree de str a tupla
         try:
@@ -249,13 +182,8 @@ def generar_arbol_anotado():
             print(f"Error al convertir a tupla: {e}")
             return
         
-        #print('Voy a enviar un arbol de tipo: ',type(tree_tupla))
-        #print("Arbol que voy a enviar: ",tree_tupla)
         Arbol.visualizar_arbol(tree_tupla, tabla_simbolos)
 
-        # Obtener la tabla de símbolos directamente
-        # symbols_table_str = str(tabla_simbolos)  # Convertir a string
-        # print('Tabla de Simbolos despues de Arbol:', symbols_table_str)
         
         # Mostrar la tabla de símbolos en el widget de resultados semánticos
         result_text_semantic.config(state="normal")
@@ -268,19 +196,66 @@ def generar_arbol_anotado():
 
 
 def actualizar_tabla():
+    # Primero, limpiamos la tabla de símbolos
+    # tabla_simbolos.reset()  # Limpiar la tabla de símbolos antes de agregar datos nuevos
+
+    try:
+        with open('tabla_lexica.csv', 'r') as csvfile:
+            reader = csv.DictReader(csvfile, fieldnames=["Linea", "Tipo", "Valor", "Posicion"])
+            next(reader)  # Salta el encabezado
+
+            # Cargar todos los símbolos en la tabla
+            for row in reader:
+                linea = int(row["Linea"])  # Convierte a entero
+                tipo = row["Tipo"]
+                valor = row["Valor"]
+                posicion = int(row["Posicion"])  # Convierte a entero
+
+                # Filtrar solo variables (ignorar 'program', 'if', 'while', etc. y números)
+                if tipo in ['int', 'float', 'IDENTIFICADOR', 'FLOTANTE', 'ENTERO']:
+                    # Asegurarse de que solo se agreguen nombres de variables
+                    if tipo in ['IDENTIFICADOR', 'int', 'float']:  # Acepta solo identificadores
+                        tabla_simbolos.add_symbol(valor, tipo, linea)
+
+        # Reabrir el archivo CSV para recorrer cada símbolo y sus referencias
+        with open('tabla_lexica.csv', 'r') as csvfile:
+            reader = csv.DictReader(csvfile, fieldnames=["Linea", "Tipo", "Valor", "Posicion"])
+            next(reader)  # Salta el encabezado
+
+            # Recorrer cada símbolo de la tabla de símbolos
+            for simbolo in tabla_simbolos.symbols.values():
+                # Reiniciar la posición del lector del archivo CSV
+                csvfile.seek(0)
+                next(reader)  # Salta el encabezado de nuevo
+
+                # Para cada símbolo, recorrer el archivo CSV para encontrar referencias
+                for row in reader:
+                    if simbolo.name == row["Valor"]:
+                        linea = int(row["Linea"])
+                        # Agregar la referencia al símbolo
+                        simbolo.add_reference(linea)
+
+    except FileNotFoundError:
+        print("El archivo 'tabla_lexica.csv' no se encontró.")
+        return
+    except Exception as e:
+        print(f"Error al leer el archivo CSV: {e}")
+        return
+
     # Obtener la tabla de símbolos directamente
-        symbols_table_str = str(tabla_simbolos)  # Convertir a string
-        #print('Tabla de Simbolos despues de Arbol:', symbols_table_str)
+    symbols_table_str = str(tabla_simbolos)  # Convertir a string
         
-        # Mostrar la tabla de símbolos en el widget de resultados semánticos
-        result_text_semantic.config(state="normal")
-        result_text_semantic.delete("1.0", "end")
-        result_text_semantic.insert("1.0", symbols_table_str)
-        result_text_semantic.config(state="disabled")
+    # Mostrar la tabla de símbolos en el widget de resultados semánticos
+    result_text_semantic.config(state="normal")
+    result_text_semantic.delete("1.0", "end")
+    result_text_semantic.insert("1.0", symbols_table_str)
+    result_text_semantic.config(state="disabled")
 
 def analyze_both():
     analyze_lexical()
     analyze_syntactic()
+    generar_arbol_anotado()
+    actualizar_tabla()
 
 root = tk.Tk()
 root.title("Editor de Código")
