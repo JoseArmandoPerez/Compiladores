@@ -73,6 +73,11 @@ def evaluar_expresion(arbol, tabla_simbolos):
                 return operando1 == operando2
             elif operador == '!=':
                 return operando1 != operando2
+            # Operadores booleanos
+            elif operador == 'or':
+                return operando1 or operando2
+            elif operador == 'and':
+                return operando1 and operando2
             else:
                 errores.append(f"Error: Operador no reconocido {operador}. En la Linea: {linea}")
                 return None
